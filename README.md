@@ -102,9 +102,8 @@ Create these GitHub repository settings before the first deployment:
 
 - Secret `CLOUDFLARE_API_TOKEN`: Cloudflare API token with Account Workers Scripts Edit permission
 - Secret `CLOUDFLARE_ACCOUNT_ID`: Cloudflare account ID
-- Secret `VITE_API_BASE_URL`: public URL of the deployed Node backend, with no trailing slash
-- Secret `VITE_SUPABASE_URL`: Supabase project URL
-- Secret `VITE_SUPABASE_ANON_KEY`: Supabase publishable/anon key
+- Variable `VITE_SUPABASE_URL`: Supabase project URL
+- Variable `VITE_SUPABASE_ANON_KEY`: Supabase publishable/anon key
 
 ### Cloudflare Container API
 
@@ -116,10 +115,10 @@ GitHub Actions secrets:
 - `SUPABASE_URL`: Supabase project URL
 - `SUPABASE_SERVICE_ROLE_KEY`: Supabase server secret key
 
-The frontend additionally requires `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as GitHub Actions
-secrets. It now calls the API at the same Cloudflare Worker origin, so `VITE_API_BASE_URL` may be left
-empty. The workflow copies the backend secrets into Cloudflare Worker secrets, and the proxy passes them
-only to the API container at startup.
+The frontend requires `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as GitHub Actions variables.
+They are public browser configuration, not server secrets. It calls the API at the same Cloudflare Worker
+origin, so no `VITE_API_BASE_URL` is needed. The workflow copies backend secrets into Cloudflare Worker
+secrets, and the proxy passes them only to the API container at startup.
 
 ## Contributing
 
