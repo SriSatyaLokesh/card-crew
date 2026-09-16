@@ -92,23 +92,22 @@ The backend tests use isolated in-memory repositories for fast API regression co
 Prisma-backed catalog, resource, request, and user repositories. The live UI smoke test requires valid
 Supabase configuration and is documented in [`docs/MVP_RELEASE_CHECKLIST.md`](docs/MVP_RELEASE_CHECKLIST.md).
 
-## Cloudflare Pages Deployment
+## Cloudflare Deployment
 
 The workflow at [`.github/workflows/cloudflare-pages.yml`](.github/workflows/cloudflare-pages.yml)
-deploys the Vite frontend to Cloudflare Pages whenever `main` changes. It also runs the backend tests
+deploys the Vite frontend as static assets on Cloudflare Workers whenever `main` changes. It also runs the backend tests
 and builds both applications before deploying.
 
 Create these GitHub repository settings before the first deployment:
 
-- Secret `CLOUDFLARE_API_TOKEN`: Cloudflare API token with Account Workers Scripts Edit and Pages Edit permissions
+- Secret `CLOUDFLARE_API_TOKEN`: Cloudflare API token with Account Workers Scripts Edit permission
 - Secret `CLOUDFLARE_ACCOUNT_ID`: Cloudflare account ID
-- Variable `CLOUDFLARE_PAGES_PROJECT`: existing Cloudflare Pages project name
 - Secret `VITE_API_BASE_URL`: public URL of the deployed Node backend, with no trailing slash
 - Secret `VITE_SUPABASE_URL`: Supabase project URL
 - Secret `VITE_SUPABASE_ANON_KEY`: Supabase publishable/anon key
 
 The current Express/Prisma backend is not deployed by this workflow. Run it on a Node-capable service
-and set `VITE_API_BASE_URL` to that service URL. Set the backend `CORS_ORIGIN` to the Cloudflare Pages
+and set `VITE_API_BASE_URL` to that service URL. Set the backend `CORS_ORIGIN` to the Cloudflare Worker
 site URL.
 
 ## Contributing

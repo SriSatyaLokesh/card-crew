@@ -1,4 +1,4 @@
-name: Deploy frontend to Cloudflare Pages
+name: Deploy frontend to Cloudflare Workers
 
 on:
   push:
@@ -48,9 +48,9 @@ jobs:
       - name: Build frontend
         run: npm --prefix frontend run build
 
-      - name: Deploy frontend to Cloudflare Pages
+      - name: Deploy frontend to Cloudflare Workers
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy frontend/dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=main
+          command: deploy
