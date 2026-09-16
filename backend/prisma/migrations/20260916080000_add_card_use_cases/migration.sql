@@ -1,0 +1,2 @@
+ALTER TABLE "CardCatalog"
+  ADD COLUMN "use_cases" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[];

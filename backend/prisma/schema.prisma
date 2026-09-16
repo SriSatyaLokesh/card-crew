@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  active
+  blocked
+  deleted
+}
+
+enum ConnectionStatus {
+  pending
+  accepted
+  blocked
+  removed
+}
+
+enum ResourceVisibility {
+  private
+  friends
+  network
+}
+
+enum ResourceStatus {
+  active
+  inactive
+  removed
+}
+
+enum RequestStatus {
+  pending
+  approved
+  declined
+  ignored
+}
+
+enum ReferralStatus {
+  not_required
+  pending
+  approved
+  declined
+  ignored
+}
+
+model User {
+  id                    String       @id
+  email                 String       @unique
+  phone                 String?      @unique
+  display_name          String
+  status                UserStatus   @default(active)
+  created_at            DateTime     @default(now())
+  updated_at            DateTime     @updatedAt
+  requested_connections Connection[] @relation("connections_requester")
+  received_connections  Connection[] @relation("connections_addressee")
+  resources             Resource[]
+  requested_requests    Request[]    @relation("requests_requester")
+  owned_requests         Request[]    @relation("requests_owner")
+  intermediary_requests Request[]    @relation("requests_intermediary")
+}
+
+model Connection {
+  id           String           @id @default(cuid())
+  requester_id String
+  addressee_id String
+  active_pair_key String?       @unique
+  status       ConnectionStatus @default(pending)
+  created_at   DateTime         @default(now())
+  updated_at   DateTime         @updatedAt
+  requester    User             @relation("connections_requester", fields: [requester_id], references: [id], onDelete: Cascade)
+  addressee    User             @relation("connections_addressee", fields: [addressee_id], references: [id], onDelete: Cascade)
+
+  @@index([requester_id])
+  @@index([addressee_id])
+  @@index([status])
+  @@index([requester_id, addressee_id])
+}
+
+model CardCatalog {
+  id           String     @id
+  issuer       String
+  product_name String
+  card_type    String
+  card_category String
+  network      String
+  variant      String?
+  country      String
+  upi_enabled  Boolean    @default(false)
+  use_cases    String[]
+  active       Boolean    @default(true)
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+  resources    Resource[]
+}
+
+model Resource {
+  id              String             @id @default(cuid())
+  owner_id        String
+  card_catalog_id String
+  visibility      ResourceVisibility @default(friends)
+  request_enabled Boolean            @default(true)
+  notes           String?
+  status          ResourceStatus     @default(active)
+  created_at      DateTime           @default(now())
+  updated_at      DateTime           @updatedAt
+  owner           User               @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  card            CardCatalog        @relation(fields: [card_catalog_id], references: [id])
+  requests        Request[]
+
+  @@index([owner_id])
+  @@index([card_catalog_id])
+}
+
+model Request {
+  id           String        @id @default(cuid())
+  requester_id String
+  owner_id     String
+  resource_id  String
+  intermediary_id String?
+  message      String        @default("")
+  status       RequestStatus @default(pending)
+  referral_status ReferralStatus @default(not_required)
+  created_at   DateTime      @default(now())
+  responded_at DateTime?
+  requester    User          @relation("requests_requester", fields: [requester_id], references: [id], onDelete: Cascade)
+  owner        User          @relation("requests_owner", fields: [owner_id], references: [id], onDelete: Cascade)
+  intermediary User?         @relation("requests_intermediary", fields: [intermediary_id], references: [id], onDelete: SetNull)
+  resource     Resource      @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@index([requester_id])
+  @@index([owner_id])
+  @@index([resource_id])
+  @@index([intermediary_id])
+}
