@@ -32,3 +32,8 @@ temp-*
 .DS_Store
 Thumbs.db
 .copilot/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example

@@ -16,6 +16,9 @@ jobs:
       VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
       VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
     steps:
       - name: Check out repository
@@ -29,6 +32,9 @@ jobs:
           cache-dependency-path: |
             backend/package-lock.json
             frontend/package-lock.json
+
+      - name: Install Cloudflare Worker dependencies
+        run: npm ci
 
       - name: Install backend dependencies
         run: npm ci --prefix backend
@@ -54,3 +60,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
+          secrets: |
+            DATABASE_URL
+            SUPABASE_URL
+            SUPABASE_SERVICE_ROLE_KEY

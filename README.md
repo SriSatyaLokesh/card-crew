@@ -106,9 +106,20 @@ Create these GitHub repository settings before the first deployment:
 - Secret `VITE_SUPABASE_URL`: Supabase project URL
 - Secret `VITE_SUPABASE_ANON_KEY`: Supabase publishable/anon key
 
-The current Express/Prisma backend is not deployed by this workflow. Run it on a Node-capable service
-and set `VITE_API_BASE_URL` to that service URL. Set the backend `CORS_ORIGIN` to the Cloudflare Worker
-site URL.
+### Cloudflare Container API
+
+The same Cloudflare Worker also proxies API routes to the Express/Prisma backend in a Cloudflare Container.
+Cloudflare Containers require the Workers Paid plan. Before deploying the container, create these additional
+GitHub Actions secrets:
+
+- `DATABASE_URL`: Supabase PostgreSQL connection string
+- `SUPABASE_URL`: Supabase project URL
+- `SUPABASE_SERVICE_ROLE_KEY`: Supabase server secret key
+
+The frontend additionally requires `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as GitHub Actions
+secrets. It now calls the API at the same Cloudflare Worker origin, so `VITE_API_BASE_URL` may be left
+empty. The workflow copies the backend secrets into Cloudflare Worker secrets, and the proxy passes them
+only to the API container at startup.
 
 ## Contributing
 

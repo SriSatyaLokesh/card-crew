@@ -1,12 +1,18 @@
 {
-	"private": true,
-	"name": "card-crew-workspace",
-	"scripts": {
-		"build": "npm run build:backend && npm run build:frontend",
-		"build:backend": "npm --prefix backend run build",
-		"build:frontend": "npm --prefix frontend run build",
-		"test": "npm --prefix backend test -- --runInBand",
-		"dev:backend": "npm --prefix backend run dev",
-		"dev:frontend": "npm --prefix frontend run dev"
-	}
+  "private": true,
+  "name": "card-crew-workspace",
+  "scripts": {
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "test": "npm --prefix backend test -- --runInBand",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
+  },
+  "devDependencies": {
+    "@cloudflare/containers": "^0.3.7",
+    "wrangler": "^4.132.0"
+  }
 }

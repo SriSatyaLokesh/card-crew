@@ -13,7 +13,7 @@ import type {
   UserProfile,
 } from "../types/api";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 class ApiError extends Error {
   constructor(public readonly status: number, message: string) {
