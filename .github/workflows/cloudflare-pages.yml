@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  deployments: write
 
 jobs:
   verify-and-deploy:
@@ -36,7 +37,7 @@ jobs:
         run: npm --prefix backend run prisma:generate
 
       - name: Test backend
-        run: npm --prefix backend test
+        run: npx --prefix backend tsx --test $(find backend/src -name '*.test.ts' -print)
 
       - name: Build backend
         run: npm --prefix backend run build
@@ -48,7 +49,7 @@ jobs:
         run: npm --prefix frontend run build
 
       - name: Deploy frontend to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
