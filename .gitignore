@@ -1,0 +1,34 @@
+# Squad: ignore runtime state (logs, inbox, sessions)
+# Note: .squad/casting/* is identity and MUST be committed to main, not ignored
+.squad/orchestration-log/
+.squad/log/
+.squad/decisions/inbox/
+.squad/sessions/
+.squad/.scratch/
+.squad/.cache/
+# Squad: SubSquad activation file (local to this machine)
+.squad-workstream
+
+# Backend scaffold
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+
+# Frontend and workspace build output
+frontend/.env
+frontend/dist/
+frontend/tsconfig.tsbuildinfo
+coverage/
+*.log
+
+# Python/tooling caches
+**/__pycache__/
+*.py[cod]
+
+# Temporary local scripts and editor/system files
+temp-*
+.DS_Store
+Thumbs.db
+.copilot/
