@@ -233,18 +233,17 @@ create table request_events (
 );
 create index request_events_request on request_events (request_id, created_at);
 
+-- Plain table, not partitioned: docs/DATABASE_DESIGN.md §11 sketches monthly partitioning
+-- for this table on the premise of high write volume, which doesn't exist yet at zero
+-- users. Partition (range on created_at, pg_cron-managed) when write volume actually
+-- warrants it -- same "build when measured" discipline already applied elsewhere in that
+-- doc to depth-3 traversal and the friend_edges materialization escape hatch.
 create table search_events (
-  id              bigint generated always as identity,
+  id              bigint generated always as identity primary key,
   user_id         uuid        not null,
   catalog_item_id uuid        not null,
   max_depth       smallint    not null,
   result_count    int         not null,
-  created_at      timestamptz not null default now(),
-  primary key (id, created_at)
-) partition by range (created_at);
--- monthly partitions are created/dropped by a pg_cron job (see docs/DATABASE_DESIGN.md §11);
--- one bootstrap partition so inserts don't fail before the job first runs.
-create table search_events_2026_09 partition of search_events
-  for values from ('2026-09-01') to ('2026-10-01');
-create table search_events_2026_10 partition of search_events
-  for values from ('2026-10-01') to ('2026-11-01');
+  created_at      timestamptz not null default now()
+);
+create index search_events_created on search_events (created_at);

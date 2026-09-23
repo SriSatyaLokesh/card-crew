@@ -10,24 +10,7 @@
 -- diff that list against pg_proc(prosecdef) so a new DEFINER function can't ship unaudited.
 --
 -- Every DEFINER function: `set search_path = ''`, fully-qualified `public.` names, acting
--- user from current_user_id() only (never a parameter), `revoke ... from public, anon`.
-
--- Indirection around auth.uid(): every function below calls this instead of auth.uid()
--- directly, so a future move off Supabase's auth needs one redefinition here, not a rewrite
--- of every function body.
-create function current_user_id()
-returns uuid
-language sql
-stable
-security invoker
-set search_path = ''
-as $$
-  select auth.uid();
-$$;
--- Postgres grants EXECUTE on new functions to PUBLIC by default — lock this down like
--- every other function here, even though it's normally only called internally.
-revoke execute on function current_user_id() from public, anon;
-grant execute on function current_user_id() to authenticated;
+-- user from auth.uid() only (never a parameter), `revoke ... from public, anon`.
 
 -- ── error contract ───────────────────────────────────────────────────────────
 -- RAISE EXCEPTION ... USING ERRCODE = 'PTxxx' maps straight to that HTTP status in
@@ -49,7 +32,7 @@ security invoker
 set search_path = ''
 as $$
 declare
-  v_uid uuid := public.current_user_id();
+  v_uid uuid := auth.uid();
   v_existing public.profiles%rowtype;
   v_name text;
   v_meta jsonb := coalesce((select auth.jwt() -> 'user_metadata'), '{}'::jsonb);
@@ -90,50 +73,11 @@ $$;
 revoke execute on function sync_profile(text, text) from public, anon;
 grant execute on function sync_profile(text, text) to authenticated;
 
--- Bundles the highest-traffic screen's reads (own resources, own pending requests both
--- directions, friend count) into one round trip instead of three-plus. INVOKER: every
--- sub-query below is already RLS-scoped to "my own rows" by the policies in the previous
--- migration, so this function cannot leak another user's row even with a body bug.
-create function get_dashboard()
-returns jsonb
-language sql
-stable
-security invoker
-set search_path = ''
-as $$
-  select jsonb_build_object(
-    'resources', coalesce((
-      select jsonb_agg(row_to_json(r)) from (
-        select id, catalog_item_id, visibility_depth, request_enabled, status
-        from public.resources
-        where owner_id = public.current_user_id() and status <> 'removed'
-        order by created_at desc
-        limit 50
-      ) r
-    ), '[]'::jsonb),
-    'incoming_requests', coalesce((
-      select jsonb_agg(row_to_json(r)) from (
-        select id, requester_id, resource_id, status, created_at
-        from public.requests
-        where owner_id = public.current_user_id() and status = 'pending'
-        order by created_at desc
-        limit 50
-      ) r
-    ), '[]'::jsonb),
-    'outgoing_requests', coalesce((
-      select jsonb_agg(row_to_json(r)) from (
-        select id, owner_id, resource_id, status, created_at
-        from public.requests
-        where requester_id = public.current_user_id() and status = 'pending'
-        order by created_at desc
-        limit 50
-      ) r
-    ), '[]'::jsonb),
-    'friend_count', (select count(*) from public.friend_edges where user_id = public.current_user_id())
-  );
-$$;
-revoke execute on function get_dashboard() from public, anon;
-grant execute on function get_dashboard() to authenticated;
+-- get_dashboard() (bundling the home screen's reads into one round trip) is deferred to
+-- when the frontend adapter (Phase C) actually has a caller for it — no point shipping an
+-- INVOKER function nothing calls yet. Add it there: every sub-query would be RLS-scoped to
+-- "my own rows" by the policies in the previous migration, so it can't leak another user's
+-- row even with a body bug.
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- SECURITY DEFINER — each crosses into another user's data; justified per function
@@ -148,7 +92,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_uid uuid := public.current_user_id();
+  v_uid uuid := auth.uid();
   v_r public.resources%rowtype;
   v_depth int;
 begin
@@ -198,7 +142,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_uid uuid := public.current_user_id();
+  v_uid uuid := auth.uid();
   v_row public.friend_requests%rowtype;
 begin
   if v_uid is null then raise exception using errcode = 'PT401', message = 'not_authenticated'; end if;
@@ -252,7 +196,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_uid uuid := public.current_user_id();
+  v_uid uuid := auth.uid();
   v_req public.friend_requests%rowtype;
   v_fr public.friendships%rowtype;
 begin
@@ -291,7 +235,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_uid uuid := public.current_user_id();
+  v_uid uuid := auth.uid();
   v_req public.friend_requests%rowtype;
 begin
   if v_uid is null then raise exception using errcode = 'PT401', message = 'not_authenticated'; end if;
@@ -324,7 +268,7 @@ language plpgsql
 security definer
 set search_path = ''
 as $$
-declare v_uid uuid := public.current_user_id();
+declare v_uid uuid := auth.uid();
 begin
   if v_uid is null then raise exception using errcode = 'PT401', message = 'not_authenticated'; end if;
   if p_target_id = v_uid then raise exception using errcode = 'PT400', message = 'cannot_block_self'; end if;
@@ -353,7 +297,7 @@ language plpgsql
 security definer
 set search_path = ''
 as $$
-declare v_uid uuid := public.current_user_id();
+declare v_uid uuid := auth.uid();
 begin
   if v_uid is null then raise exception using errcode = 'PT401', message = 'not_authenticated'; end if;
 
@@ -383,7 +327,7 @@ stable
 security definer
 set search_path = ''
 as $$
-  with me as (select public.current_user_id() as uid),
+  with me as (select auth.uid() as uid),
   d1 as (
     select e.friend_id as user_id, 1 as depth, null::uuid as via
     from public.friend_edges e join me on e.user_id = me.uid
@@ -431,7 +375,7 @@ stable
 security definer
 set search_path = ''
 as $$
-  with me as (select public.current_user_id() as uid),
+  with me as (select auth.uid() as uid),
   d1 as (
     select e.friend_id as user_id, 1 as depth, null::uuid as via
     from public.friend_edges e, me where e.user_id = me.uid
@@ -507,7 +451,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_uid uuid := public.current_user_id();
+  v_uid uuid := auth.uid();
   v_res public.resources%rowtype;
   v_intermediary uuid;
   v_direct boolean;
@@ -576,7 +520,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_uid uuid := public.current_user_id();
+  v_uid uuid := auth.uid();
   v_req public.requests%rowtype;
 begin
   if v_uid is null then raise exception using errcode = 'PT401', message = 'not_authenticated'; end if;
@@ -611,7 +555,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_uid uuid := public.current_user_id();
+  v_uid uuid := auth.uid();
   v_req public.requests%rowtype;
 begin
   if v_uid is null then raise exception using errcode = 'PT401', message = 'not_authenticated'; end if;
@@ -637,17 +581,17 @@ revoke execute on function respond_to_referral(uuid, referral_status) from publi
 grant execute on function respond_to_referral(uuid, referral_status) to authenticated;
 
 -- Justification: reads another user's phone number — the one place in the whole schema
--- that happens, gated tightly behind an already-owner-approved request.
-create type contact_info as (id uuid, display_name text, phone text, whatsapp_message text);
-
+-- that happens, gated tightly behind an already-owner-approved request. Returns jsonb
+-- rather than a named composite type (no other caller needs one) so PostgREST hands the
+-- client a single object, same as every other single-row RPC here.
 create function reveal_contact(p_request_id uuid, p_message text default null)
-returns contact_info
+returns jsonb
 language plpgsql
 security definer
 set search_path = ''
 as $$
 declare
-  v_uid uuid := public.current_user_id();
+  v_uid uuid := auth.uid();
   v_req public.requests%rowtype;
   v_contact_id uuid;
   v_contact public.profiles%rowtype;
@@ -673,7 +617,10 @@ begin
 
   insert into public.request_events (request_id, actor_id, event) values (p_request_id, v_uid, 'contact_revealed');
 
-  return (v_contact.id, v_contact.display_name, v_contact.phone, v_msg)::public.contact_info;
+  return jsonb_build_object(
+    'id', v_contact.id, 'display_name', v_contact.display_name,
+    'phone', v_contact.phone, 'whatsapp_message', v_msg
+  );
 end;
 $$;
 revoke execute on function reveal_contact(uuid, text) from public, anon;
@@ -700,5 +647,5 @@ grant execute on function reveal_contact(uuid, text) to authenticated;
 --     RPC) — friend_edges has no INSERT/DELETE policy for `authenticated`, so the trigger
 --     must bypass RLS to maintain the mirror when a friendships row changes.
 --
--- Everything else in this file (current_user_id, sync_profile, get_dashboard) is
+-- The one other function in this file, sync_profile, is
 -- SECURITY INVOKER and relies on RLS alone.
