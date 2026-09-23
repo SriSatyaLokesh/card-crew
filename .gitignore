@@ -37,3 +37,7 @@ Thumbs.db
 .wrangler
 .dev.vars*
 !.dev.vars.example
+
+# supabase CLI local runtime state
+supabase/.branches
+supabase/.temp
