@@ -153,7 +153,7 @@ on conflict do nothing;
 -- legacy id: hdfc-tata-neu-infinity
 with item as (
   insert into catalog_items (item_type, issuer_id, name, country, active)
-  select 'card', i.id, 'Tata Neu Infinity', 'IN', true
+  select 'card', i.id, 'Tata Neu Infinity (RuPay)', 'IN', true
   from issuers i where i.slug = 'hdfc'
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
@@ -171,7 +171,7 @@ on conflict do nothing;
 -- legacy id: hdfc-tata-neu-plus
 with item as (
   insert into catalog_items (item_type, issuer_id, name, country, active)
-  select 'card', i.id, 'Tata Neu Plus', 'IN', true
+  select 'card', i.id, 'Tata Neu Plus (RuPay)', 'IN', true
   from issuers i where i.slug = 'hdfc'
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
@@ -1305,7 +1305,7 @@ on conflict do nothing;
 -- legacy id: au-ixigo
 with item as (
   insert into catalog_items (item_type, issuer_id, name, country, active)
-  select 'card', i.id, 'ixigo', 'IN', true
+  select 'card', i.id, 'ixigo (RuPay)', 'IN', true
   from issuers i where i.slug = 'au-small-finance-bank'
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
@@ -2025,7 +2025,7 @@ on conflict do nothing;
 -- legacy id: hdfc-tata-neu-plus-visa
 with item as (
   insert into catalog_items (item_type, issuer_id, name, country, active)
-  select 'card', i.id, 'Tata Neu Plus', 'IN', true
+  select 'card', i.id, 'Tata Neu Plus (Visa)', 'IN', true
   from issuers i where i.slug = 'hdfc'
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
@@ -2043,7 +2043,7 @@ on conflict do nothing;
 -- legacy id: hdfc-tata-neu-infinity-visa
 with item as (
   insert into catalog_items (item_type, issuer_id, name, country, active)
-  select 'card', i.id, 'Tata Neu Infinity', 'IN', true
+  select 'card', i.id, 'Tata Neu Infinity (Visa)', 'IN', true
   from issuers i where i.slug = 'hdfc'
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
@@ -2277,7 +2277,7 @@ on conflict do nothing;
 -- legacy id: au-ixigo-visa
 with item as (
   insert into catalog_items (item_type, issuer_id, name, country, active)
-  select 'card', i.id, 'ixigo', 'IN', true
+  select 'card', i.id, 'ixigo (Visa)', 'IN', true
   from issuers i where i.slug = 'au-small-finance-bank'
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id

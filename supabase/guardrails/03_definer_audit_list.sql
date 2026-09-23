@@ -9,7 +9,12 @@ declare
   v_audited text[] := array[
     'get_resource', 'send_friend_request', 'accept_friend_request', 'decline_friend_request',
     'block_user', 'remove_friend', 'search_network', 'network_graph', 'create_request',
-    'respond_to_request', 'respond_to_referral', 'reveal_contact'
+    'respond_to_request', 'respond_to_referral', 'reveal_contact',
+    -- trigger function, not an RPC, but still SECURITY DEFINER: friend_edges has no
+    -- INSERT/DELETE policy for `authenticated`, so the trigger must bypass RLS to
+    -- maintain the mirror when a friendships row (which IS authenticated-writable via
+    -- accept_friend_request/block_user/remove_friend) changes.
+    'sync_friend_edges'
   ];
   v_unaudited text;
   v_stale text;

@@ -63,6 +63,25 @@ function slug(s) {
     .replace(/^-+|-+$/g, "");
 }
 
+// catalog_items is unique on (issuer_id, item_type, name) -- it has no network column,
+// deliberately, since it's the generic table shared by every future resource type, not
+// just cards. A handful of real products are only distinguishable by network (e.g. HDFC
+// issues "Tata Neu Infinity" as both a RuPay and a Visa card) -- disambiguate those names
+// with a network suffix so they land as two catalog_items rows instead of silently
+// colliding into one (found by running `supabase db reset` and comparing row counts
+// against source row counts -- see supabase/README.md).
+const byIssuerAndName = new Map();
+for (const r of rows) {
+  const key = `${r.issuer}|${r.product_name}`;
+  if (!byIssuerAndName.has(key)) byIssuerAndName.set(key, []);
+  byIssuerAndName.get(key).push(r);
+}
+for (const group of byIssuerAndName.values()) {
+  if (group.length > 1) {
+    for (const r of group) r.product_name = `${r.product_name} (${r.network})`;
+  }
+}
+
 const issuers = new Map();
 const networks = new Map();
 const useCaseSet = new Set();

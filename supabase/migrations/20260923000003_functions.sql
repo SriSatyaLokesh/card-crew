@@ -554,7 +554,7 @@ begin
   insert into public.requests (requester_id, owner_id, resource_id, intermediary_id, message, referral_status)
   values (
     v_uid, v_res.owner_id, p_resource_id, v_intermediary, coalesce(p_message, ''),
-    case when v_intermediary is not null then 'pending' else 'not_required' end
+    (case when v_intermediary is not null then 'pending' else 'not_required' end)::public.referral_status
   )
   returning * into v_req;
 
@@ -673,7 +673,7 @@ begin
 
   insert into public.request_events (request_id, actor_id, event) values (p_request_id, v_uid, 'contact_revealed');
 
-  return (v_contact.id, v_contact.display_name, v_contact.phone, v_msg)::contact_info;
+  return (v_contact.id, v_contact.display_name, v_contact.phone, v_msg)::public.contact_info;
 end;
 $$;
 revoke execute on function reveal_contact(uuid, text) from public, anon;
@@ -696,6 +696,9 @@ grant execute on function reveal_contact(uuid, text) to authenticated;
 --   respond_to_request      — error-message fidelity (see comment above the function)
 --   respond_to_referral     — error-message fidelity (see comment above the function)
 --   reveal_contact           — reads another user's phone number
+--   sync_friend_edges (defined in 20260923000001_schema.sql, a trigger function, not an
+--     RPC) — friend_edges has no INSERT/DELETE policy for `authenticated`, so the trigger
+--     must bypass RLS to maintain the mirror when a friendships row changes.
 --
 -- Everything else in this file (current_user_id, sync_profile, get_dashboard) is
 -- SECURITY INVOKER and relies on RLS alone.
