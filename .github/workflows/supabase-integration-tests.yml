@@ -1,0 +1,42 @@
+name: Supabase Integration Tests
+
+on:
+  pull_request:
+    paths:
+      - "supabase/**"
+      - "tests/integration/**"
+      - ".github/workflows/supabase-integration-tests.yml"
+  push:
+    branches: [main]
+    paths:
+      - "supabase/**"
+      - "tests/integration/**"
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+
+      - uses: supabase/setup-cli@46f7f98c7f948ad727d22c1e67fab04c223a0520 # v3
+        with:
+          version: latest
+
+      - name: Start local Supabase (applies migrations + seed)
+        run: supabase start --exclude studio,imgproxy,inbucket
+
+      - name: Install integration test dependencies
+        working-directory: tests/integration
+        run: npm install
+
+      - name: Run integration tests
+        working-directory: tests/integration
+        run: npm test
+
+      - name: Stop local Supabase
+        if: always()
+        run: supabase stop --no-backup
