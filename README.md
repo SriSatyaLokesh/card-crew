@@ -15,8 +15,8 @@ PINs, OTPs, bank credentials, or other payment secrets.
 - Approval-gated phone/WhatsApp contact handoff
 - Mobile-first React UI with an Obsidian-inspired trust graph
 
-Product scope and acceptance criteria live in [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md) and the source PRD
-in [`docs/trusted_personal_resource_network_prd.md`](docs/trusted_personal_resource_network_prd.md).
+Product scope and acceptance criteria live in the source PRD,
+[`docs/trusted_personal_resource_network_prd.md`](docs/trusted_personal_resource_network_prd.md).
 
 ## Repository Layout
 
@@ -88,9 +88,9 @@ npm test
 npm run build
 ```
 
-The backend tests use isolated in-memory repositories for fast API regression coverage. Production uses
-Prisma-backed catalog, resource, request, and user repositories. The live UI smoke test requires valid
-Supabase configuration and is documented in [`docs/MVP_RELEASE_CHECKLIST.md`](docs/MVP_RELEASE_CHECKLIST.md).
+The backend tests use isolated in-memory repositories for fast API regression coverage. The integration
+suite in `tests/integration/` runs against a real local Supabase instance (`supabase start`) instead —
+see [`supabase/README.md`](supabase/README.md).
 
 ## Cloudflare Deployment
 
@@ -139,9 +139,8 @@ after the applicable direct-owner or intermediary approval path succeeds.
 
 ## Key Documents
 
+- [`docs/trusted_personal_resource_network_prd.md`](docs/trusted_personal_resource_network_prd.md) — PRD
+- [`docs/DATABASE_DESIGN.md`](docs/DATABASE_DESIGN.md) — Postgres/Supabase schema, RLS and privacy model
+- [`docs/DATABASE_MIGRATION_PLAN.md`](docs/DATABASE_MIGRATION_PLAN.md) — findings and phased migration plan
 - [`docs/API_CONTRACT.md`](docs/API_CONTRACT.md)
 - [`docs/design.md`](docs/design.md)
-- [`docs/UI_PLAN.md`](docs/UI_PLAN.md)
-- [`docs/USER_STORY_CARD_DETAILS.md`](docs/USER_STORY_CARD_DETAILS.md)
-- [`docs/MVP_SIGNOFF.md`](docs/MVP_SIGNOFF.md)
-- [`docs/MVP_RELEASE_CHECKLIST.md`](docs/MVP_RELEASE_CHECKLIST.md)

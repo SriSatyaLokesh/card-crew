@@ -1,8 +1,7 @@
 # Frontend
 
 Vite + React + TypeScript client for Card Crew, implementing F1-F4 (app shell, My Network, My Cards,
-search-first home). See [docs/FRONTEND_PLAN.md](../docs/FRONTEND_PLAN.md) for the full task breakdown,
-API contract reference, and known gaps.
+search-first home). See [docs/API_CONTRACT.md](../docs/API_CONTRACT.md) for the API reference.
 
 ## Setup
 
