@@ -165,6 +165,8 @@ Rules for every `SECURITY DEFINER` function: pinned empty `search_path`, fully-q
 
 Policy hygiene: wrap `auth.uid()` as `(select auth.uid())` so Postgres evaluates it once per statement instead of per row; index every column an RLS predicate touches.
 
+**`SECURITY INVOKER` by default, `DEFINER` only when justified.** Every `DEFINER` function hand-writes authorization logic that RLS would otherwise enforce automatically — one missed `WHERE owner_id = ...` inside a `DEFINER` body is a silent leak no policy catches. So: a function that only ever touches the caller's own rows (profile sync, a personal dashboard/aggregate read) should run as `INVOKER` — RLS re-checks every sub-query the same as a direct client call, so a bug in the function body still can't cross the authorization boundary. Reserve `DEFINER` for functions that genuinely must read or write another user's row — multi-hop graph discovery (`search_network`, an eventual `network_graph`), deriving `owner_id`/`intermediary_id` on someone else's behalf (`create_request`), or writing a row that represents both parties' consent (`accept_friend_request`, `block_user`). Each `DEFINER` function should carry a one-line justification for why `INVOKER` wasn't enough, and the list of `DEFINER` functions is worth diffing against `pg_proc` in CI so a new one can't ship unaudited.
+
 ---
 
 ## 9. The hot query — "which friend has this card" `[MVP]`
@@ -489,12 +491,19 @@ alter table catalog_items enable row level security;
 create policy friend_edges_own on friend_edges for select to authenticated
   using (user_id = (select auth.uid()));
 
-create policy profiles_read on profiles for select to authenticated
-  using (id = (select auth.uid())
-      or exists (select 1 from friend_edges e
-                 where e.user_id = (select auth.uid()) and e.friend_id = profiles.id));
+create policy profiles_self_read on profiles for select to authenticated
+  using (id = (select auth.uid()));
 create policy profiles_update_own on profiles for update to authenticated
   using (id = (select auth.uid())) with check (id = (select auth.uid()));
+
+-- safe-columns projection for anyone resolving a display name (a friend, a pending
+-- request's sender, a search result's owner) — never phone. security_invoker = false
+-- so it works without a matching RLS predicate; granted to `authenticated` only,
+-- never `anon` — this is a trusted-network app, not a public directory.
+create view profiles_public with (security_invoker = false) as
+  select id, display_name, status from profiles;
+revoke all on profiles_public from public, anon;
+grant select on profiles_public to authenticated;
 
 create policy resources_owner_all on resources for all to authenticated
   using (owner_id = (select auth.uid())) with check (owner_id = (select auth.uid()));
@@ -505,9 +514,12 @@ create policy resources_friends_read on resources for select to authenticated
 
 create policy requests_party_read on requests for select to authenticated
   using (requester_id = (select auth.uid()) or owner_id = (select auth.uid()));
-create policy requests_insert_own on requests for insert to authenticated
-  with check (requester_id = (select auth.uid()));
--- status transitions: via function only; no generic UPDATE policy for clients.
+-- deliberately no INSERT policy: a client-checkable `WITH CHECK (requester_id = auth.uid())`
+-- can only validate columns the client supplies, but owner_id/intermediary_id must be
+-- *derived* server-side from the resource + graph (see create_request, §13/V1) — a client
+-- that could set those itself would reopen exactly the id-spoofing hole this design closes.
+-- absence of a policy for a command = implicit deny; all writes go through DEFINER functions.
+-- status transitions: via function only; no generic UPDATE policy for clients either.
 
 create policy catalog_read on catalog_items for select to authenticated using (active);
 create policy blocks_own on user_blocks for all to authenticated
@@ -548,4 +560,10 @@ Deliberately omitted from the MVP slice (see §13): `friend_requests` accept/dec
 
 ## Revision notes
 
-_Pending: review pass against `timescale/pg-aiguide` guidance once the plugin is installed. Corrections will be recorded here rather than silently edited above._
+**2026-09-23 — RLS hardening pass** (found during architect review of the companion Supabase-native API plan, [issue #3](https://github.com/SriSatyaLokesh/card-crew/issues/3)):
+- `profiles_read` allowed any accepted friend to read a profile's `phone` directly via `select` — replaced with `profiles_self_read` (full row, self only) + a `profiles_public` view (id/display_name/status only) granted to `authenticated`, deliberately **not** `anon`.
+- `requests_insert_own` let a client supply `requester_id` on insert, which only works if `owner_id`/`intermediary_id` are also client-suppliable — reopening the id-spoofing hole this design exists to close. Removed; all `requests` writes go through `DEFINER` functions (`create_request` et al., §13) that derive those columns server-side.
+- Added the `SECURITY INVOKER`-by-default rule to §8 — narrows the `DEFINER` surface to functions that genuinely cross the authorization boundary, each individually justified.
+- `(select auth.uid())` wrapping was already consistent throughout §12 — no change needed there.
+
+_Still pending: review pass against `timescale/pg-aiguide` guidance once the plugin is installed._
