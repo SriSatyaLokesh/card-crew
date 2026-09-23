@@ -90,7 +90,7 @@ describe("profiles visibility", () => {
 describe("auth boundary", () => {
   it("rejects an RPC call from a signed-out (anon-key-only) client", async () => {
     const client = anonClient();
-    const { error } = await client.rpc("get_dashboard");
+    const { error } = await client.rpc("network_graph", { p_max_depth: 1 });
     expect(error).not.toBeNull();
   });
 
@@ -101,7 +101,7 @@ describe("auth boundary", () => {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0",
       { auth: { autoRefreshToken: false, persistSession: false }, global: { headers: { Authorization: "Bearer garbage.token.here" } } },
     );
-    const { error } = await badClient.rpc("get_dashboard");
+    const { error } = await badClient.rpc("network_graph", { p_max_depth: 1 });
     expect(error).not.toBeNull();
   });
 });
