@@ -75,7 +75,7 @@ export async function createTestUser(options: { displayName?: string; metadata?:
  * the real app's post-signup flow. */
 export async function syncProfile(user: TestUser, displayName?: string) {
   const { data, error } = await user.client.rpc("sync_profile", { p_display_name: displayName ?? null });
-  if (error) throw new PgError("sync_profile", error);
+  if (error) throw pgError("sync_profile", error);
   return data;
 }
 
@@ -83,9 +83,9 @@ export async function syncProfile(user: TestUser, displayName?: string) {
  * friendships + friend_edges via the trigger). */
 export async function becomeFriends(a: TestUser, b: TestUser) {
   const { data: req, error: sendError } = await a.client.rpc("send_friend_request", { p_addressee_id: b.id });
-  if (sendError) throw new PgError("send_friend_request", sendError);
+  if (sendError) throw pgError("send_friend_request", sendError);
   const { data: accepted, error: acceptError } = await b.client.rpc("accept_friend_request", { p_request_id: req.id });
-  if (acceptError) throw new PgError("accept_friend_request", acceptError);
+  if (acceptError) throw pgError("accept_friend_request", acceptError);
   return accepted;
 }
 
@@ -116,17 +116,15 @@ export async function addResource(
     .insert({ owner_id: owner.id, catalog_item_id: catalogItemId, ...overrides })
     .select()
     .single();
-  if (error) throw new PgError("insert resources", error);
+  if (error) throw pgError("insert resources", error);
   return data;
 }
 
 /** Wraps a PostgrestError/FunctionsError with the operation name in the message, so a
  * failed assertion in a test points straight at which call failed instead of a bare
  * Postgres error string. */
-export class PgError extends Error {
-  code?: string;
-  constructor(op: string, error: { message: string; code?: string }) {
-    super(`${op} failed: ${error.message}${error.code ? ` (${error.code})` : ""}`);
-    this.code = error.code;
-  }
+function pgError(op: string, error: { message: string; code?: string }): Error {
+  return Object.assign(new Error(`${op} failed: ${error.message}${error.code ? ` (${error.code})` : ""}`), {
+    code: error.code,
+  });
 }
