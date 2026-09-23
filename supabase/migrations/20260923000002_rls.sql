@@ -27,6 +27,13 @@ alter table resources             enable row level security;
 alter table requests              enable row level security;
 alter table request_events        enable row level security;
 alter table search_events         enable row level security;
+-- ENABLE ROW LEVEL SECURITY on a partitioned parent does not cascade to partitions that
+-- already exist when the statement runs (found by the CI guardrail, not assumed): each
+-- partition is its own relation and needs its own enable. Any future partition a pg_cron
+-- job creates (docs/DATABASE_DESIGN.md §11) must do the same in the same transaction that
+-- creates it.
+alter table search_events_2026_09 enable row level security;
+alter table search_events_2026_10 enable row level security;
 
 -- ── profiles ─────────────────────────────────────────────────────────────────
 -- Full row (including phone) is self-only. Everyone else resolves display names through
