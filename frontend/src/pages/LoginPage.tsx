@@ -11,6 +11,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -61,17 +62,29 @@ function LoginPage() {
             required
           />
         </label>
-        <label>
-          Password
-          <input
-            type="password"
-            autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            minLength={8}
-            required
-          />
-        </label>
+        <div className="password-field">
+          <label>
+            Password
+            <input
+              type={showPassword ? "text" : "password"}
+              autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              minLength={8}
+              required
+            />
+          </label>
+          {/* Outside the <label> deliberately: <button> is itself labelable, so nesting it
+              inside the label merged both into one accessible name ("Password Show password"). */}
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() => setShowPassword((current) => !current)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
 
         {formError && <p className="form-error" role="alert">{formError}</p>}
 
