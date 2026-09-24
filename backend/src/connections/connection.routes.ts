@@ -1,6 +1,6 @@
-import { type Response, Router } from "express";
+import { Router } from "express";
 
-import { HttpError } from "../errors/http-error.js";
+import { sendErrorResponse } from "../errors/send-error-response.js";
 import { createRateLimitMiddleware } from "../middleware/rate-limit.js";
 
 import {
@@ -83,16 +83,6 @@ function createConnectionRouter({ connectionService }: ConnectionRouterDependenc
   });
 
   return router;
-}
-
-function sendErrorResponse(error: unknown, response: Response) {
-  if (error instanceof HttpError) {
-    response.status(error.statusCode).json({ error: error.message });
-    return;
-  }
-
-  console.error(error);
-  response.status(500).json({ error: "Internal server error" });
 }
 
 export { createConnectionRouter };

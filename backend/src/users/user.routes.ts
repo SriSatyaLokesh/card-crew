@@ -1,6 +1,6 @@
-import { type RequestHandler, type Response, Router } from "express";
+import { type RequestHandler, Router } from "express";
 
-import { HttpError } from "../errors/http-error.js";
+import { sendErrorResponse } from "../errors/send-error-response.js";
 import { createRateLimitMiddleware } from "../middleware/rate-limit.js";
 
 import { parseSyncUserInput } from "./user.validation.js";
@@ -62,16 +62,6 @@ function createUserRouter({
   });
 
   return router;
-}
-
-function sendErrorResponse(error: unknown, response: Response) {
-  if (error instanceof HttpError) {
-    response.status(error.statusCode).json({ error: error.message });
-    return;
-  }
-
-  console.error(error);
-  response.status(500).json({ error: "Internal server error" });
 }
 
 export { createUserRouter };

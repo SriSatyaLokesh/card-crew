@@ -24,27 +24,28 @@ const userRepository = new PrismaUserRepository(prisma);
 const catalogRepository = new PrismaCardCatalogRepository(prisma);
 const resourceRepository = new PrismaResourceRepository(prisma);
 const requestRepository = new PrismaRequestRepository(prisma);
+const connectionRepository = new PrismaConnectionRepository(prisma);
 const userService = new UserService({
   userRepository,
 });
 const connectionService = new ConnectionService({
-  connectionRepository: new PrismaConnectionRepository(prisma),
+  connectionRepository,
   userRepository,
 });
 const resourceService = new ResourceService({
   resourceRepository,
   userRepository,
   cardCatalogRepository: catalogRepository,
-  connectionRepository: new PrismaConnectionRepository(prisma),
+  connectionRepository,
 });
 const requestService = new RequestService({
   requestRepository,
   userRepository,
   resourceRepository,
-  connectionRepository: new PrismaConnectionRepository(prisma),
+  connectionRepository,
 });
 const networkService = new NetworkService({
-  connectionRepository: new PrismaConnectionRepository(prisma),
+  connectionRepository,
   userRepository,
   resourceRepository,
 });
