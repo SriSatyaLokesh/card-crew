@@ -13,9 +13,9 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const syncProfile = useCallback(async (activeSession: Session, displayName?: string) => {
+  const syncProfile = useCallback(async (displayName?: string) => {
     try {
-      const { user } = await api.syncUser(activeSession.access_token, displayName);
+      const { user } = await api.syncUser(displayName);
       setProfile(user);
       setError(null);
     } catch (syncError) {
@@ -34,7 +34,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
       setSession(data.session);
 
       if (data.session) {
-        syncProfile(data.session).finally(() => setLoading(false));
+        syncProfile().finally(() => setLoading(false));
       } else {
         setLoading(false);
       }
@@ -44,7 +44,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
       setSession(nextSession);
 
       if (nextSession) {
-        syncProfile(nextSession);
+        syncProfile();
       } else {
         setProfile(null);
       }
@@ -76,7 +76,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (data.session) {
-      await syncProfile(data.session, displayName);
+      await syncProfile(displayName);
     }
   }, [syncProfile]);
 

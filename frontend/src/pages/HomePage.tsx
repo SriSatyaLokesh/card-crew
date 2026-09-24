@@ -3,13 +3,10 @@ import { Link } from "react-router-dom";
 
 import { useAuth } from "../auth/AuthContext";
 import { api } from "../lib/apiClient";
-import { resolveDisplayNames } from "../lib/resolveNames";
 import { NetworkGraph } from "../components/NetworkGraph";
 import type { GraphFriend } from "../components/NetworkGraph";
 import { RequestComposeModal } from "../components/RequestComposeModal";
 import type { CardCatalogSummary, NetworkMatch } from "../types/api";
-
-type MatchWithName = NetworkMatch & { display_name: string };
 
 function HomePage() {
   const { profile } = useAuth();
@@ -19,10 +16,10 @@ function HomePage() {
   const [friends, setFriends] = useState<GraphFriend[]>([]);
   const [query, setQuery] = useState("");
   const [selectedCard, setSelectedCard] = useState<CardCatalogSummary | null>(null);
-  const [matches, setMatches] = useState<MatchWithName[] | null>(null);
+  const [matches, setMatches] = useState<NetworkMatch[] | null>(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
-  const [composeMatch, setComposeMatch] = useState<MatchWithName | null>(null);
+  const [composeMatch, setComposeMatch] = useState<NetworkMatch | null>(null);
   const [requestSentFor, setRequestSentFor] = useState<string | null>(null);
   const [searchDepth, setSearchDepth] = useState<1 | 2>(1);
 
@@ -40,17 +37,8 @@ function HomePage() {
     }
 
     api
-      .getConnections(profile.id, "accepted")
-      .then(({ connections }) => {
-        const friendIds = connections.map((connection) => ({
-          user_id: connection.requester_id === profile.id ? connection.addressee_id : connection.requester_id,
-          depth: 1 as const,
-          card_count: 0,
-          via_user_id: null,
-        }));
-        return resolveDisplayNames(friendIds);
-      })
-      .then(setFriends)
+      .getNetworkGraph(1)
+      .then(({ nodes }) => setFriends(nodes.filter((node) => node.depth === 1) as GraphFriend[]))
       .catch(() => setFriends([]));
   }, [profile]);
 
@@ -82,9 +70,8 @@ function HomePage() {
     setRequestSentFor(null);
 
     try {
-      const { matches: networkMatches } = await api.searchNetwork(profile.id, card.id, searchDepth);
-      const withNames = await resolveDisplayNames(networkMatches);
-      setMatches(withNames);
+      const { matches: networkMatches } = await api.searchNetwork(card.id, searchDepth);
+      setMatches(networkMatches);
     } catch (searchErr) {
       setSearchError(searchErr instanceof Error ? searchErr.message : "Search failed. Try again.");
     } finally {
@@ -93,7 +80,7 @@ function HomePage() {
   }
 
   const highlightedUserIds = useMemo(
-    () => new Set((matches ?? []).map((match) => match.user_id)),
+    () => new Set((matches ?? []).map((match) => match.owner_id)),
     [matches],
   );
 
@@ -163,7 +150,7 @@ function HomePage() {
           ) : (
             <ul className="match-list">
               {matches.map((match) => (
-                <li key={match.user_id}>
+                <li key={match.owner_id}>
                   <strong>{match.display_name}</strong>
                   <span className="match-resource">{selectedCard.issuer} {selectedCard.product_name}</span>
                   <span className={`badge ${match.depth === 1 ? "badge-direct" : "badge-second-degree"}`}>
@@ -198,8 +185,6 @@ function HomePage() {
 
       {composeMatch && profile && selectedCard && (
         <RequestComposeModal
-          requesterId={profile.id}
-          ownerId={composeMatch.user_id}
           ownerName={composeMatch.display_name}
           resourceId={composeMatch.resource_id}
           cardLabel={`${selectedCard.issuer} ${selectedCard.product_name}`}

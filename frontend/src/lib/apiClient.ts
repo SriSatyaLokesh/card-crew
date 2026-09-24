@@ -1,19 +1,23 @@
+import type { PostgrestError } from "@supabase/supabase-js";
+
+import { supabase } from "./supabaseClient";
 import type {
+  BlockedUserSummary,
   CardCatalogSummary,
-  ConnectionStatus,
-  ConnectionSummary,
   ContactInfo,
+  FriendRequestSummary,
+  FriendshipSummary,
+  NetworkEdge,
   NetworkMatch,
   NetworkNode,
-  NetworkEdge,
+  ReferralStatus,
   RequestStatus,
   RequestSummary,
+  ResourceStatus,
   ResourceSummary,
   ResourceVisibility,
   UserProfile,
 } from "../types/api";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 class ApiError extends Error {
   constructor(public readonly status: number, message: string) {
@@ -22,196 +26,207 @@ class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...init,
-    headers: {
-      "content-type": "application/json",
-      ...init?.headers,
-    },
-  });
+// RAISE EXCEPTION ... USING ERRCODE = 'PTxxx' in the RPC functions maps straight to these.
+// PGRST116 is PostgREST's own "0 rows from a call that required exactly one" — used here to
+// catch RLS silently filtering out a PATCH/DELETE the caller doesn't own (see issue #3 plan
+// §RLS fixes note 4): every write below chains `.select().single()` so that case surfaces as
+// a real error instead of a silent no-op.
+const PG_STATUS: Record<string, number> = { PT400: 400, PT401: 401, PT403: 403, PT404: 404, PT409: 409, PT429: 429 };
 
-  if (response.status === 204) {
-    return undefined as T;
+function toApiError(error: PostgrestError): ApiError {
+  if (error.code === "PGRST116") {
+    return new ApiError(404, "not_found");
   }
+  const status = PG_STATUS[error.code ?? ""] ?? (error.code === "23505" || error.code === "23503" ? 409 : 500);
+  return new ApiError(status, error.message);
+}
 
-  const body = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new ApiError(response.status, body.error ?? "Request failed");
+function unwrap<T>({ data, error }: { data: T | null; error: PostgrestError | null }): T {
+  if (error) {
+    throw toApiError(error);
   }
-
-  return body as T;
+  return data as T;
 }
 
-function syncUser(accessToken: string, displayName?: string) {
-  return request<{ user: UserProfile }>("/users/sync", {
-    method: "POST",
-    headers: { authorization: `Bearer ${accessToken}` },
-    body: JSON.stringify(displayName ? { display_name: displayName } : {}),
-  });
-}
+const DEPTH_BY_VISIBILITY: Record<ResourceVisibility, number> = { private: 0, friends: 1, network: 2 };
+const VISIBILITY_BY_DEPTH: Record<number, ResourceVisibility> = { 0: "private", 1: "friends", 2: "network", 3: "network" };
 
-function getUserProfile(id: string) {
-  return request<{ user: UserProfile }>(`/users/${id}`);
-}
-
-function getCatalogCards() {
-  return request<{ cards: CardCatalogSummary[] }>("/catalog/cards");
-}
-
-function getResources(userId: string) {
-  return request<{ resources: ResourceSummary[] }>(`/resources?user_id=${encodeURIComponent(userId)}`);
-}
-
-function createResource(input: {
+type ResourceRow = {
+  id: string;
   owner_id: string;
-  card_catalog_id: string;
+  catalog_item_id: string;
+  visibility_depth: number;
+  request_enabled: boolean;
+  notes: string | null;
+  status: ResourceStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+function toResourceSummary(row: ResourceRow): ResourceSummary {
+  return { ...row, visibility: VISIBILITY_BY_DEPTH[row.visibility_depth] ?? "network" };
+}
+
+async function syncUser(displayName?: string) {
+  const res = await supabase.rpc("sync_profile", { p_display_name: displayName ?? null });
+  return { user: unwrap(res) as UserProfile };
+}
+
+async function getCatalogCards() {
+  const res = await supabase.from("catalog_cards_view").select("*");
+  return { cards: unwrap(res) as CardCatalogSummary[] };
+}
+
+async function getResources() {
+  const res = await supabase.from("resources").select("*");
+  return { resources: (unwrap(res) as ResourceRow[]).map(toResourceSummary) };
+}
+
+async function getResource(id: string) {
+  const res = await supabase.rpc("get_resource", { p_resource_id: id });
+  return { resource: toResourceSummary(unwrap(res) as ResourceRow) };
+}
+
+async function createResource(input: {
+  owner_id: string;
+  catalog_item_id: string;
   visibility?: ResourceVisibility;
   request_enabled?: boolean;
   notes?: string | null;
 }) {
-  return request<{ resource: ResourceSummary }>("/resources", {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
+  const res = await supabase
+    .from("resources")
+    .insert({
+      owner_id: input.owner_id,
+      catalog_item_id: input.catalog_item_id,
+      visibility_depth: DEPTH_BY_VISIBILITY[input.visibility ?? "friends"],
+      request_enabled: input.request_enabled,
+      notes: input.notes,
+    })
+    .select()
+    .single();
+  return { resource: toResourceSummary(unwrap(res) as ResourceRow) };
 }
 
-function updateResource(
+async function updateResource(
   id: string,
-  userId: string,
   patch: Partial<{ visibility: ResourceVisibility; request_enabled: boolean; notes: string | null }>,
 ) {
-  return request<{ resource: ResourceSummary }>(`/resources/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify({ user_id: userId, ...patch }),
-  });
+  const { visibility, ...rest } = patch;
+  const res = await supabase
+    .from("resources")
+    .update({ ...rest, ...(visibility ? { visibility_depth: DEPTH_BY_VISIBILITY[visibility] } : {}) })
+    .eq("id", id)
+    .select()
+    .single();
+  return { resource: toResourceSummary(unwrap(res) as ResourceRow) };
 }
 
-function deleteResource(id: string, userId: string) {
-  return request<void>(`/resources/${id}`, {
-    method: "DELETE",
-    body: JSON.stringify({ user_id: userId }),
-  });
+async function deleteResource(id: string) {
+  const res = await supabase.from("resources").delete().eq("id", id).select().single();
+  unwrap(res);
 }
 
-function getResource(id: string, viewerId: string) {
-  return request<{ resource: ResourceSummary }>(`/resources/${id}?user_id=${encodeURIComponent(viewerId)}`);
+async function getFriendships() {
+  const res = await supabase.from("friendships").select("*");
+  return { friendships: unwrap(res) as FriendshipSummary[] };
 }
 
-function getConnections(userId: string, status?: ConnectionStatus) {
-  const query = status ? `&status=${status}` : "";
-  return request<{ connections: ConnectionSummary[] }>(
-    `/connections?user_id=${encodeURIComponent(userId)}${query}`,
-  );
+async function getPendingFriendRequests() {
+  const res = await supabase.from("friend_requests").select("*").eq("status", "pending");
+  return { requests: unwrap(res) as FriendRequestSummary[] };
 }
 
-function sendConnectionRequest(requesterId: string, addresseeId: string) {
-  return request<{ connection: ConnectionSummary }>("/connections", {
-    method: "POST",
-    body: JSON.stringify({ requester_id: requesterId, addressee_id: addresseeId }),
-  });
+async function getBlockedUsers() {
+  const res = await supabase.from("user_blocks").select("*");
+  return { blocks: unwrap(res) as BlockedUserSummary[] };
 }
 
-function acceptConnection(id: string, userId: string) {
-  return request<{ connection: ConnectionSummary }>(
-    `/connections/${id}/accept?user_id=${encodeURIComponent(userId)}`,
-    { method: "POST" },
-  );
+async function sendFriendRequest(addresseeId: string) {
+  const res = await supabase.rpc("send_friend_request", { p_addressee_id: addresseeId });
+  return { request: unwrap(res) as FriendRequestSummary };
 }
 
-function blockConnection(id: string, userId: string) {
-  return request<{ connection: ConnectionSummary }>(
-    `/connections/${id}/block?user_id=${encodeURIComponent(userId)}`,
-    { method: "POST" },
-  );
+async function acceptFriendRequest(requestId: string) {
+  const res = await supabase.rpc("accept_friend_request", { p_request_id: requestId });
+  return { friendship: unwrap(res) as FriendshipSummary };
 }
 
-function removeConnection(id: string, userId: string) {
-  return request<void>(`/connections/${id}?user_id=${encodeURIComponent(userId)}`, {
-    method: "DELETE",
-  });
+async function declineFriendRequest(requestId: string) {
+  const res = await supabase.rpc("decline_friend_request", { p_request_id: requestId });
+  return { request: unwrap(res) as FriendRequestSummary };
 }
 
-function searchNetwork(userId: string, cardCatalogId: string, depth = 1) {
-  return request<{ matches: NetworkMatch[] }>(
-    `/search/network?user_id=${encodeURIComponent(userId)}&card_catalog_id=${encodeURIComponent(cardCatalogId)}&depth=${depth}`,
-  );
+async function blockUser(targetId: string) {
+  const res = await supabase.rpc("block_user", { p_target_id: targetId });
+  unwrap(res);
 }
 
-function getNetworkGraph(userId: string, depth = 2) {
-  return request<{ nodes: NetworkNode[]; edges: NetworkEdge[] }>(
-    `/network/graph?user_id=${encodeURIComponent(userId)}&depth=${depth}`,
-  );
+async function removeFriend(friendId: string) {
+  const res = await supabase.rpc("remove_friend", { p_friend_id: friendId });
+  unwrap(res);
 }
 
-function createRequest(input: {
-  requester_id: string;
-  owner_id: string;
-  resource_id: string;
-  message?: string;
-}) {
-  return request<{ request: RequestSummary }>("/requests", {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
+async function searchNetwork(catalogItemId: string, depth = 1) {
+  const res = await supabase.rpc("search_network", { p_catalog_item: catalogItemId, p_max_depth: depth });
+  return { matches: unwrap(res) as NetworkMatch[] };
 }
 
-function getIncomingRequests(ownerId: string) {
-  return request<{ requests: RequestSummary[] }>(`/requests/incoming?user_id=${encodeURIComponent(ownerId)}`);
+async function getNetworkGraph(depth = 2) {
+  const res = await supabase.rpc("network_graph", { p_max_depth: depth });
+  return unwrap(res) as { nodes: NetworkNode[]; edges: NetworkEdge[]; truncated: boolean };
 }
 
-function getOutgoingRequests(requesterId: string) {
-  return request<{ requests: RequestSummary[] }>(`/requests/outgoing?user_id=${encodeURIComponent(requesterId)}`);
+async function createRequest(input: { resource_id: string; message?: string }) {
+  const res = await supabase.rpc("create_request", { p_resource_id: input.resource_id, p_message: input.message ?? "" });
+  return { request: unwrap(res) as RequestSummary };
 }
 
-function getReferralRequests(intermediaryId: string) {
-  return request<{ requests: RequestSummary[] }>(`/requests/referrals?user_id=${encodeURIComponent(intermediaryId)}`);
+// The three old /requests/incoming|outgoing|referrals endpoints all read the same RLS-scoped
+// row set (requester_id = me OR owner_id = me OR intermediary_id = me); callers filter the
+// single result client-side instead of paying for three round trips for one table.
+async function getRequests() {
+  const res = await supabase.from("requests").select("*");
+  return { requests: unwrap(res) as RequestSummary[] };
 }
 
-function updateReferralStatus(id: string, userId: string, referral_status: "approved" | "declined" | "ignored") {
-  return request<{ request: RequestSummary }>(`/requests/${id}/referral`, {
-    method: "PATCH",
-    body: JSON.stringify({ user_id: userId, referral_status }),
-  });
+async function respondToRequest(id: string, status: RequestStatus) {
+  const res = await supabase.rpc("respond_to_request", { p_request_id: id, p_status: status });
+  return { request: unwrap(res) as RequestSummary };
 }
 
-function updateRequestStatus(id: string, userId: string, status: RequestStatus) {
-  return request<{ request: RequestSummary }>(`/requests/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify({ user_id: userId, status }),
-  });
+async function respondToReferral(id: string, referralStatus: ReferralStatus) {
+  const res = await supabase.rpc("respond_to_referral", { p_request_id: id, p_referral_status: referralStatus });
+  return { request: unwrap(res) as RequestSummary };
 }
 
-function revealContact(id: string, userId: string, message?: string) {
-  return request<{ contact: ContactInfo }>(`/requests/${id}/contact`, {
-    method: "POST",
-    body: JSON.stringify({ user_id: userId, ...(message?.trim() ? { message: message.trim() } : {}) }),
-  });
+async function revealContact(id: string, message?: string) {
+  const res = await supabase.rpc("reveal_contact", { p_request_id: id, p_message: message?.trim() || null });
+  return { contact: unwrap(res) as ContactInfo };
 }
 
 export const api = {
   syncUser,
-  getUserProfile,
   getCatalogCards,
   getResources,
   getResource,
   createResource,
   updateResource,
   deleteResource,
-  getConnections,
-  sendConnectionRequest,
-  acceptConnection,
-  blockConnection,
-  removeConnection,
+  getFriendships,
+  getPendingFriendRequests,
+  getBlockedUsers,
+  sendFriendRequest,
+  acceptFriendRequest,
+  declineFriendRequest,
+  blockUser,
+  removeFriend,
   searchNetwork,
   getNetworkGraph,
   createRequest,
-  getIncomingRequests,
-  getOutgoingRequests,
-  getReferralRequests,
-  updateRequestStatus,
-  updateReferralStatus,
+  getRequests,
+  respondToRequest,
+  respondToReferral,
   revealContact,
 };
 

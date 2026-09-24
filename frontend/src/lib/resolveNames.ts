@@ -1,12 +1,8 @@
-import { api } from "./apiClient";
+import { supabase } from "./supabaseClient";
 
 async function resolveDisplayName(userId: string): Promise<string> {
-  try {
-    const { user } = await api.getUserProfile(userId);
-    return user.display_name;
-  } catch {
-    return "Unknown user";
-  }
+  const { data } = await supabase.from("profiles_public").select("display_name").eq("id", userId).single();
+  return data?.display_name ?? "Unknown user";
 }
 
 async function resolveDisplayNames<T extends { user_id: string }>(
