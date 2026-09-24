@@ -1,0 +1,14 @@
+{
+  "name": "card-crew-e2e-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}
