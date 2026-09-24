@@ -44,3 +44,8 @@ supabase/.temp
 
 # graphify generated knowledge-graph output
 graphify-out/
+
+# Playwright artifacts
+tests/e2e/test-results/
+tests/e2e/playwright-report/
+tests/e2e/blob-report/
