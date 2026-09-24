@@ -10,14 +10,31 @@ permissions:
   deployments: write
 
 jobs:
+  # Manually-gated, not every push: only runs when this push actually touched supabase/*,
+  # and only pushes the schema, never data. See issue #3 §Deployment.
+  deploy-migrations:
+    if: contains(github.event.head_commit.modified, 'supabase/') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v3
+        with:
+          version: latest
+
+      - name: Deploy Supabase migrations
+        run: supabase db push --linked
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
+
   verify-and-deploy:
+    needs: [deploy-migrations]
+    if: always() && (needs.deploy-migrations.result == 'success' || needs.deploy-migrations.result == 'skipped')
     runs-on: ubuntu-latest
     env:
       VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
       VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
     steps:
       - name: Check out repository
@@ -29,26 +46,17 @@ jobs:
           node-version: 20
           cache: npm
           cache-dependency-path: |
-            backend/package-lock.json
+            package-lock.json
             frontend/package-lock.json
 
       - name: Install Cloudflare Worker dependencies
         run: npm ci
 
-      - name: Install backend dependencies
-        run: npm ci --prefix backend
-
-      - name: Generate Prisma client
-        run: npm --prefix backend run prisma:generate
-
-      - name: Test backend
-        run: npx --prefix backend tsx --test $(find backend/src -name '*.test.ts' -print)
-
-      - name: Build backend
-        run: npm --prefix backend run build
-
       - name: Install frontend dependencies
         run: npm ci --prefix frontend
+
+      - name: Type-check frontend
+        run: npm --prefix frontend run lint
 
       - name: Build frontend
         run: npm --prefix frontend run build
@@ -59,7 +67,3 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
-          secrets: |
-            DATABASE_URL
-            SUPABASE_URL
-            SUPABASE_SERVICE_ROLE_KEY

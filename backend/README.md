@@ -1,4 +1,9 @@
-# Backend
+# Backend (archived — reference only)
+
+**Not part of the deploy path.** As of issue #3, the frontend talks directly to Supabase
+(PostgREST + RPC + Auth, see [`../supabase/`](../supabase)) — this Express/Prisma backend is
+kept in the repo only as a reference for a possible future "more efficient" backend. Nothing
+here is built, tested, or deployed by CI, and `wrangler.jsonc` no longer references it.
 
 Minimal Node.js + Express + TypeScript scaffold for the Card Crew API.
 
