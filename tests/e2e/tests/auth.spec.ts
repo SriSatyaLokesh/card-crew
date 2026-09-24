@@ -11,7 +11,7 @@ test.describe("auth", () => {
     await page.getByRole("button", { name: "New here? Create an account" }).click();
     await page.getByLabel("Display name").fill(displayName);
     await page.getByLabel("Email").fill(email);
-    await page.getByLabel("Password").fill(TEST_PASSWORD);
+    await page.getByLabel("Password", { exact: true }).fill(TEST_PASSWORD);
     await page.getByRole("button", { name: "Create account" }).click();
 
     await expect(page).toHaveURL("/");
