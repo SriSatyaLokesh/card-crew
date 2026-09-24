@@ -2,21 +2,9 @@ type UserStatus = "active" | "blocked" | "deleted";
 
 type UserProfile = {
   id: string;
-  email?: string;
-  phone?: string | null;
+  phone: string | null;
   display_name: string;
   status: UserStatus;
-  created_at: string;
-  updated_at: string;
-};
-
-type ConnectionStatus = "pending" | "accepted" | "blocked" | "removed";
-
-type ConnectionSummary = {
-  id: string;
-  requester_id: string;
-  addressee_id: string;
-  status: ConnectionStatus;
   created_at: string;
   updated_at: string;
 };
@@ -24,6 +12,7 @@ type ConnectionSummary = {
 type CardCatalogSummary = {
   id: string;
   issuer: string;
+  issuer_slug: string;
   product_name: string;
   card_type: string;
   card_category: "credit" | "debit" | "prepaid" | "charge";
@@ -33,8 +22,6 @@ type CardCatalogSummary = {
   upi_enabled: boolean;
   use_cases: string[];
   active: boolean;
-  created_at: string;
-  updated_at: string;
 };
 
 type ResourceVisibility = "private" | "friends" | "network";
@@ -43,7 +30,7 @@ type ResourceStatus = "active" | "inactive" | "removed";
 type ResourceSummary = {
   id: string;
   owner_id: string;
-  card_catalog_id: string;
+  catalog_item_id: string;
   visibility: ResourceVisibility;
   request_enabled: boolean;
   notes: string | null;
@@ -52,13 +39,37 @@ type ResourceSummary = {
   updated_at: string;
 };
 
+type FriendshipSummary = {
+  user_a: string;
+  user_b: string;
+  created_at: string;
+};
+
+type FriendRequestStatus = "pending" | "accepted" | "declined" | "cancelled";
+
+type FriendRequestSummary = {
+  id: string;
+  requester_id: string;
+  addressee_id: string;
+  status: FriendRequestStatus;
+  created_at: string;
+  responded_at: string | null;
+};
+
+type BlockedUserSummary = {
+  blocker_id: string;
+  blocked_id: string;
+  created_at: string;
+};
+
 type NetworkMatch = {
-  user_id: string;
+  owner_id: string;
+  display_name: string;
   resource_id: string;
-  relationship: string;
   depth: 1 | 2;
   via_user_id: string | null;
   requestable: boolean;
+  needs_referral: boolean;
 };
 
 type NetworkNode = {
@@ -73,10 +84,10 @@ type NetworkNode = {
 type NetworkEdge = {
   from_user_id: string;
   to_user_id: string;
-  status: "accepted";
 };
 
 type RequestStatus = "pending" | "approved" | "declined" | "ignored";
+type ReferralStatus = "not_required" | "pending" | "approved" | "declined" | "ignored";
 
 type RequestSummary = {
   id: string;
@@ -86,7 +97,7 @@ type RequestSummary = {
   intermediary_id: string | null;
   message: string;
   status: RequestStatus;
-  referral_status: "not_required" | "pending" | "approved" | "declined" | "ignored";
+  referral_status: ReferralStatus;
   created_at: string;
   responded_at: string | null;
 };
@@ -94,20 +105,21 @@ type RequestSummary = {
 type ContactInfo = {
   id: string;
   display_name: string;
-  email: string;
   phone: string | null;
-  whatsapp_url: string | null;
   whatsapp_message: string;
 };
 
 export type {
+  BlockedUserSummary,
   CardCatalogSummary,
-  ConnectionStatus,
-  ConnectionSummary,
   ContactInfo,
-  NetworkMatch,
+  FriendRequestStatus,
+  FriendRequestSummary,
+  FriendshipSummary,
   NetworkEdge,
+  NetworkMatch,
   NetworkNode,
+  ReferralStatus,
   RequestStatus,
   RequestSummary,
   ResourceStatus,

@@ -136,6 +136,26 @@ describe("requests — second-degree referral flow", () => {
     },
   );
 
+  it("lets the intermediary list the referral via a plain table select (requests_intermediary_read RLS)", async () => {
+    const requester = await createTestUser();
+    const mutual = await createTestUser();
+    const owner = await createTestUser();
+    await Promise.all([syncProfile(requester, "Requester"), syncProfile(mutual, "Mutual"), syncProfile(owner, "Owner")]);
+    await becomeFriends(requester, mutual);
+    await becomeFriends(mutual, owner);
+    const cardId = await getCatalogItemId(requester.client, "Atlas", "axis");
+    const resource = await addResource(owner, cardId, { visibility_depth: 2 });
+    const { data: created } = await requester.client.rpc("create_request", { p_resource_id: resource.id });
+
+    const { data: visible, error } = await mutual.client.from("requests").select("id").eq("id", created.id);
+    expect(error).toBeNull();
+    expect(visible).toHaveLength(1);
+
+    const outsider = await createTestUser();
+    const { data: hidden } = await outsider.client.from("requests").select("id").eq("id", created.id);
+    expect(hidden).toHaveLength(0); // confirms this is real RLS, not an open table
+  });
+
   it("rejects a second-degree request when the resource isn't network-visible (visibility_depth < 2)", async () => {
     const requester = await createTestUser();
     const mutual = await createTestUser();

@@ -4,8 +4,6 @@ import type { FormEvent } from "react";
 import { api, ApiError } from "../lib/apiClient";
 
 type RequestComposeModalProps = {
-  requesterId: string;
-  ownerId: string;
   ownerName: string;
   resourceId: string;
   cardLabel: string;
@@ -14,8 +12,6 @@ type RequestComposeModalProps = {
 };
 
 function RequestComposeModal({
-  requesterId,
-  ownerId,
   ownerName,
   resourceId,
   cardLabel,
@@ -47,8 +43,6 @@ function RequestComposeModal({
 
     try {
       await api.createRequest({
-        requester_id: requesterId,
-        owner_id: ownerId,
         resource_id: resourceId,
         message: message.trim() || undefined,
       });

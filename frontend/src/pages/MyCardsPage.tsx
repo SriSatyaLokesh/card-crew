@@ -20,11 +20,11 @@ function MyCardsPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  async function loadResources(ownerId: string) {
+  async function loadResources() {
     setLoading(true);
 
     try {
-      const { resources: ownerResources } = await api.getResources(ownerId);
+      const { resources: ownerResources } = await api.getResources();
       setResources(ownerResources);
     } catch (loadError) {
       setError(loadError instanceof ApiError ? loadError.message : "Failed to load your cards");
@@ -42,7 +42,7 @@ function MyCardsPage() {
 
   useEffect(() => {
     if (profile) {
-      void loadResources(profile.id);
+      void loadResources();
     }
   }, [profile]);
 
@@ -83,7 +83,7 @@ function MyCardsPage() {
     try {
       await api.createResource({
         owner_id: profile.id,
-        card_catalog_id: selectedCard.id,
+        catalog_item_id: selectedCard.id,
         visibility,
         request_enabled: requestEnabled,
         notes: notes.trim() || null,
@@ -91,7 +91,7 @@ function MyCardsPage() {
       setNotes("");
       setSuccess(`${selectedCard.issuer} ${selectedCard.product_name} added.`);
       setSelectedCard(null);
-      await loadResources(profile.id);
+      await loadResources();
     } catch (addError) {
       setError(addError instanceof ApiError ? addError.message : "Failed to add card");
     }
@@ -106,9 +106,9 @@ function MyCardsPage() {
     setSuccess(null);
 
     try {
-      await api.updateResource(resource.id, profile.id, { visibility: nextVisibility });
+      await api.updateResource(resource.id, { visibility: nextVisibility });
       setSuccess("Visibility updated.");
-      await loadResources(profile.id);
+      await loadResources();
     } catch (updateError) {
       setError(updateError instanceof ApiError ? updateError.message : "Failed to update visibility");
     }
@@ -123,8 +123,8 @@ function MyCardsPage() {
     setSuccess(null);
 
     try {
-      await api.updateResource(resource.id, profile.id, { request_enabled: !resource.request_enabled });
-      await loadResources(profile.id);
+      await api.updateResource(resource.id, { request_enabled: !resource.request_enabled });
+      await loadResources();
     } catch (updateError) {
       setError(updateError instanceof ApiError ? updateError.message : "Failed to update requests setting");
     }
@@ -143,9 +143,9 @@ function MyCardsPage() {
     setSuccess(null);
 
     try {
-      await api.deleteResource(resource.id, profile.id);
+      await api.deleteResource(resource.id);
       setSuccess("Card removed.");
-      await loadResources(profile.id);
+      await loadResources();
     } catch (removeError) {
       setError(removeError instanceof ApiError ? removeError.message : "Failed to remove card");
     }
@@ -277,7 +277,7 @@ function MyCardsPage() {
 
         <ul className="saved-card-grid">
           {resources.map((resource) => {
-            const card = cardsById.get(resource.card_catalog_id);
+            const card = cardsById.get(resource.catalog_item_id);
             return (
               <li key={resource.id}>
                 <div className={`visual-card visual-card-${card?.card_category ?? "unknown"}`}>

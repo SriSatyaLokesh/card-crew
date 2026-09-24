@@ -6,13 +6,18 @@ import { api, ApiError } from "../lib/apiClient";
 import { resolveDisplayName } from "../lib/resolveNames";
 import { NetworkGraph } from "../components/NetworkGraph";
 import type { GraphFriend } from "../components/NetworkGraph";
-import type { ConnectionSummary, NetworkEdge, NetworkNode } from "../types/api";
+import type { BlockedUserSummary, FriendRequestSummary, FriendshipSummary, NetworkEdge, NetworkNode } from "../types/api";
 
-type EnrichedConnection = ConnectionSummary & { counterpartyName: string };
+type EnrichedFriendship = FriendshipSummary & { counterpartyId: string; counterpartyName: string };
+type EnrichedRequest = FriendRequestSummary & { counterpartyName: string };
+type EnrichedBlock = BlockedUserSummary & { counterpartyName: string };
 
 function MyNetworkPage() {
   const { profile } = useAuth();
-  const [connections, setConnections] = useState<EnrichedConnection[]>([]);
+  const [friendships, setFriendships] = useState<EnrichedFriendship[]>([]);
+  const [incoming, setIncoming] = useState<EnrichedRequest[]>([]);
+  const [outgoing, setOutgoing] = useState<EnrichedRequest[]>([]);
+  const [blocked, setBlocked] = useState<EnrichedBlock[]>([]);
   const [inviteId, setInviteId] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,21 +27,41 @@ function MyNetworkPage() {
   const [graphEdges, setGraphEdges] = useState<NetworkEdge[]>([]);
   const [selectedGraphNode, setSelectedGraphNode] = useState<GraphFriend | null>(null);
 
-  async function loadConnections(userId: string) {
+  async function loadNetwork(selfId: string) {
     setLoading(true);
     setError(null);
 
     try {
-      const { connections: allConnections } = await api.getConnections(userId);
-      const enriched = await Promise.all(
-        allConnections.map(async (connection) => ({
-          ...connection,
-          counterpartyName: await resolveDisplayName(
-            connection.requester_id === userId ? connection.addressee_id : connection.requester_id,
-          ),
-        })),
-      );
-      setConnections(enriched);
+      const [{ friendships: allFriendships }, { requests: pending }, { blocks }] = await Promise.all([
+        api.getFriendships(),
+        api.getPendingFriendRequests(),
+        api.getBlockedUsers(),
+      ]);
+
+      const [friendshipsEnriched, incomingEnriched, outgoingEnriched, blockedEnriched] = await Promise.all([
+        Promise.all(
+          allFriendships.map(async (f) => {
+            const counterpartyId = f.user_a === selfId ? f.user_b : f.user_a;
+            return { ...f, counterpartyId, counterpartyName: await resolveDisplayName(counterpartyId) };
+          }),
+        ),
+        Promise.all(
+          pending
+            .filter((r) => r.addressee_id === selfId)
+            .map(async (r) => ({ ...r, counterpartyName: await resolveDisplayName(r.requester_id) })),
+        ),
+        Promise.all(
+          pending
+            .filter((r) => r.requester_id === selfId)
+            .map(async (r) => ({ ...r, counterpartyName: await resolveDisplayName(r.addressee_id) })),
+        ),
+        Promise.all(blocks.map(async (b) => ({ ...b, counterpartyName: await resolveDisplayName(b.blocked_id) }))),
+      ]);
+
+      setFriendships(friendshipsEnriched);
+      setIncoming(incomingEnriched);
+      setOutgoing(outgoingEnriched);
+      setBlocked(blockedEnriched);
     } catch (loadError) {
       setError(loadError instanceof ApiError ? loadError.message : "Failed to load your network");
     } finally {
@@ -46,7 +71,7 @@ function MyNetworkPage() {
 
   useEffect(() => {
     if (profile) {
-      void loadConnections(profile.id);
+      void loadNetwork(profile.id);
     }
   }, [profile]);
 
@@ -55,23 +80,10 @@ function MyNetworkPage() {
       return;
     }
 
-    api.getNetworkGraph(profile.id, graphDepth)
+    api.getNetworkGraph(graphDepth)
       .then(({ nodes, edges }) => { setGraphNodes(nodes); setGraphEdges(edges); })
       .catch(() => { setGraphNodes([]); setGraphEdges([]); });
-  }, [graphDepth, profile, connections]);
-
-  const grouped = useMemo(() => {
-    if (!profile) {
-      return { direct: [], incoming: [], outgoing: [], blocked: [] };
-    }
-
-    return {
-      direct: connections.filter((c) => c.status === "accepted"),
-      incoming: connections.filter((c) => c.status === "pending" && c.addressee_id === profile.id),
-      outgoing: connections.filter((c) => c.status === "pending" && c.requester_id === profile.id),
-      blocked: connections.filter((c) => c.status === "blocked"),
-    };
-  }, [connections, profile]);
+  }, [graphDepth, profile, friendships]);
 
   async function handleInvite(event: FormEvent) {
     event.preventDefault();
@@ -84,16 +96,16 @@ function MyNetworkPage() {
     setSuccess(null);
 
     try {
-      await api.sendConnectionRequest(profile.id, inviteId.trim());
+      await api.sendFriendRequest(inviteId.trim());
       setInviteId("");
       setSuccess("Invite sent.");
-      await loadConnections(profile.id);
+      await loadNetwork(profile.id);
     } catch (inviteError) {
       setError(inviteError instanceof ApiError ? inviteError.message : "Failed to send invite");
     }
   }
 
-  async function handleAccept(connectionId: string) {
+  async function handleAccept(requestId: string) {
     if (!profile) {
       return;
     }
@@ -102,15 +114,15 @@ function MyNetworkPage() {
     setSuccess(null);
 
     try {
-      await api.acceptConnection(connectionId, profile.id);
+      await api.acceptFriendRequest(requestId);
       setSuccess("Connection accepted.");
-      await loadConnections(profile.id);
+      await loadNetwork(profile.id);
     } catch (actionError) {
       setError(actionError instanceof ApiError ? actionError.message : "Failed to accept connection");
     }
   }
 
-  async function handleRemove(connectionId: string) {
+  async function handleDeclineOrCancel(requestId: string) {
     if (!profile) {
       return;
     }
@@ -119,15 +131,31 @@ function MyNetworkPage() {
     setSuccess(null);
 
     try {
-      await api.removeConnection(connectionId, profile.id);
+      await api.declineFriendRequest(requestId);
+      await loadNetwork(profile.id);
+    } catch (actionError) {
+      setError(actionError instanceof ApiError ? actionError.message : "Failed to update request");
+    }
+  }
+
+  async function handleRemoveFriend(friendId: string) {
+    if (!profile) {
+      return;
+    }
+
+    setError(null);
+    setSuccess(null);
+
+    try {
+      await api.removeFriend(friendId);
       setSuccess("Connection removed.");
-      await loadConnections(profile.id);
+      await loadNetwork(profile.id);
     } catch (actionError) {
       setError(actionError instanceof ApiError ? actionError.message : "Failed to remove connection");
     }
   }
 
-  async function handleBlock(connectionId: string) {
+  async function handleBlock(targetId: string) {
     if (!profile) {
       return;
     }
@@ -140,13 +168,18 @@ function MyNetworkPage() {
     setSuccess(null);
 
     try {
-      await api.blockConnection(connectionId, profile.id);
+      await api.blockUser(targetId);
       setSuccess("Connection blocked.");
-      await loadConnections(profile.id);
+      await loadNetwork(profile.id);
     } catch (actionError) {
       setError(actionError instanceof ApiError ? actionError.message : "Failed to block connection");
     }
   }
+
+  const graphFriends = useMemo(
+    () => graphNodes.filter((node) => node.depth > 0) as GraphFriend[],
+    [graphNodes],
+  );
 
   return (
     <div className="page">
@@ -181,9 +214,9 @@ function MyNetworkPage() {
         </div>
         <NetworkGraph
           selfName={profile?.display_name ?? "You"}
-          friends={graphNodes.filter((node) => node.depth > 0) as GraphFriend[]}
-                    edges={graphEdges}
-                    selfUserId={profile?.id}
+          friends={graphFriends}
+          edges={graphEdges}
+          selfUserId={profile?.id}
           highlightedUserIds={new Set()}
           searchActive={false}
           onSelectNode={setSelectedGraphNode}
@@ -202,14 +235,14 @@ function MyNetworkPage() {
 
       <section>
         <h2>Direct friends</h2>
-        {!loading && grouped.direct.length === 0 && <p className="empty-state">No direct friends yet.</p>}
+        {!loading && friendships.length === 0 && <p className="empty-state">No direct friends yet.</p>}
         <ul className="connection-list">
-          {grouped.direct.map((connection) => (
-            <li key={connection.id}>
-              <div className="connection-person"><strong>{connection.counterpartyName}</strong><small>Direct friend</small></div>
+          {friendships.map((friendship) => (
+            <li key={`${friendship.user_a}-${friendship.user_b}`}>
+              <div className="connection-person"><strong>{friendship.counterpartyName}</strong><small>Direct friend</small></div>
               <div className="connection-actions">
-                <button className="button-danger" type="button" onClick={() => void handleBlock(connection.id)}>Block</button>
-                <button className="button-secondary" type="button" onClick={() => void handleRemove(connection.id)}>Remove</button>
+                <button className="button-danger" type="button" onClick={() => void handleBlock(friendship.counterpartyId)}>Block</button>
+                <button className="button-secondary" type="button" onClick={() => void handleRemoveFriend(friendship.counterpartyId)}>Remove</button>
               </div>
             </li>
           ))}
@@ -218,14 +251,14 @@ function MyNetworkPage() {
 
       <section>
         <h2>Incoming requests</h2>
-        {!loading && grouped.incoming.length === 0 && <p className="empty-state">No incoming requests.</p>}
+        {!loading && incoming.length === 0 && <p className="empty-state">No incoming requests.</p>}
         <ul className="connection-list">
-          {grouped.incoming.map((connection) => (
-            <li key={connection.id}>
-              <div className="connection-person"><strong>{connection.counterpartyName}</strong><small>Wants to connect</small></div>
+          {incoming.map((request) => (
+            <li key={request.id}>
+              <div className="connection-person"><strong>{request.counterpartyName}</strong><small>Wants to connect</small></div>
               <div className="connection-actions">
-                <button type="button" onClick={() => void handleAccept(connection.id)}>Accept</button>
-                <button className="button-secondary" type="button" onClick={() => void handleRemove(connection.id)}>Decline</button>
+                <button type="button" onClick={() => void handleAccept(request.id)}>Accept</button>
+                <button className="button-secondary" type="button" onClick={() => void handleDeclineOrCancel(request.id)}>Decline</button>
               </div>
             </li>
           ))}
@@ -234,12 +267,12 @@ function MyNetworkPage() {
 
       <section>
         <h2>Outgoing requests</h2>
-        {!loading && grouped.outgoing.length === 0 && <p className="empty-state">No outgoing requests.</p>}
+        {!loading && outgoing.length === 0 && <p className="empty-state">No outgoing requests.</p>}
         <ul className="connection-list">
-          {grouped.outgoing.map((connection) => (
-            <li key={connection.id}>
-              <div className="connection-person"><strong>{connection.counterpartyName}</strong><small>Invite pending</small></div>
-              <button className="button-secondary" type="button" onClick={() => void handleRemove(connection.id)}>Cancel invite</button>
+          {outgoing.map((request) => (
+            <li key={request.id}>
+              <div className="connection-person"><strong>{request.counterpartyName}</strong><small>Invite pending</small></div>
+              <button className="button-secondary" type="button" onClick={() => void handleDeclineOrCancel(request.id)}>Cancel invite</button>
             </li>
           ))}
         </ul>
@@ -247,11 +280,11 @@ function MyNetworkPage() {
 
       <section>
         <h2>Blocked</h2>
-        {!loading && grouped.blocked.length === 0 && <p className="empty-state">No one is blocked.</p>}
+        {!loading && blocked.length === 0 && <p className="empty-state">No one is blocked.</p>}
         <ul className="connection-list">
-          {grouped.blocked.map((connection) => (
-            <li key={connection.id}>
-              <div className="connection-person"><strong>{connection.counterpartyName}</strong><small>Blocked</small></div>
+          {blocked.map((block) => (
+            <li key={block.blocked_id}>
+              <div className="connection-person"><strong>{block.counterpartyName}</strong><small>Blocked</small></div>
             </li>
           ))}
         </ul>

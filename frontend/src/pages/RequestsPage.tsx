@@ -10,6 +10,12 @@ type EnrichedRequest = RequestSummary & {
   cardLabel: string;
 };
 
+// wa.me needs digits only (no "+"); building this client-side keeps the phone number out of
+// SQL entirely (see issue #3 plan — reveal_contact returns raw phone + message, nothing else).
+function toWhatsAppUrl(phone: string, message: string): string {
+  return `https://wa.me/${phone.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
+}
+
 function RequestsPage() {
   const { profile } = useAuth();
   const [tab, setTab] = useState<"incoming" | "outgoing" | "referrals">("incoming");
@@ -24,7 +30,6 @@ function RequestsPage() {
 
   async function enrich(
     requests: RequestSummary[],
-    viewerId: string,
     counterpartyOf: (r: RequestSummary) => string,
     cardsLookup: Map<string, CardCatalogSummary>,
   ) {
@@ -34,9 +39,9 @@ function RequestsPage() {
         let cardLabel = "A card";
 
         try {
-          const { resource } = await api.getResource(req.resource_id, viewerId);
-          const card = cardsLookup.get(resource.card_catalog_id);
-          cardLabel = card ? `${card.issuer} ${card.product_name}` : resource.card_catalog_id;
+          const { resource } = await api.getResource(req.resource_id);
+          const card = cardsLookup.get(resource.catalog_item_id);
+          cardLabel = card ? `${card.issuer} ${card.product_name}` : resource.catalog_item_id;
         } catch {
           // resource may no longer be viewable; keep the fallback label
         }
@@ -55,19 +60,16 @@ function RequestsPage() {
     setError(null);
 
     try {
-      const { cards: catalogCards } = await api.getCatalogCards();
+      const [{ cards: catalogCards }, { requests: all }] = await Promise.all([
+        api.getCatalogCards(),
+        api.getRequests(),
+      ]);
       const cardsLookup = new Map(catalogCards.map((card) => [card.id, card]));
 
-      const [{ requests: incomingRaw }, { requests: outgoingRaw }, { requests: referralRaw }] = await Promise.all([
-        api.getIncomingRequests(profile.id),
-        api.getOutgoingRequests(profile.id),
-        api.getReferralRequests(profile.id),
-      ]);
-
       const [incomingEnriched, outgoingEnriched, referralEnriched] = await Promise.all([
-        enrich(incomingRaw, profile.id, (r) => r.requester_id, cardsLookup),
-        enrich(outgoingRaw, profile.id, (r) => r.owner_id, cardsLookup),
-        enrich(referralRaw, profile.id, (r) => r.requester_id, cardsLookup),
+        enrich(all.filter((r) => r.owner_id === profile.id), (r) => r.requester_id, cardsLookup),
+        enrich(all.filter((r) => r.requester_id === profile.id), (r) => r.owner_id, cardsLookup),
+        enrich(all.filter((r) => r.intermediary_id === profile.id), (r) => r.requester_id, cardsLookup),
       ]);
 
       setIncoming(incomingEnriched);
@@ -93,7 +95,7 @@ function RequestsPage() {
     setActionError(null);
 
     try {
-      await api.updateRequestStatus(request.id, profile.id, status);
+      await api.respondToRequest(request.id, status);
       await loadAll();
     } catch (statusError) {
       setActionError(statusError instanceof ApiError ? statusError.message : "Failed to update request");
@@ -108,7 +110,7 @@ function RequestsPage() {
     setActionError(null);
 
     try {
-      const { contact } = await api.revealContact(request.id, profile.id, messageByRequestId[request.id]);
+      const { contact } = await api.revealContact(request.id, messageByRequestId[request.id]);
       setContactByRequestId((prev) => ({ ...prev, [request.id]: contact }));
     } catch (contactError) {
       setActionError(contactError instanceof ApiError ? contactError.message : "Failed to load contact");
@@ -119,7 +121,7 @@ function RequestsPage() {
     if (!profile) return;
     setActionError(null);
     try {
-      await api.updateReferralStatus(request.id, profile.id, status);
+      await api.respondToReferral(request.id, status);
       await loadAll();
     } catch (referralError) {
       setActionError(referralError instanceof ApiError ? referralError.message : "Failed to update referral");
@@ -218,9 +220,16 @@ function RequestsPage() {
 
               {contact && (
                 <p className="form-success">
-                  Contact details available: {contact.display_name} ({contact.email}
-                  {contact.phone ? `, ${contact.phone}` : ""})
-                  {contact.whatsapp_url && <><br /><a href={contact.whatsapp_url} target="_blank" rel="noreferrer">Open WhatsApp with message</a></>}
+                  Contact details available: {contact.display_name}
+                  {contact.phone ? ` (${contact.phone})` : ""}
+                  {contact.phone && (
+                    <>
+                      <br />
+                      <a href={toWhatsAppUrl(contact.phone, contact.whatsapp_message)} target="_blank" rel="noreferrer">
+                        Open WhatsApp with message
+                      </a>
+                    </>
+                  )}
                 </p>
               )}
 
