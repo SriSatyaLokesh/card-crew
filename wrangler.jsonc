@@ -1,35 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "card-crew",
-  "main": "cloudflare/worker.ts",
   "compatibility_date": "2026-09-15",
   "observability": {
     "enabled": true
   },
   "assets": {
     "directory": "frontend/dist",
-    "binding": "ASSETS",
     "not_found_handling": "single-page-application"
-  },
-  "containers": [
-    {
-      "class_name": "CardCrewApiContainer",
-      "image": "./backend/Dockerfile",
-      "max_instances": 1
-    }
-  ],
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "API_CONTAINER",
-        "class_name": "CardCrewApiContainer"
-      }
-    ]
-  },
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": ["CardCrewApiContainer"]
-    }
-  ]
+  }
 }
