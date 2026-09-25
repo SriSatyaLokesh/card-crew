@@ -194,6 +194,28 @@ const CARD_CATALOG_SEED: CardSeedTuple[] = [
   ["pnb-platinum-debit", "Punjab National Bank", "Platinum Debit", "debit", "debit", "RuPay", "Premium", true],
   ["canara-world-debit", "Canara Bank", "World Debit", "debit", "debit", "Mastercard", "Premium", false],
   ["union-platinum-debit", "Union Bank of India", "Platinum Debit", "debit", "debit", "RuPay", "Premium", true],
+
+  // Payments banks: the "small-scale UPI card partnered with a bank" segment — basic
+  // RuPay debit cards issued against a payments-bank wallet account, not a full savings
+  // account.
+  ["paytm-payments-bank-rupay-debit", "Paytm Payments Bank", "RuPay Debit Card", "debit", "debit", "RuPay", "Basic", true],
+  ["airtel-payments-bank-rupay-debit", "Airtel Payments Bank", "RuPay Debit Card", "debit", "debit", "RuPay", "Basic", true],
+  ["ippb-rupay-debit", "India Post Payments Bank", "RuPay Debit Card", "debit", "debit", "RuPay", "Basic", true],
+  ["fino-payments-bank-rupay-debit", "Fino Payments Bank", "RuPay Debit Card", "debit", "debit", "RuPay", "Basic", true],
+  ["nsdl-payments-bank-rupay-debit", "NSDL Payments Bank", "RuPay Debit Card", "debit", "debit", "RuPay", "Basic", true],
+  ["freo-rupay", "Freo", "RuPay Credit Card", "co-branded", "credit", "RuPay", "UPI", true],
+
+  ["hdfc-regalia", "HDFC", "Regalia", "credit", "credit", "Visa", "Rewards", false],
+  ["hdfc-diners-privilege", "HDFC", "Diners Club Privilege", "credit", "credit", "Diners Club", "Rewards", false],
+
+  ["boi-rupay-platinum-debit", "Bank of India", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["central-bank-rupay-platinum-debit", "Central Bank of India", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["indian-bank-rupay-platinum-debit", "Indian Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["iob-rupay-platinum-debit", "Indian Overseas Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["uco-bank-rupay-platinum-debit", "UCO Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["karur-vysya-rupay-platinum-debit", "Karur Vysya Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["equitas-sfb-rupay-platinum-debit", "Equitas Small Finance Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["ujjivan-sfb-rupay-platinum-debit", "Ujjivan Small Finance Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
 ];
 
 function toCardCatalogRecord(seed: CardSeedTuple) {
