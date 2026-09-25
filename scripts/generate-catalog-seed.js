@@ -25,13 +25,13 @@ if (!arrMatch) throw new Error(`could not locate CARD_CATALOG_SEED array in ${sr
 const arrBody = arrMatch[1];
 
 const rowRe =
-  /\[\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*(null|"[^"]*"),\s*(true|false)\s*\]/g;
+  /\[\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*(null|"[^"]*"),\s*(true|false)\s*\]/g;
 const rows = [];
 let m;
 while ((m = rowRe.exec(arrBody))) {
-  const [, id, issuer, product_name, card_type, card_category, network, variantRaw, upiRaw] = m;
+  const [, id, issuer, product_name, card_type, card_category, network, segment, variantRaw, upiRaw] = m;
   const variant = variantRaw === "null" ? null : variantRaw.slice(1, -1);
-  rows.push({ id, issuer, product_name, card_type, card_category, network, variant, upi_enabled: upiRaw === "true" });
+  rows.push({ id, issuer, product_name, card_type, card_category, network, segment, variant, upi_enabled: upiRaw === "true" });
 }
 if (rows.length === 0) throw new Error("no rows parsed — has the CARD_CATALOG_SEED tuple shape changed?");
 
@@ -135,15 +135,15 @@ for (const r of rowsWithUseCases) {
   lines.push(`  on conflict (issuer_id, item_type, name) do update set active = true`);
   lines.push(`  returning id`);
   lines.push(`), card as (`);
-  lines.push(`  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)`);
+  lines.push(`  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)`);
   lines.push(
-    `  select item.id, ${sqlStr(r.card_type)}, ${sqlStr(r.card_category)}, n.id, ${
+    `  select item.id, ${sqlStr(r.card_type)}, ${sqlStr(r.card_category)}, n.id, ${sqlStr(r.segment)}, ${
       r.variant === null ? "null" : sqlStr(r.variant)
     }, ${r.upi_enabled}`
   );
   lines.push(`  from item, card_networks n where n.slug = ${sqlStr(slug(r.network))}`);
   lines.push(
-    `  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled`
+    `  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled`
   );
   lines.push(`  returning catalog_item_id`);
   lines.push(`)`);

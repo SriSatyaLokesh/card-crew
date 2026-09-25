@@ -6,6 +6,12 @@ import type { CardCatalogSummary, ResourceSummary, ResourceVisibility } from "..
 
 const VISIBILITY_OPTIONS: ResourceVisibility[] = ["private", "friends", "network"];
 
+const SEGMENT_LABELS: Record<CardCatalogSummary["segment"], string> = {
+  retail: "Retail",
+  "co-branded": "Co-branded",
+  corporate: "Corporate",
+};
+
 function MyCardsPage() {
   const { profile } = useAuth();
   const [cards, setCards] = useState<CardCatalogSummary[]>([]);
@@ -205,7 +211,8 @@ function MyCardsPage() {
               <span className="catalog-result">
                 <strong>{card.issuer} {card.product_name}</strong>
                 <small><b>Network:</b> {card.network}</small>
-                <small><b>Variant:</b> {card.variant ?? "Standard"}</small>
+                <small><b>Tier:</b> {card.variant ?? "Standard"}</small>
+                {card.segment !== "retail" && <small className="card-meta">{SEGMENT_LABELS[card.segment]}</small>}
                 {card.upi_enabled && <small className="card-meta">UPI enabled</small>}
                 <small>{card.use_cases.slice(0, 3).join(" · ")}</small>
               </span>
@@ -226,13 +233,14 @@ function MyCardsPage() {
               <div>
                 <span className="eyebrow">Selected card</span>
                 <h3>{selectedCard.issuer} {selectedCard.product_name}</h3>
-                <p>{selectedCard.network}{selectedCard.variant ? ` · ${selectedCard.variant}` : ""} · {selectedCard.card_category}</p>
+                <p>{selectedCard.network}{selectedCard.variant ? ` · ${selectedCard.variant}` : ""} · {selectedCard.card_category}{selectedCard.segment !== "retail" ? ` · ${SEGMENT_LABELS[selectedCard.segment]}` : ""}</p>
               </div>
               <button className="button-secondary" type="button" onClick={() => setSelectedCard(null)}>Change</button>
             </div>
             <div className="card-facts">
               <span><b>Network</b>{selectedCard.network}</span>
-              <span><b>Variant</b>{selectedCard.variant ?? "Standard"}</span>
+              <span><b>Tier</b>{selectedCard.variant ?? "Standard"}</span>
+              <span><b>Segment</b>{SEGMENT_LABELS[selectedCard.segment]}</span>
               <span><b>UPI</b>{selectedCard.upi_enabled ? "Enabled" : "Not listed"}</span>
               <span><b>Use cases</b>{selectedCard.use_cases.slice(0, 3).join(", ")}</span>
             </div>
@@ -294,7 +302,13 @@ function MyCardsPage() {
                 </div>
                 <div className="resource-identity">
                   <strong>{card ? `${card.issuer} ${card.product_name}` : "Catalog record unavailable"}</strong>
-                  {card && <small><b>Network:</b> {card.network} · <b>Variant:</b> {card.variant ?? "Standard"}{card.upi_enabled ? " · UPI enabled" : ""}</small>}
+                  {card && (
+                    <small>
+                      <b>Network:</b> {card.network} · <b>Tier:</b> {card.variant ?? "Standard"}
+                      {card.segment !== "retail" ? ` · ${SEGMENT_LABELS[card.segment]}` : ""}
+                      {card.upi_enabled ? " · UPI enabled" : ""}
+                    </small>
+                  )}
                 </div>
                 <label className="field-compact">
                   Visible to
