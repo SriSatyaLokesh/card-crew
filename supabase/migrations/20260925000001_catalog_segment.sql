@@ -9,12 +9,18 @@ alter table catalog_cards
 
 update catalog_cards set segment = 'co-branded' where card_type = 'co-branded';
 
+-- Drop the old constraint before backfilling card_type, not after: on a database that
+-- already has rows (prod), backfilling a co-branded/prepaid row to card_type='prepaid'
+-- while the old check (which doesn't allow 'prepaid') is still in effect fails the
+-- update outright. `supabase db reset` didn't catch this locally because it seeds an
+-- empty table before this migration ever runs, so the backfill update was a no-op.
+alter table catalog_cards drop constraint catalog_cards_card_type_check;
+
 -- card_type becomes form-factor only. Backfill from card_category (equal to it for
 -- every existing co-branded row, prepaid included — e.g. LazyCard is card_type
 -- 'co-branded'/card_category 'prepaid' today, so it becomes card_type 'prepaid').
 update catalog_cards set card_type = card_category where card_type = 'co-branded';
 
-alter table catalog_cards drop constraint catalog_cards_card_type_check;
 alter table catalog_cards
   add constraint catalog_cards_card_type_check
     check (card_type in ('credit', 'debit', 'charge', 'prepaid'));
