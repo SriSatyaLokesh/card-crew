@@ -10,10 +10,13 @@ permissions:
   deployments: write
 
 jobs:
-  # Manually-gated, not every push: only runs when this push actually touched supabase/*,
-  # and only pushes the schema, never data. See issue #3 §Deployment.
+  # Runs on every push to main: `supabase db push` is idempotent (tracks applied
+  # migrations in supabase_migrations.schema_migrations, no-ops if nothing new), and
+  # `github.event.head_commit.modified` — the previous path-based gate — is unreliable
+  # for squash-merge commits (a documented GitHub Actions limitation), which silently
+  # skipped this job on every squash-merged PR. Only pushes the schema, never data.
+  # See issue #3 §Deployment and issue #28.
   deploy-migrations:
-    if: contains(github.event.head_commit.modified, 'supabase/') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
