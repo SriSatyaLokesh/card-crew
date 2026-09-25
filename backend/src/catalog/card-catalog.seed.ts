@@ -151,7 +151,13 @@ const CARD_CATALOG_SEED: CardSeedTuple[] = [
   ["au-ixigo-visa", "AU Small Finance Bank", "ixigo", "co-branded", "credit", "Visa", "Co-branded", false],
   ["au-vetta-rupay", "AU Small Finance Bank", "Vetta RuPay", "credit", "credit", "RuPay", "UPI", true],
   ["indusind-eazydiner-rupay", "IndusInd Bank", "EazyDiner RuPay", "co-branded", "credit", "RuPay", "Co-branded", true],
-  ["yes-kickstarter-rupay", "YES BANK", "Kiwi RuPay", "co-branded", "credit", "RuPay", "UPI", true],
+  // Correction: Kiwi is a fintech app partnered with Axis Bank for RuPay-on-UPI credit,
+  // not a YES BANK product — matches the Fi/Jupiter/Niyo/Freo pattern of modeling the
+  // fintech app as its own issuer. The old "yes-kickstarter-rupay" id/attribution was
+  // wrong; if it already reached prod via seed:prod, deactivate that stale row by hand:
+  //   update catalog_items set active = false
+  //   where name = 'Kiwi RuPay' and issuer_id = (select id from issuers where slug = 'yes-bank');
+  ["kiwi-rupay-credit", "Kiwi", "RuPay Credit Card", "co-branded", "credit", "RuPay", "UPI", true],
   ["federal-scapia-rupay", "Federal Bank", "Scapia RuPay", "co-branded", "credit", "RuPay", "Travel", true],
   ["onecard-rupay", "OneCard", "RuPay", "credit", "credit", "RuPay", "UPI", true],
   ["bob-easy-rupay", "Bank of Baroda", "Easy RuPay", "credit", "credit", "RuPay", "UPI", true],
@@ -194,6 +200,175 @@ const CARD_CATALOG_SEED: CardSeedTuple[] = [
   ["pnb-platinum-debit", "Punjab National Bank", "Platinum Debit", "debit", "debit", "RuPay", "Premium", true],
   ["canara-world-debit", "Canara Bank", "World Debit", "debit", "debit", "Mastercard", "Premium", false],
   ["union-platinum-debit", "Union Bank of India", "Platinum Debit", "debit", "debit", "RuPay", "Premium", true],
+
+  // Payments banks: the "small-scale UPI card partnered with a bank" segment — basic
+  // RuPay debit cards issued against a payments-bank wallet account, not a full savings
+  // account.
+  ["paytm-payments-bank-rupay-debit", "Paytm Payments Bank", "RuPay Debit Card", "debit", "debit", "RuPay", "Basic", true],
+  ["airtel-payments-bank-rupay-debit", "Airtel Payments Bank", "RuPay Debit Card", "debit", "debit", "RuPay", "Basic", true],
+  ["ippb-rupay-debit", "India Post Payments Bank", "RuPay Debit Card", "debit", "debit", "RuPay", "Basic", true],
+  ["fino-payments-bank-rupay-debit", "Fino Payments Bank", "RuPay Debit Card", "debit", "debit", "RuPay", "Basic", true],
+  ["nsdl-payments-bank-rupay-debit", "NSDL Payments Bank", "RuPay Debit Card", "debit", "debit", "RuPay", "Basic", true],
+  ["freo-rupay", "Freo", "RuPay Credit Card", "co-branded", "credit", "RuPay", "UPI", true],
+
+  ["hdfc-regalia", "HDFC", "Regalia", "credit", "credit", "Visa", "Rewards", false],
+  ["hdfc-diners-privilege", "HDFC", "Diners Club Privilege", "credit", "credit", "Diners Club", "Rewards", false],
+
+  ["boi-rupay-platinum-debit", "Bank of India", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["central-bank-rupay-platinum-debit", "Central Bank of India", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["indian-bank-rupay-platinum-debit", "Indian Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["iob-rupay-platinum-debit", "Indian Overseas Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["uco-bank-rupay-platinum-debit", "UCO Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["karur-vysya-rupay-platinum-debit", "Karur Vysya Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["equitas-sfb-rupay-platinum-debit", "Equitas Small Finance Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+  ["ujjivan-sfb-rupay-platinum-debit", "Ujjivan Small Finance Bank", "RuPay Platinum Debit", "debit", "debit", "RuPay", "Platinum", true],
+
+  // Round 2 (issue #23): verified via official bank sites / press releases — corporate
+  // and business cards (tagged via `variant`, no dedicated schema column), plus
+  // remaining real variants across issuers already tracked above.
+  ["hdfc-bizfirst", "HDFC", "BizFirst", "credit", "credit", "Visa", "Business", false],
+  ["hdfc-bizgrow", "HDFC", "BizGrow", "credit", "credit", "Visa", "Business", false],
+  ["hdfc-bizpower", "HDFC", "BizPower", "credit", "credit", "Visa", "Business", false],
+  ["hdfc-bizblack", "HDFC", "BizBlack Metal Edition", "credit", "credit", "Diners Club", "Business", false],
+  ["hdfc-upi-rupay-biz", "HDFC", "UPI RuPay Biz Credit Card", "credit", "credit", "RuPay", "Business", true],
+  ["hdfc-business-regalia", "HDFC", "Business Regalia", "credit", "credit", "Visa", "Business", false],
+  ["hdfc-business-regalia-first", "HDFC", "Business Regalia First", "credit", "credit", "Visa", "Business", false],
+  ["hdfc-regalia-first", "HDFC", "Regalia First", "credit", "credit", "Visa", "Rewards", false],
+  ["hdfc-marriott-bonvoy", "HDFC", "Marriott Bonvoy", "co-branded", "credit", "Diners Club", "Co-branded", false],
+
+  ["icici-corporate-gold", "ICICI", "Corporate Gold", "credit", "credit", "Visa", "Corporate", false],
+  ["icici-corporate-platinum", "ICICI", "Corporate Platinum", "credit", "credit", "Mastercard", "Corporate", false],
+  ["icici-rubyx-debit", "ICICI", "Rubyx Debit", "debit", "debit", "Visa", "Premium", false],
+  ["icici-expressions-debit", "ICICI", "Expressions Debit", "debit", "debit", "Mastercard", "Customizable", false],
+
+  ["axis-primus", "Axis", "Primus", "credit", "credit", "Visa", "Premium", false],
+  ["axis-corporate-liability", "Axis", "Corporate Credit Card with Corporate Liability", "credit", "credit", "Visa", "Corporate", false],
+  ["axis-executive-corporate", "Axis", "Executive Corporate Credit Card", "credit", "credit", "Mastercard", "Corporate", false],
+  ["axis-rewards", "Axis", "REWARDS", "credit", "credit", "Visa", "Rewards", false],
+  ["axis-horizon-mastercard", "Axis", "Horizon", "credit", "credit", "Mastercard", "Travel", false],
+  ["axis-horizon-visa", "Axis", "Horizon", "credit", "credit", "Visa", "Travel", false],
+
+  ["kotak-biz", "Kotak Mahindra Bank", "Biz Credit Card", "credit", "credit", "Visa", "Business", false],
+  ["kotak-corporate-platinum", "Kotak Mahindra Bank", "Corporate Platinum Credit Card", "credit", "credit", "Visa", "Corporate", false],
+  ["kotak-solitaire-business", "Kotak Mahindra Bank", "Solitaire Business Credit Card", "credit", "credit", "Visa", "Business", false],
+  ["kotak-business-power-platinum-debit", "Kotak Mahindra Bank", "Business Power Platinum Debit Card", "debit", "debit", "Visa", "Business", false],
+
+  ["idfc-first-mayura", "IDFC FIRST Bank", "Mayura", "credit", "credit", "Mastercard", "Metal", false],
+  ["idfc-first-ashva", "IDFC FIRST Bank", "Ashva", "credit", "credit", "Visa", "Metal", false],
+  ["idfc-first-indigo-dual-mastercard", "IDFC FIRST Bank", "IndiGo Dual", "co-branded", "credit", "Mastercard", "Co-branded", false],
+  ["idfc-first-indigo-dual-rupay", "IDFC FIRST Bank", "IndiGo Dual", "co-branded", "credit", "RuPay", "Co-branded", true],
+  ["idfc-first-business-multiplier", "IDFC FIRST Bank", "Business Multiplier", "credit", "credit", "Visa", "Business", false],
+  ["idfc-first-business-max", "IDFC FIRST Bank", "Business Max", "credit", "credit", "Visa", "Business", false],
+  ["idfc-first-private-infinite-debit", "IDFC FIRST Bank", "FIRST Private Infinite", "debit", "debit", "Visa", "Metal", false],
+  ["idfc-first-select-debit", "IDFC FIRST Bank", "FIRST Select Debit", "debit", "debit", "Visa", "Premium", false],
+  ["idfc-first-business-debit", "IDFC FIRST Bank", "Visa Signature Business Debit Card", "debit", "debit", "Visa", "Business", false],
+
+  ["amex-corporate-platinum", "American Express", "Platinum Corporate Card", "charge", "charge", "American Express", "Corporate", false],
+  ["amex-corporate-gold", "American Express", "Gold Corporate Card", "charge", "charge", "American Express", "Corporate", false],
+
+  ["hsbc-visa-platinum", "HSBC India", "Visa Platinum", "credit", "credit", "Visa", "Entry", false],
+  ["hsbc-rupay-platinum", "HSBC India", "RuPay Platinum", "credit", "credit", "RuPay", "UPI", true],
+  ["hsbc-rupay-cashback", "HSBC India", "RuPay Cashback", "credit", "credit", "RuPay", "UPI", true],
+
+  ["sc-digismart", "Standard Chartered", "DigiSmart", "credit", "credit", "Visa", "Digital", false],
+
+  ["dbs-infinite-debit", "DBS Bank India", "Treasures Infinite Debit", "debit", "debit", "Visa", "Premium", false],
+  ["dbs-superx", "DBS Bank India", "SuperX", "credit", "credit", "Visa", "Rewards", false],
+  ["dbs-superx-plus", "DBS Bank India", "SuperX Plus", "credit", "credit", "Visa", "Rewards", false],
+
+  ["bob-select", "Bank of Baroda", "Select", "credit", "credit", "Visa", "Rewards", false],
+  ["bob-tiara", "Bank of Baroda", "Tiara", "credit", "credit", "RuPay", "Women", true],
+  ["bob-corporate-rupay", "Bank of Baroda", "BOBCARD Corporate", "co-branded", "credit", "RuPay", "Corporate", true],
+  ["bob-corporate-premium", "Bank of Baroda", "Corporate Premium Credit Card", "credit", "credit", "Visa", "Corporate", false],
+
+  ["suryoday-sfb-rupay-select-credit", "Suryoday Small Finance Bank", "RuPay Select Credit Card", "credit", "credit", "RuPay", "Secured", true],
+  ["suryoday-sfb-rupay-platinum-credit", "Suryoday Small Finance Bank", "RuPay Platinum Credit Card", "credit", "credit", "RuPay", "Secured", true],
+  ["suryoday-sfb-rupay-select-debit", "Suryoday Small Finance Bank", "RuPay Select Debit Card", "debit", "debit", "RuPay", "Premium", true],
+  ["suryoday-sfb-rupay-platinum-debit", "Suryoday Small Finance Bank", "RuPay Platinum Debit Card", "debit", "debit", "RuPay", "Platinum", true],
+
+  ["jana-sfb-rupay-select-debit", "Jana Small Finance Bank", "RuPay Select Debit Card", "debit", "debit", "RuPay", "Premium", true],
+
+  ["esaf-sfb-rupay-platinum-debit", "ESAF Small Finance Bank", "Platinum RuPay Debit Card", "debit", "debit", "RuPay", "Platinum", true],
+  ["esaf-sfb-rupay-classic-debit", "ESAF Small Finance Bank", "Classic RuPay Debit Card", "debit", "debit", "RuPay", "Basic", true],
+  ["esaf-sfb-inori-rupay-platinum-credit", "ESAF Small Finance Bank", "Inori RuPay Platinum Credit Card", "credit", "credit", "RuPay", "UPI", true],
+
+  ["unity-sfb-roarbank-rupay", "Unity Small Finance Bank", "RoarBank RuPay Credit Card", "co-branded", "credit", "RuPay", "UPI", true],
+  ["unity-sfb-bharatpe-rupay", "Unity Small Finance Bank", "BharatPe RuPay Credit Card", "co-branded", "credit", "RuPay", "UPI", true],
+
+  ["lazypay-lazycard", "LazyPay", "LazyCard", "co-branded", "prepaid", "Visa", "Prepaid", false],
+
+  ["sbi-miles", "SBI Card", "MILES", "credit", "credit", "Visa", "Travel", false],
+  ["sbi-miles-prime", "SBI Card", "MILES PRIME", "credit", "credit", "Visa", "Travel", false],
+  ["sbi-pulse", "SBI Card", "PULSE", "credit", "credit", "Visa", "Wellness", false],
+  ["sbi-unnati", "SBI Card", "Unnati", "credit", "credit", "Visa", "Entry", false],
+  ["sbi-doctors", "SBI Card", "Doctor's SBI Card", "credit", "credit", "Visa", "Affinity", false],
+  ["sbi-yatra", "SBI Card", "Yatra SBI Card", "co-branded", "credit", "Visa", "Co-branded", false],
+  ["sbi-signature-corporate", "SBI Card", "Signature Corporate Card", "credit", "credit", "Visa", "Corporate", false],
+  ["sbi-platinum-corporate", "SBI Card", "Platinum Corporate Card", "credit", "credit", "Visa", "Corporate", false],
+  ["sbi-central-travel-account", "SBI Card", "Central Travel Account Card", "credit", "credit", "Visa", "Corporate", false],
+  ["sbi-corporate-utility", "SBI Card", "Corporate Utility Card", "credit", "credit", "Visa", "Corporate", false],
+  ["sbi-corporate-purchase", "SBI Card", "Corporate Purchase Card", "credit", "credit", "Visa", "Corporate", false],
+  ["sbi-corporate-virtual", "SBI Card", "Corporate Virtual Card", "credit", "credit", "Visa", "Corporate", false],
+
+  ["rbl-icon", "RBL Bank", "Icon", "credit", "credit", "Mastercard", "Premium", false],
+  ["rbl-insignia-preferred-banking", "RBL Bank", "Insignia Preferred Banking World Card", "credit", "credit", "Mastercard", "Premium", false],
+  ["rbl-lumiere", "RBL Bank", "LUMIERE", "credit", "credit", "Visa", "Ultra-Premium", false],
+  ["rbl-nova", "RBL Bank", "NOVA", "credit", "credit", "Visa", "Premium", false],
+  ["rbl-aspire-banking", "RBL Bank", "Aspire Banking Credit Card", "credit", "credit", "Visa", "Premium Banking", false],
+  ["rbl-signature-banking", "RBL Bank", "Signature Banking Credit Card", "credit", "credit", "Visa", "Premium Banking", false],
+  ["rbl-razorpayx-corporate", "RBL Bank", "RazorpayX Corporate Card", "co-branded", "credit", "RuPay", "Business", true],
+  ["rbl-razorpayx-corporate-purchase", "RBL Bank", "RazorpayX Corporate Purchase Card", "co-branded", "credit", "RuPay", "Business", true],
+  ["rbl-te-platinum-corporate", "RBL Bank", "T&E Platinum Card", "credit", "credit", "Visa", "Corporate", false],
+  ["rbl-corporate-purchase-card", "RBL Bank", "Corporate Purchase Card", "credit", "credit", "Visa", "Corporate", false],
+
+  ["au-altura", "AU Small Finance Bank", "Altura", "credit", "credit", "Visa", "Entry", false],
+  ["au-altura-plus", "AU Small Finance Bank", "Altura Plus", "credit", "credit", "Visa", "Rewards", false],
+  ["au-spont", "AU Small Finance Bank", "Spont", "credit", "credit", "Visa", "Invite-only", false],
+  ["au-corporate-card", "AU Small Finance Bank", "Corporate Card", "credit", "credit", "Visa", "Corporate", false],
+
+  ["indusind-platinum-aura-edge", "IndusInd Bank", "Platinum Aura Edge", "credit", "credit", "RuPay", "Rewards", true],
+  ["indusind-platinum-visa", "IndusInd Bank", "Platinum Visa", "credit", "credit", "Visa", "Entry", false],
+  ["indusind-nexxt", "IndusInd Bank", "Nexxt", "credit", "credit", "Visa", "Premium", false],
+  ["indusind-samman", "IndusInd Bank", "Samman RuPay Credit Card", "credit", "credit", "RuPay", "Government", true],
+  ["indusind-eazydiner-platinum", "IndusInd Bank", "EazyDiner Platinum", "co-branded", "credit", "Visa", "Co-branded", false],
+  ["indusind-avios-visa-infinite", "IndusInd Bank", "Avios Visa Infinite", "co-branded", "credit", "Visa", "Travel", false],
+  ["indusind-epay-amex", "IndusInd Bank", "ePay Amex Credit Card", "credit", "credit", "American Express", "Virtual", false],
+  ["indusind-cred-rupay", "IndusInd Bank", "CRED IndusInd Bank RuPay Credit Card", "co-branded", "credit", "RuPay", "Fintech", true],
+  ["indusind-pioneer-heritage", "IndusInd Bank", "Pioneer Heritage", "credit", "credit", "Visa", "Super-Premium", false],
+  ["indusind-pioneer-legacy", "IndusInd Bank", "Pioneer Legacy", "credit", "credit", "Visa", "Premium", false],
+  ["indusind-pioneer-private", "IndusInd Bank", "Pioneer Private", "credit", "credit", "Visa", "Ultra-Premium", false],
+  ["indusind-vrddhi-business", "IndusInd Bank", "Vrddhi Business Card", "credit", "credit", "Visa", "Business", false],
+  ["indusind-saarthi-business", "IndusInd Bank", "Saarthi Business Card", "credit", "credit", "RuPay", "Business", true],
+  ["indusind-fortuna-advantedge", "IndusInd Bank", "Fortuna AdvantEdge Card", "credit", "credit", "Visa", "Business", false],
+  ["indusind-odcc-corporate", "IndusInd Bank", "OD/CC Linked Corporate Credit Card", "credit", "credit", "RuPay", "Corporate", true],
+
+  ["yes-ace", "YES BANK", "Ace", "credit", "credit", "Visa", "Entry", false],
+  ["yes-prosperity-rewards", "YES BANK", "Prosperity Rewards", "credit", "credit", "Visa", "Rewards", false],
+  ["yes-prosperity-cashback", "YES BANK", "Prosperity Cashback", "credit", "credit", "Visa", "Cashback", false],
+  ["yes-wellness", "YES BANK", "Wellness", "credit", "credit", "Visa", "Wellness", false],
+  ["yes-finbooster", "YES BANK", "FinBooster", "credit", "credit", "RuPay", "UPI", true],
+
+  ["federal-visa-signet", "Federal Bank", "Visa Signet", "credit", "credit", "Visa", "Entry", false],
+  ["federal-rupay-signet", "Federal Bank", "RuPay Signet", "credit", "credit", "RuPay", "UPI", true],
+
+  ["pnb-luxura-rupay-ekaa", "Punjab National Bank", "LUXURA (RuPay EKAA)", "credit", "credit", "RuPay", "Premium", true],
+  ["pnb-luxura-visa", "Punjab National Bank", "LUXURA (Visa Infinite)", "credit", "credit", "Visa", "Premium", false],
+  ["pnb-patanjali-select", "Punjab National Bank", "RuPay Select Patanjali Credit Card", "co-branded", "credit", "RuPay", "Co-branded", true],
+
+  ["canara-rupay-select", "Canara Bank", "RuPay Select", "credit", "credit", "RuPay", "Premium", true],
+  ["canara-rupay-women-platinum-debit", "Canara Bank", "RuPay Women Platinum Debit Card", "debit", "debit", "RuPay", "Women", true],
+
+  ["union-jcb-health", "Union Bank of India", "JCB HEALTH", "credit", "credit", "JCB", "Wellness", false],
+  ["union-visa-signature", "Union Bank of India", "Visa Signature", "credit", "credit", "Visa", "Premium", false],
+  ["union-visa-platinum", "Union Bank of India", "Visa Platinum", "credit", "credit", "Visa", "Rewards", false],
+
+  ["south-indian-bank-onecard", "South Indian Bank", "SIB OneCard", "co-branded", "credit", "Visa", "Co-branded", false],
+
+  ["karnataka-bank-sbi-prime", "Karnataka Bank", "SBI Card Prime", "co-branded", "credit", "Visa", "Co-branded", false],
+  ["karnataka-bank-simplysave-sbi", "Karnataka Bank", "SimplySave SBI Card", "co-branded", "credit", "Visa", "Co-branded", false],
+
+  ["idbi-imperium-platinum", "IDBI Bank", "Imperium Platinum", "credit", "credit", "Visa", "Secured/FD-backed", false],
+  ["idbi-aspire-platinum", "IDBI Bank", "Aspire Platinum", "credit", "credit", "Visa", "Travel", false],
 ];
 
 function toCardCatalogRecord(seed: CardSeedTuple) {

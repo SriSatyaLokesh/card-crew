@@ -11,7 +11,8 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "test": "tsx --test \"src/**/*.test.ts\"",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "seed:prod": "node scripts/push-catalog-to-supabase.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.0.0",
