@@ -25,6 +25,7 @@ insert into issuers (slug, name, country) values
   ('canara-bank', 'Canara Bank', 'IN'),
   ('union-bank-of-india', 'Union Bank of India', 'IN'),
   ('bajaj-finserv', 'Bajaj Finserv', 'IN'),
+  ('kiwi', 'Kiwi', 'IN'),
   ('idbi-bank', 'IDBI Bank', 'IN'),
   ('dbs-bank-india', 'DBS Bank India', 'IN'),
   ('south-indian-bank', 'South Indian Bank', 'IN'),
@@ -51,7 +52,12 @@ insert into issuers (slug, name, country) values
   ('uco-bank', 'UCO Bank', 'IN'),
   ('karur-vysya-bank', 'Karur Vysya Bank', 'IN'),
   ('equitas-small-finance-bank', 'Equitas Small Finance Bank', 'IN'),
-  ('ujjivan-small-finance-bank', 'Ujjivan Small Finance Bank', 'IN')
+  ('ujjivan-small-finance-bank', 'Ujjivan Small Finance Bank', 'IN'),
+  ('suryoday-small-finance-bank', 'Suryoday Small Finance Bank', 'IN'),
+  ('jana-small-finance-bank', 'Jana Small Finance Bank', 'IN'),
+  ('esaf-small-finance-bank', 'ESAF Small Finance Bank', 'IN'),
+  ('unity-small-finance-bank', 'Unity Small Finance Bank', 'IN'),
+  ('lazypay', 'LazyPay', 'IN')
 on conflict (slug) do update set name = excluded.name;
 
 insert into card_networks (slug, name) values
@@ -59,7 +65,8 @@ insert into card_networks (slug, name) values
   ('visa', 'Visa'),
   ('diners-club', 'Diners Club'),
   ('rupay', 'RuPay'),
-  ('american-express', 'American Express')
+  ('american-express', 'American Express'),
+  ('jcb', 'JCB')
 on conflict (slug) do update set name = excluded.name;
 
 insert into use_cases (slug) values
@@ -2342,11 +2349,11 @@ insert into catalog_card_use_cases (catalog_item_id, use_case_id)
 select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi', 'lifestyle')
 on conflict do nothing;
 
--- legacy id: yes-kickstarter-rupay
+-- legacy id: kiwi-rupay-credit
 with item as (
   insert into catalog_items (item_type, issuer_id, name, country, active)
-  select 'card', i.id, 'Kiwi RuPay', 'IN', true
-  from issuers i where i.slug = 'yes-bank'
+  select 'card', i.id, 'RuPay Credit Card', 'IN', true
+  from issuers i where i.slug = 'kiwi'
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
@@ -3402,4 +3409,2110 @@ with item as (
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
 select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking', 'upi', 'travel')
+on conflict do nothing;
+
+-- legacy id: hdfc-bizfirst
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'BizFirst', 'IN', true
+  from issuers i where i.slug = 'hdfc'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: hdfc-bizgrow
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'BizGrow', 'IN', true
+  from issuers i where i.slug = 'hdfc'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: hdfc-bizpower
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'BizPower', 'IN', true
+  from issuers i where i.slug = 'hdfc'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: hdfc-bizblack
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'BizBlack Metal Edition', 'IN', true
+  from issuers i where i.slug = 'hdfc'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'diners-club'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: hdfc-upi-rupay-biz
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'UPI RuPay Biz Credit Card', 'IN', true
+  from issuers i where i.slug = 'hdfc'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: hdfc-business-regalia
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Business Regalia', 'IN', true
+  from issuers i where i.slug = 'hdfc'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: hdfc-business-regalia-first
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Business Regalia First', 'IN', true
+  from issuers i where i.slug = 'hdfc'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: hdfc-regalia-first
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Regalia First', 'IN', true
+  from issuers i where i.slug = 'hdfc'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: hdfc-marriott-bonvoy
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Marriott Bonvoy', 'IN', true
+  from issuers i where i.slug = 'hdfc'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  from item, card_networks n where n.slug = 'diners-club'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: icici-corporate-gold
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Corporate Gold', 'IN', true
+  from issuers i where i.slug = 'icici'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: icici-corporate-platinum
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Corporate Platinum', 'IN', true
+  from issuers i where i.slug = 'icici'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'mastercard'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel')
+on conflict do nothing;
+
+-- legacy id: icici-rubyx-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Rubyx Debit', 'IN', true
+  from issuers i where i.slug = 'icici'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking', 'lifestyle')
+on conflict do nothing;
+
+-- legacy id: icici-expressions-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Expressions Debit', 'IN', true
+  from issuers i where i.slug = 'icici'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Customizable', false
+  from item, card_networks n where n.slug = 'mastercard'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking')
+on conflict do nothing;
+
+-- legacy id: axis-primus
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Primus', 'IN', true
+  from issuers i where i.slug = 'axis'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: axis-corporate-liability
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Corporate Credit Card with Corporate Liability', 'IN', true
+  from issuers i where i.slug = 'axis'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: axis-executive-corporate
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Executive Corporate Credit Card', 'IN', true
+  from issuers i where i.slug = 'axis'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'mastercard'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: axis-rewards
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'REWARDS', 'IN', true
+  from issuers i where i.slug = 'axis'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: axis-horizon-mastercard
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Horizon (Mastercard)', 'IN', true
+  from issuers i where i.slug = 'axis'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  from item, card_networks n where n.slug = 'mastercard'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: axis-horizon-visa
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Horizon (Visa)', 'IN', true
+  from issuers i where i.slug = 'axis'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: kotak-biz
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Biz Credit Card', 'IN', true
+  from issuers i where i.slug = 'kotak-mahindra-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: kotak-corporate-platinum
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Corporate Platinum Credit Card', 'IN', true
+  from issuers i where i.slug = 'kotak-mahindra-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel')
+on conflict do nothing;
+
+-- legacy id: kotak-solitaire-business
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Solitaire Business Credit Card', 'IN', true
+  from issuers i where i.slug = 'kotak-mahindra-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: kotak-business-power-platinum-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Business Power Platinum Debit Card', 'IN', true
+  from issuers i where i.slug = 'kotak-mahindra-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking', 'travel')
+on conflict do nothing;
+
+-- legacy id: idfc-first-mayura
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Mayura', 'IN', true
+  from issuers i where i.slug = 'idfc-first-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Metal', false
+  from item, card_networks n where n.slug = 'mastercard'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: idfc-first-ashva
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Ashva', 'IN', true
+  from issuers i where i.slug = 'idfc-first-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Metal', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: idfc-first-indigo-dual-mastercard
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'IndiGo Dual (Mastercard)', 'IN', true
+  from issuers i where i.slug = 'idfc-first-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  from item, card_networks n where n.slug = 'mastercard'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: idfc-first-indigo-dual-rupay
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'IndiGo Dual (RuPay)', 'IN', true
+  from issuers i where i.slug = 'idfc-first-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: idfc-first-business-multiplier
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Business Multiplier', 'IN', true
+  from issuers i where i.slug = 'idfc-first-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: idfc-first-business-max
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Business Max', 'IN', true
+  from issuers i where i.slug = 'idfc-first-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: idfc-first-private-infinite-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'FIRST Private Infinite', 'IN', true
+  from issuers i where i.slug = 'idfc-first-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Metal', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking')
+on conflict do nothing;
+
+-- legacy id: idfc-first-select-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'FIRST Select Debit', 'IN', true
+  from issuers i where i.slug = 'idfc-first-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking')
+on conflict do nothing;
+
+-- legacy id: idfc-first-business-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Visa Signature Business Debit Card', 'IN', true
+  from issuers i where i.slug = 'idfc-first-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking')
+on conflict do nothing;
+
+-- legacy id: amex-corporate-platinum
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Platinum Corporate Card', 'IN', true
+  from issuers i where i.slug = 'american-express'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'charge', 'charge', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'american-express'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel')
+on conflict do nothing;
+
+-- legacy id: amex-corporate-gold
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Gold Corporate Card', 'IN', true
+  from issuers i where i.slug = 'american-express'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'charge', 'charge', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'american-express'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: hsbc-visa-platinum
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Visa Platinum', 'IN', true
+  from issuers i where i.slug = 'hsbc-india'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel')
+on conflict do nothing;
+
+-- legacy id: hsbc-rupay-platinum
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RuPay Platinum', 'IN', true
+  from issuers i where i.slug = 'hsbc-india'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi', 'travel')
+on conflict do nothing;
+
+-- legacy id: hsbc-rupay-cashback
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RuPay Cashback', 'IN', true
+  from issuers i where i.slug = 'hsbc-india'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi', 'cashback')
+on conflict do nothing;
+
+-- legacy id: sc-digismart
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'DigiSmart', 'IN', true
+  from issuers i where i.slug = 'standard-chartered'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Digital', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'cashback')
+on conflict do nothing;
+
+-- legacy id: dbs-infinite-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Treasures Infinite Debit', 'IN', true
+  from issuers i where i.slug = 'dbs-bank-india'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking')
+on conflict do nothing;
+
+-- legacy id: dbs-superx
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'SuperX', 'IN', true
+  from issuers i where i.slug = 'dbs-bank-india'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: dbs-superx-plus
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'SuperX Plus', 'IN', true
+  from issuers i where i.slug = 'dbs-bank-india'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: bob-select
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Select', 'IN', true
+  from issuers i where i.slug = 'bank-of-baroda'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: bob-tiara
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Tiara', 'IN', true
+  from issuers i where i.slug = 'bank-of-baroda'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Women', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: bob-corporate-rupay
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'BOBCARD Corporate', 'IN', true
+  from issuers i where i.slug = 'bank-of-baroda'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Corporate', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: bob-corporate-premium
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Corporate Premium Credit Card', 'IN', true
+  from issuers i where i.slug = 'bank-of-baroda'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: suryoday-sfb-rupay-select-credit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RuPay Select Credit Card', 'IN', true
+  from issuers i where i.slug = 'suryoday-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Secured', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: suryoday-sfb-rupay-platinum-credit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RuPay Platinum Credit Card', 'IN', true
+  from issuers i where i.slug = 'suryoday-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Secured', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi', 'travel')
+on conflict do nothing;
+
+-- legacy id: suryoday-sfb-rupay-select-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RuPay Select Debit Card', 'IN', true
+  from issuers i where i.slug = 'suryoday-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Premium', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking', 'upi')
+on conflict do nothing;
+
+-- legacy id: suryoday-sfb-rupay-platinum-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RuPay Platinum Debit Card', 'IN', true
+  from issuers i where i.slug = 'suryoday-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking', 'upi', 'travel')
+on conflict do nothing;
+
+-- legacy id: jana-sfb-rupay-select-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RuPay Select Debit Card', 'IN', true
+  from issuers i where i.slug = 'jana-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Premium', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking', 'upi')
+on conflict do nothing;
+
+-- legacy id: esaf-sfb-rupay-platinum-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Platinum RuPay Debit Card', 'IN', true
+  from issuers i where i.slug = 'esaf-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking', 'upi', 'travel')
+on conflict do nothing;
+
+-- legacy id: esaf-sfb-rupay-classic-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Classic RuPay Debit Card', 'IN', true
+  from issuers i where i.slug = 'esaf-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Basic', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking', 'upi')
+on conflict do nothing;
+
+-- legacy id: esaf-sfb-inori-rupay-platinum-credit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Inori RuPay Platinum Credit Card', 'IN', true
+  from issuers i where i.slug = 'esaf-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi', 'travel')
+on conflict do nothing;
+
+-- legacy id: unity-sfb-roarbank-rupay
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RoarBank RuPay Credit Card', 'IN', true
+  from issuers i where i.slug = 'unity-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'UPI', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: unity-sfb-bharatpe-rupay
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'BharatPe RuPay Credit Card', 'IN', true
+  from issuers i where i.slug = 'unity-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'UPI', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: lazypay-lazycard
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'LazyCard', 'IN', true
+  from issuers i where i.slug = 'lazypay'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'prepaid', n.id, 'Prepaid', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: sbi-miles
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'MILES', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: sbi-miles-prime
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'MILES PRIME', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: sbi-pulse
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'PULSE', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Wellness', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: sbi-unnati
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Unnati', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: sbi-doctors
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Doctor''s SBI Card', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Affinity', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: sbi-yatra
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Yatra SBI Card', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: sbi-signature-corporate
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Signature Corporate Card', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: sbi-platinum-corporate
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Platinum Corporate Card', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel')
+on conflict do nothing;
+
+-- legacy id: sbi-central-travel-account
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Central Travel Account Card', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel')
+on conflict do nothing;
+
+-- legacy id: sbi-corporate-utility
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Corporate Utility Card', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: sbi-corporate-purchase
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Corporate Purchase Card', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: sbi-corporate-virtual
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Corporate Virtual Card', 'IN', true
+  from issuers i where i.slug = 'sbi-card'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: rbl-icon
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Icon', 'IN', true
+  from issuers i where i.slug = 'rbl-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  from item, card_networks n where n.slug = 'mastercard'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: rbl-insignia-preferred-banking
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Insignia Preferred Banking World Card', 'IN', true
+  from issuers i where i.slug = 'rbl-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  from item, card_networks n where n.slug = 'mastercard'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: rbl-lumiere
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'LUMIERE', 'IN', true
+  from issuers i where i.slug = 'rbl-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Ultra-Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: rbl-nova
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'NOVA', 'IN', true
+  from issuers i where i.slug = 'rbl-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: rbl-aspire-banking
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Aspire Banking Credit Card', 'IN', true
+  from issuers i where i.slug = 'rbl-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium Banking', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: rbl-signature-banking
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Signature Banking Credit Card', 'IN', true
+  from issuers i where i.slug = 'rbl-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium Banking', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: rbl-razorpayx-corporate
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RazorpayX Corporate Card', 'IN', true
+  from issuers i where i.slug = 'rbl-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Business', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: rbl-razorpayx-corporate-purchase
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RazorpayX Corporate Purchase Card', 'IN', true
+  from issuers i where i.slug = 'rbl-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Business', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: rbl-te-platinum-corporate
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'T&E Platinum Card', 'IN', true
+  from issuers i where i.slug = 'rbl-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel')
+on conflict do nothing;
+
+-- legacy id: rbl-corporate-purchase-card
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Corporate Purchase Card', 'IN', true
+  from issuers i where i.slug = 'rbl-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: au-altura
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Altura', 'IN', true
+  from issuers i where i.slug = 'au-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: au-altura-plus
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Altura Plus', 'IN', true
+  from issuers i where i.slug = 'au-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: au-spont
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Spont', 'IN', true
+  from issuers i where i.slug = 'au-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Invite-only', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: au-corporate-card
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Corporate Card', 'IN', true
+  from issuers i where i.slug = 'au-small-finance-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: indusind-platinum-aura-edge
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Platinum Aura Edge', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Rewards', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi', 'travel')
+on conflict do nothing;
+
+-- legacy id: indusind-platinum-visa
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Platinum Visa', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel')
+on conflict do nothing;
+
+-- legacy id: indusind-nexxt
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Nexxt', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: indusind-samman
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Samman RuPay Credit Card', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Government', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: indusind-eazydiner-platinum
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'EazyDiner Platinum', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel', 'lifestyle')
+on conflict do nothing;
+
+-- legacy id: indusind-avios-visa-infinite
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Avios Visa Infinite', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Travel', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: indusind-epay-amex
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'ePay Amex Credit Card', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Virtual', false
+  from item, card_networks n where n.slug = 'american-express'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: indusind-cred-rupay
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'CRED IndusInd Bank RuPay Credit Card', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Fintech', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: indusind-pioneer-heritage
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Pioneer Heritage', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Super-Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: indusind-pioneer-legacy
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Pioneer Legacy', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: indusind-pioneer-private
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Pioneer Private', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Ultra-Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: indusind-vrddhi-business
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Vrddhi Business Card', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: indusind-saarthi-business
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Saarthi Business Card', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: indusind-fortuna-advantedge
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Fortuna AdvantEdge Card', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Business', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: indusind-odcc-corporate
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'OD/CC Linked Corporate Credit Card', 'IN', true
+  from issuers i where i.slug = 'indusind-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Corporate', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: yes-ace
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Ace', 'IN', true
+  from issuers i where i.slug = 'yes-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'cashback')
+on conflict do nothing;
+
+-- legacy id: yes-prosperity-rewards
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Prosperity Rewards', 'IN', true
+  from issuers i where i.slug = 'yes-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: yes-prosperity-cashback
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Prosperity Cashback', 'IN', true
+  from issuers i where i.slug = 'yes-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Cashback', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'cashback')
+on conflict do nothing;
+
+-- legacy id: yes-wellness
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Wellness', 'IN', true
+  from issuers i where i.slug = 'yes-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Wellness', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: yes-finbooster
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'FinBooster', 'IN', true
+  from issuers i where i.slug = 'yes-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: federal-visa-signet
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Visa Signet', 'IN', true
+  from issuers i where i.slug = 'federal-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: federal-rupay-signet
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RuPay Signet', 'IN', true
+  from issuers i where i.slug = 'federal-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: pnb-luxura-rupay-ekaa
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'LUXURA (RuPay EKAA)', 'IN', true
+  from issuers i where i.slug = 'punjab-national-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: pnb-luxura-visa
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'LUXURA (Visa Infinite)', 'IN', true
+  from issuers i where i.slug = 'punjab-national-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: pnb-patanjali-select
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RuPay Select Patanjali Credit Card', 'IN', true
+  from issuers i where i.slug = 'punjab-national-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: canara-rupay-select
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RuPay Select', 'IN', true
+  from issuers i where i.slug = 'canara-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'upi')
+on conflict do nothing;
+
+-- legacy id: canara-rupay-women-platinum-debit
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'RuPay Women Platinum Debit Card', 'IN', true
+  from issuers i where i.slug = 'canara-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'Women', true
+  from item, card_networks n where n.slug = 'rupay'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('daily-banking', 'upi', 'travel')
+on conflict do nothing;
+
+-- legacy id: union-jcb-health
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'JCB HEALTH', 'IN', true
+  from issuers i where i.slug = 'union-bank-of-india'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Wellness', false
+  from item, card_networks n where n.slug = 'jcb'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: union-visa-signature
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Visa Signature', 'IN', true
+  from issuers i where i.slug = 'union-bank-of-india'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: union-visa-platinum
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Visa Platinum', 'IN', true
+  from issuers i where i.slug = 'union-bank-of-india'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel')
+on conflict do nothing;
+
+-- legacy id: south-indian-bank-onecard
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'SIB OneCard', 'IN', true
+  from issuers i where i.slug = 'south-indian-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: karnataka-bank-sbi-prime
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'SBI Card Prime', 'IN', true
+  from issuers i where i.slug = 'karnataka-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: karnataka-bank-simplysave-sbi
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'SimplySave SBI Card', 'IN', true
+  from issuers i where i.slug = 'karnataka-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend')
+on conflict do nothing;
+
+-- legacy id: idbi-imperium-platinum
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Imperium Platinum', 'IN', true
+  from issuers i where i.slug = 'idbi-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Secured/FD-backed', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel')
+on conflict do nothing;
+
+-- legacy id: idbi-aspire-platinum
+with item as (
+  insert into catalog_items (item_type, issuer_id, name, country, active)
+  select 'card', i.id, 'Aspire Platinum', 'IN', true
+  from issuers i where i.slug = 'idbi-bank'
+  on conflict (issuer_id, item_type, name) do update set active = true
+  returning id
+), card as (
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  from item, card_networks n where n.slug = 'visa'
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  returning catalog_item_id
+)
+insert into catalog_card_use_cases (catalog_item_id, use_case_id)
+select card.catalog_item_id, uc.id from card, use_cases uc where uc.slug in ('general-spend', 'travel')
 on conflict do nothing;
