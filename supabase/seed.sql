@@ -89,10 +89,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Infinite', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Infinite', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -107,10 +107,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Gold', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Gold', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -125,10 +125,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Metal', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Metal', false
   from item, card_networks n where n.slug = 'diners-club'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -143,10 +143,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -161,10 +161,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -179,10 +179,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -197,10 +197,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -215,10 +215,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -233,10 +233,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Virtual', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -251,10 +251,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -269,10 +269,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -287,10 +287,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -305,10 +305,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -323,10 +323,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -341,10 +341,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -359,10 +359,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -377,10 +377,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Cashback', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -395,10 +395,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -413,10 +413,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -431,10 +431,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Lifestyle', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -449,10 +449,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Entry', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -467,10 +467,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -485,10 +485,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -503,10 +503,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Metal', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Metal', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -521,10 +521,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -539,10 +539,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -557,10 +557,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -575,10 +575,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -593,10 +593,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -611,10 +611,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -629,10 +629,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -647,10 +647,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -665,10 +665,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -683,10 +683,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Entry', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -701,10 +701,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -719,10 +719,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -737,10 +737,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -755,10 +755,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Cashback', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -773,10 +773,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -791,10 +791,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -809,10 +809,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -827,10 +827,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -845,10 +845,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -863,10 +863,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -881,10 +881,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -899,10 +899,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -917,10 +917,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -935,10 +935,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -953,10 +953,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Lifetime Free', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -971,10 +971,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -989,10 +989,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Lifestyle', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1007,10 +1007,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1025,10 +1025,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1043,10 +1043,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1061,10 +1061,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1079,10 +1079,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1097,10 +1097,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1115,10 +1115,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1133,10 +1133,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1151,10 +1151,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1169,10 +1169,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1187,10 +1187,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1205,10 +1205,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1223,10 +1223,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1241,10 +1241,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1259,10 +1259,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1277,10 +1277,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1295,10 +1295,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1313,10 +1313,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Flexible', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1331,10 +1331,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1349,10 +1349,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Entry', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1367,10 +1367,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1385,10 +1385,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'charge', 'charge', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'charge', 'charge', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'american-express'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1403,10 +1403,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'american-express'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1421,10 +1421,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'charge', 'charge', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'charge', 'charge', n.id, 'retail', 'Gold', false
   from item, card_networks n where n.slug = 'american-express'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1439,10 +1439,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'american-express'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1457,10 +1457,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'american-express'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1475,10 +1475,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1493,10 +1493,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1511,10 +1511,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1529,10 +1529,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1547,10 +1547,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1565,10 +1565,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1583,10 +1583,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Cashback', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1601,10 +1601,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Cashback', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1619,10 +1619,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1637,10 +1637,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1655,10 +1655,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1673,10 +1673,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Cashback', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1691,10 +1691,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1709,10 +1709,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1727,10 +1727,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1745,10 +1745,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1763,10 +1763,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1781,10 +1781,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1799,10 +1799,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1817,10 +1817,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1835,10 +1835,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1853,10 +1853,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1871,10 +1871,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Metal', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Metal', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1889,10 +1889,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1907,10 +1907,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1925,10 +1925,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1943,10 +1943,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1961,10 +1961,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1979,10 +1979,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -1997,10 +1997,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2015,10 +2015,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2033,10 +2033,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2051,10 +2051,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2069,10 +2069,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2087,10 +2087,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', 'Signature', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2105,10 +2105,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', 'Infinite', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2123,10 +2123,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', 'Infinite', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2141,10 +2141,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Customizable', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2159,10 +2159,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2177,10 +2177,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2195,10 +2195,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2213,10 +2213,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2231,10 +2231,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2249,10 +2249,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Entry', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2267,10 +2267,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2285,10 +2285,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2303,10 +2303,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2321,10 +2321,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2339,10 +2339,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2357,10 +2357,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2375,10 +2375,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Travel', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2393,10 +2393,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2411,10 +2411,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2429,10 +2429,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2447,10 +2447,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2465,10 +2465,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2483,10 +2483,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2501,10 +2501,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2519,10 +2519,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2537,10 +2537,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Digital', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2555,10 +2555,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2573,10 +2573,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Digital', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2591,10 +2591,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2609,10 +2609,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Signature', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2627,10 +2627,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Digital', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2645,10 +2645,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2663,10 +2663,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2681,10 +2681,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Digital', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2699,10 +2699,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2717,10 +2717,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2735,10 +2735,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Platinum', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2753,10 +2753,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2771,10 +2771,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2789,10 +2789,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2807,10 +2807,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2825,10 +2825,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2843,10 +2843,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2861,10 +2861,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2879,10 +2879,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2897,10 +2897,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2915,10 +2915,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2933,10 +2933,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Digital', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2951,10 +2951,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2969,10 +2969,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -2987,10 +2987,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3005,10 +3005,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3023,10 +3023,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3041,10 +3041,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3059,10 +3059,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3077,10 +3077,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3095,10 +3095,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3113,10 +3113,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3131,10 +3131,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Basic', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Basic', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3149,10 +3149,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Basic', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Basic', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3167,10 +3167,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Basic', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Basic', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3185,10 +3185,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Basic', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Basic', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3203,10 +3203,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Basic', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Basic', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3221,10 +3221,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3239,10 +3239,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3257,10 +3257,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'diners-club'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3275,10 +3275,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3293,10 +3293,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3311,10 +3311,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3329,10 +3329,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3347,10 +3347,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3365,10 +3365,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3383,10 +3383,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3401,10 +3401,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3419,10 +3419,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3437,10 +3437,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3455,10 +3455,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3473,10 +3473,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'diners-club'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3491,10 +3491,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3509,10 +3509,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3527,10 +3527,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3545,10 +3545,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3563,10 +3563,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'diners-club'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3581,10 +3581,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', 'Gold', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3599,10 +3599,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', 'Platinum', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3617,10 +3617,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3635,10 +3635,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Customizable', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3653,10 +3653,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3671,10 +3671,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3689,10 +3689,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3707,10 +3707,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3725,10 +3725,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3743,10 +3743,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3761,10 +3761,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3779,10 +3779,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3797,10 +3797,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', 'Invite-only', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3815,10 +3815,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'corporate', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3833,10 +3833,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Metal', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Metal', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3851,10 +3851,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Metal', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Metal', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3869,10 +3869,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3887,10 +3887,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3905,10 +3905,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3923,10 +3923,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3941,10 +3941,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Metal', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Metal', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3959,10 +3959,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3977,10 +3977,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'corporate', 'Signature', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -3995,10 +3995,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'charge', 'charge', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'charge', 'charge', n.id, 'corporate', 'Platinum', false
   from item, card_networks n where n.slug = 'american-express'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4013,10 +4013,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'charge', 'charge', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'charge', 'charge', n.id, 'corporate', 'Gold', false
   from item, card_networks n where n.slug = 'american-express'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4031,10 +4031,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Entry', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4049,10 +4049,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4067,10 +4067,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4085,10 +4085,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Digital', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4103,10 +4103,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4121,10 +4121,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4139,10 +4139,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4157,10 +4157,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4175,10 +4175,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Women', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4193,10 +4193,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Corporate', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4211,10 +4211,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4229,10 +4229,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Secured', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4247,10 +4247,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Secured', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4265,10 +4265,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4283,10 +4283,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4301,10 +4301,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Premium', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4319,10 +4319,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Platinum', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4337,10 +4337,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Basic', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Basic', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4355,10 +4355,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4373,10 +4373,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4391,10 +4391,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4409,10 +4409,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'prepaid', n.id, 'Prepaid', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'prepaid', 'prepaid', n.id, 'co-branded', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4427,10 +4427,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4445,10 +4445,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4463,10 +4463,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Wellness', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4481,10 +4481,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Entry', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4499,10 +4499,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Affinity', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4517,10 +4517,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4535,10 +4535,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4553,10 +4553,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4571,10 +4571,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4589,10 +4589,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4607,10 +4607,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4625,10 +4625,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4643,10 +4643,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4661,10 +4661,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'mastercard'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4679,10 +4679,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Ultra-Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Ultra-Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4697,10 +4697,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4715,10 +4715,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium Banking', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium Banking', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4733,10 +4733,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium Banking', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium Banking', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4751,10 +4751,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Business', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4769,10 +4769,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Business', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4787,10 +4787,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4805,10 +4805,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4823,10 +4823,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Entry', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4841,10 +4841,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4859,10 +4859,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Invite-only', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Invite-only', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4877,10 +4877,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4895,10 +4895,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4913,10 +4913,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Entry', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4931,10 +4931,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4949,10 +4949,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Government', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4967,10 +4967,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -4985,10 +4985,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', 'Infinite', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5003,10 +5003,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Virtual', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'american-express'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5021,10 +5021,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Fintech', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5039,10 +5039,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Super-Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Super-Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5057,10 +5057,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5075,10 +5075,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Ultra-Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Ultra-Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5093,10 +5093,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5111,10 +5111,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5129,10 +5129,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Business', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5147,10 +5147,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Corporate', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'corporate', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5165,10 +5165,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Entry', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5183,10 +5183,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5201,10 +5201,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Cashback', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5219,10 +5219,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Wellness', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5237,10 +5237,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5255,10 +5255,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Entry', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Entry', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5273,10 +5273,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'UPI', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Entry', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5291,10 +5291,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5309,10 +5309,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5327,10 +5327,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5345,10 +5345,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5363,10 +5363,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'debit', 'debit', n.id, 'Women', true
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'debit', 'debit', n.id, 'retail', 'Platinum', true
   from item, card_networks n where n.slug = 'rupay'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5381,10 +5381,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Wellness', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', null, false
   from item, card_networks n where n.slug = 'jcb'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5399,10 +5399,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Premium', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Premium', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5417,10 +5417,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Rewards', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5435,10 +5435,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5453,10 +5453,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5471,10 +5471,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'co-branded', 'credit', n.id, 'Co-branded', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'co-branded', null, false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5489,10 +5489,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Secured/FD-backed', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)
@@ -5507,10 +5507,10 @@ with item as (
   on conflict (issuer_id, item_type, name) do update set active = true
   returning id
 ), card as (
-  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, variant, upi_enabled)
-  select item.id, 'credit', 'credit', n.id, 'Travel', false
+  insert into catalog_cards (catalog_item_id, card_type, card_category, network_id, segment, variant, upi_enabled)
+  select item.id, 'credit', 'credit', n.id, 'retail', 'Platinum', false
   from item, card_networks n where n.slug = 'visa'
-  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, variant = excluded.variant, upi_enabled = excluded.upi_enabled
+  on conflict (catalog_item_id) do update set card_type = excluded.card_type, card_category = excluded.card_category, network_id = excluded.network_id, segment = excluded.segment, variant = excluded.variant, upi_enabled = excluded.upi_enabled
   returning catalog_item_id
 )
 insert into catalog_card_use_cases (catalog_item_id, use_case_id)

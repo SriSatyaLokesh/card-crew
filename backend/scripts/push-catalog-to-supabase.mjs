@@ -37,11 +37,11 @@ const arrMatch = src.match(/const CARD_CATALOG_SEED: CardSeedTuple\[\] = \[([\s\
 if (!arrMatch) throw new Error(`could not locate CARD_CATALOG_SEED array in ${seedPath}`);
 
 const rowRe =
-  /\[\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*(null|"[^"]*"),\s*(true|false)\s*\]/g;
+  /\[\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*(null|"[^"]*"),\s*(true|false)\s*\]/g;
 const rows = [];
 let m;
 while ((m = rowRe.exec(arrMatch[1]))) {
-  const [, id, issuer, product_name, card_type, card_category, network, variantRaw, upiRaw] = m;
+  const [, id, issuer, product_name, card_type, card_category, network, segment, variantRaw, upiRaw] = m;
   rows.push({
     id,
     issuer,
@@ -49,6 +49,7 @@ while ((m = rowRe.exec(arrMatch[1]))) {
     card_type,
     card_category,
     network,
+    segment,
     variant: variantRaw === "null" ? null : variantRaw.slice(1, -1),
     upi_enabled: upiRaw === "true",
   });
@@ -135,6 +136,7 @@ const catalogCardRows = rowsWithUseCases.map((r) => {
     card_type: r.card_type,
     card_category: r.card_category,
     network_id: networkIdBySlug.get(slug(r.network)),
+    segment: r.segment,
     variant: r.variant,
     upi_enabled: r.upi_enabled,
   };

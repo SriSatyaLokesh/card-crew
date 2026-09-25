@@ -17,6 +17,7 @@ type CardCatalogSummary = {
   card_type: string;
   card_category: "credit" | "debit" | "prepaid" | "charge";
   network: string;
+  segment: "retail" | "co-branded" | "corporate";
   variant: string | null;
   country: string;
   upi_enabled: boolean;

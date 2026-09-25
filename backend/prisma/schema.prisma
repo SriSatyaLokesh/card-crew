@@ -87,6 +87,7 @@ model CardCatalog {
   card_type    String
   card_category String
   network      String
+  segment      String     @default("retail")
   variant      String?
   country      String
   upi_enabled  Boolean    @default(false)
