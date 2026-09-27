@@ -1,0 +1,93 @@
+# Recommended label set for card-crew.
+#
+# This file is a reference, not applied automatically. Apply it with a
+# label-sync tool of your choice, for example:
+#
+#   npx github-label-sync --access-token <token> --labels .github/labels.yml SriSatyaLokesh/card-crew
+#
+# or create/update labels by hand under Settings -> Labels using the same
+# names, colors, and descriptions so the two stay in sync.
+
+# --- Type (mirrors the issue templates / GitHub issue types) -------------
+- name: bug
+  color: "d73a4a"
+  description: Something works differently than documented or expected.
+- name: enhancement
+  color: "a2eeef"
+  description: A new capability, resource type, or improvement.
+- name: documentation
+  color: "0075ca"
+  description: README/docs/comments are wrong, missing, or unclear.
+- name: question
+  color: "d876e3"
+  description: Needs clarification, not (yet) a code change.
+
+# --- Area ------------------------------------------------------------------
+- name: "area:frontend"
+  color: "c5def5"
+  description: Vite + React + TypeScript web app (frontend/).
+- name: "area:backend"
+  color: "c5def5"
+  description: Express + Prisma API (backend/) — reference/archived path.
+- name: "area:supabase"
+  color: "c5def5"
+  description: Schema, RLS policies, RPC catalog (supabase/) — the target backend.
+- name: "area:design"
+  color: "c5def5"
+  description: UI/UX and the design system (docs/design.md).
+- name: "area:docs"
+  color: "c5def5"
+  description: README, ARCHITECTURE.md, CONTRIBUTING.md, docs/.
+- name: "area:ci"
+  color: "c5def5"
+  description: GitHub Actions workflows, Cloudflare deployment.
+
+# --- Triage / workflow -----------------------------------------------------
+- name: "good first issue"
+  color: "7057ff"
+  description: Small, scoped, and a good starting point for new contributors.
+- name: "help wanted"
+  color: "008672"
+  description: Maintainers would appreciate a community contribution here.
+- name: "needs triage"
+  color: "ededed"
+  description: Not yet reviewed by a maintainer.
+- name: duplicate
+  color: "cfd3d7"
+  description: This issue or PR already exists elsewhere.
+- name: wontfix
+  color: "ffffff"
+  description: This will not be worked on, with a reason given in the thread.
+- name: "priority:high"
+  color: "b60205"
+  description: Maintainer-set high priority.
+- name: "priority:low"
+  color: "fef2c0"
+  description: Maintainer-set low priority.
+
+# --- Security ---------------------------------------------------------------
+- name: security
+  color: "e11d48"
+  description: Touches authentication, authorization, RLS, or the privacy boundary. Never applied to a publicly-filed vulnerability report — see SECURITY.md.
+
+# --- Squad (AI-agent workflow — reserved for maintainers) -------------------
+# See .squad/routing.md and CONTRIBUTING.md#the-squad-ai-agents. Contributors
+# should not apply these labels themselves.
+- name: squad
+  color: "5319e7"
+  description: "Reserved: inbox label for the maintainers' AI-agent triage workflow."
+- name: "squad:lead"
+  color: "5319e7"
+  description: "Reserved: routed to the Squad Lead agent."
+- name: "squad:frontend"
+  color: "5319e7"
+  description: "Reserved: routed to the Squad Frontend agent."
+- name: "squad:backend"
+  color: "5319e7"
+  description: "Reserved: routed to the Squad Backend agent."
+- name: "squad:ux"
+  color: "5319e7"
+  description: "Reserved: routed to the Squad UX agent."
+- name: "squad:tester"
+  color: "5319e7"
+  description: "Reserved: routed to the Squad Tester agent."

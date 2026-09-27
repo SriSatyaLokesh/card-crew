@@ -1,0 +1,26 @@
+name: ❓ Question
+description: You need clarification, not (yet) a code or doc change.
+title: "[Question]: "
+labels: ["question"]
+type: "Question"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If a Discussion board is enabled on this repo, that's often a better fit for open-ended questions. This template is fine either way.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: The more specific, the faster you'll get a useful answer. Link the doc or code you already looked at, if any.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: What are you trying to do?
+      description: The underlying goal, in case there's a better path than the one you were about to ask about.
+    validations:
+      required: false
