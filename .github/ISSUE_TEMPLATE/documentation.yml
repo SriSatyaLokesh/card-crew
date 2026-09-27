@@ -1,0 +1,30 @@
+name: 📚 Documentation
+description: The README, docs/, ARCHITECTURE.md, or code comments are wrong, missing, or unclear.
+title: "[Docs]: "
+labels: ["documentation"]
+type: "Documentation"
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Where?
+      description: File path and, if applicable, section heading or line number.
+      placeholder: docs/API_CONTRACT.md — "Requests" section
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: What's wrong or missing?
+      description: Is it inaccurate, outdated, confusing, or just absent? Quote the current text if you're pointing at something specific.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested fix
+      description: If you already know what it should say, put it here — makes this an easy first PR for anyone (including you!).
+    validations:
+      required: false

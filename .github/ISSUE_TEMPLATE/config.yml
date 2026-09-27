@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/SriSatyaLokesh/card-crew/security/advisories/new
+    about: Do not open a public issue for security reports — see SECURITY.md and use GitHub's private advisory form instead.
+  - name: 💬 Discussions
+    url: https://github.com/SriSatyaLokesh/card-crew/discussions
+    about: Open-ended discussion, ideas that aren't yet a concrete feature request, or general chat about the project.

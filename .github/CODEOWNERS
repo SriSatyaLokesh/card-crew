@@ -1,0 +1,18 @@
+# CODEOWNERS
+#
+# Requests review from the listed owner(s) automatically when a PR touches
+# a matching path. Order matters — the last matching pattern wins, so keep
+# more specific rules below more general ones.
+#
+# Update the handle below to the actual maintainer GitHub username(s)/team
+# once this file is enabled — a single "@SriSatyaLokesh" placeholder is not
+# enough on its own for GitHub to request a review; add real usernames.
+
+*                           @SriSatyaLokesh
+
+# Security-sensitive and cross-cutting areas get extra scrutiny.
+/supabase/                 @SriSatyaLokesh
+/backend/src/               @SriSatyaLokesh
+/.github/workflows/         @SriSatyaLokesh
+/SECURITY.md                @SriSatyaLokesh
+/docs/DATABASE_DESIGN.md    @SriSatyaLokesh

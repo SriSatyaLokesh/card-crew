@@ -1,0 +1,65 @@
+name: ✨ Feature request
+description: Propose a new capability, resource type, or improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+type: "Feature"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, skim the [PRD](https://github.com/SriSatyaLokesh/card-crew/blob/main/docs/trusted_personal_resource_network_prd.md) — it's the source of truth for product direction and may already answer "is this in scope." For anything larger than a small, self-contained change, filing here first (before a PR) saves everyone rework.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the job-to-be-done, not the implementation. E.g. "I need to find a lounge-access benefit, not just cards."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would you like to happen? Sketch the UX or API shape if you have one in mind.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other ways to solve the same problem, and why you think this one is better.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where would this live?
+      multiple: true
+      options:
+        - frontend/ (web app)
+        - backend/ (Express API)
+        - supabase/ (schema, RLS, RPC)
+        - Design / UX (docs/design.md)
+        - Docs
+        - Not sure
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: boundary-check
+    attributes:
+      label: Security boundary check
+      options:
+        - label: This proposal does not require storing card numbers, CVVs, PINs, OTPs, or bank credentials (see SECURITY.md — this is a hard boundary, not a preference).
+          required: true
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Would you like to work on this?
+      options:
+        - label: I'd like to submit a PR for this myself.
+          required: false
