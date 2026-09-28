@@ -106,36 +106,6 @@ function LoginPage() {
       >
         {mode === "sign-in" ? "New here? Create an account" : "Already have an account? Sign in"}
       </button>
-
-      <div style={{ marginTop: "1.25rem", paddingTop: "1rem", borderTop: "1px dashed var(--paper-200)", textAlign: "center" }}>
-        <button
-          type="button"
-          className="button-secondary"
-          style={{ width: "100%", minHeight: "40px", fontSize: "0.85rem", fontWeight: 700 }}
-          onClick={async () => {
-            setSubmitting(true);
-            setFormError(null);
-            try {
-              try {
-                await signIn("teja@cardcrew.local", "password123");
-              } catch (signErr: any) {
-                if (signErr?.message?.includes("does not exist") || signErr?.status === 404) {
-                  await signUp("teja@cardcrew.local", "password123", "Teja");
-                } else {
-                  throw signErr;
-                }
-              }
-              navigate("/", { replace: true });
-            } catch (err: any) {
-              setFormError(err instanceof Error ? err.message : "Quick login failed");
-            } finally {
-              setSubmitting(false);
-            }
-          }}
-        >
-          ⚡ Instant Local Demo Sign-in (Teja)
-        </button>
-      </div>
     </div>
   );
 }
