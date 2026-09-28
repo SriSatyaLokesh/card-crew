@@ -10,6 +10,8 @@ type AuthContextValue = {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName: string) => Promise<void>;
   signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
+  updateProfileState: (updated: UserProfile) => void;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);

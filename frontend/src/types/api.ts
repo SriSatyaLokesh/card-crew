@@ -2,11 +2,56 @@ type UserStatus = "active" | "blocked" | "deleted";
 
 type UserProfile = {
   id: string;
+  email?: string;
+  username?: string | null;
+  avatar_url?: string | null;
   phone: string | null;
   display_name: string;
   status: UserStatus;
+  has_password?: boolean;
   created_at: string;
   updated_at: string;
+};
+
+export type UserCard = {
+  id: string;
+  userId: string;
+  cardName: string;
+  cardType: string;
+  visibilityScope?: "DIRECT_FRIENDS" | "TOTAL_NETWORK";
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SearchUserSummary = {
+  id: string;
+  display_name: string;
+  email?: string;
+  status: string;
+  relationship: "direct_friend" | "friend_of_friend" | "incoming_request" | "outgoing_request" | "blocked" | "none";
+  mutual_friend_name?: string | null;
+  mutual_friend_count?: number;
+  connection_id?: string | null;
+  avatar_url?: string | null;
+};
+
+export type NetworkStats = {
+  totalRequests: number;
+  directFriends: number;
+  friendsOfFriends: number;
+  incomingRequests: number;
+  pendingRequests: number;
+  blockedMe: number;
+};
+
+export type FriendOfFriendSummary = {
+  id: string;
+  display_name: string;
+  email?: string;
+  mutual_friend_name: string | null;
+  mutual_friends_count: number;
+  relationship: "friend_of_friend";
+  avatar_url?: string | null;
 };
 
 type CardCatalogSummary = {
@@ -80,6 +125,7 @@ type NetworkNode = {
   relationship: "self" | "direct" | "second-degree";
   via_user_id: string | null;
   card_count: number;
+  avatar_url?: string | null;
 };
 
 type NetworkEdge = {

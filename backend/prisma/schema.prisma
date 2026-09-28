@@ -50,6 +50,9 @@ enum ReferralStatus {
 model User {
   id                    String       @id
   email                 String       @unique
+  username              String?      @unique
+  avatar_url            String?
+  password_hash         String?
   phone                 String?      @unique
   display_name          String
   status                UserStatus   @default(active)
@@ -61,6 +64,22 @@ model User {
   requested_requests    Request[]    @relation("requests_requester")
   owned_requests         Request[]    @relation("requests_owner")
   intermediary_requests Request[]    @relation("requests_intermediary")
+  blocks_initiated      UserBlock[]  @relation("blocks_blocker")
+  blocks_received       UserBlock[]  @relation("blocks_blocked")
+  cards                 Card[]
+}
+
+model UserBlock {
+  id         String   @id @default(cuid())
+  blocker_id String
+  blocked_id String
+  created_at DateTime @default(now())
+  blocker    User     @relation("blocks_blocker", fields: [blocker_id], references: [id], onDelete: Cascade)
+  blocked    User     @relation("blocks_blocked", fields: [blocked_id], references: [id], onDelete: Cascade)
+
+  @@unique([blocker_id, blocked_id])
+  @@index([blocker_id])
+  @@index([blocked_id])
 }
 
 model Connection {
@@ -137,3 +156,17 @@ model Request {
   @@index([resource_id])
   @@index([intermediary_id])
 }
+
+model Card {
+  id               String   @id @default(cuid())
+  user_id          String
+  card_name        String
+  card_type        String
+  visibility_scope String   @default("DIRECT_FRIENDS")
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+  user             User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+}
+

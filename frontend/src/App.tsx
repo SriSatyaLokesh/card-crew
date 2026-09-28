@@ -8,6 +8,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { MyCardsPage } from "./pages/MyCardsPage";
 import { MyNetworkPage } from "./pages/MyNetworkPage";
 import { RequestsPage } from "./pages/RequestsPage";
+import { ProfilePage } from "./pages/ProfilePage";
 
 function SignedInLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -53,6 +54,14 @@ function App() {
             element={
               <SignedInLayout>
                 <RequestsPage />
+              </SignedInLayout>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <SignedInLayout>
+                <ProfilePage />
               </SignedInLayout>
             }
           />
