@@ -271,8 +271,15 @@ export function RequestsPage() {
     setBusyActionId(targetUserId);
 
     try {
-      await api.sendFriendRequest(targetUserId);
+      const { request } = await api.sendFriendRequest(targetUserId);
       setSuccess(`Connection invite sent to ${targetName}!`);
+      setSearchResults((prev) =>
+        prev.map((u) =>
+          u.id === targetUserId
+            ? { ...u, relationship: "outgoing_request" as const, connection_id: request.id }
+            : u,
+        ),
+      );
       await loadData(profile.id);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Failed to send connection invite");
@@ -290,6 +297,13 @@ export function RequestsPage() {
     try {
       await api.acceptFriendRequest(requestId);
       setSuccess("Connection accepted! User is now in your direct network.");
+      setSearchResults((prev) =>
+        prev.map((u) =>
+          u.connection_id === requestId
+            ? { ...u, relationship: "direct_friend" as const }
+            : u,
+        ),
+      );
       await loadData(profile.id);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Failed to accept connection request");
@@ -307,6 +321,13 @@ export function RequestsPage() {
     try {
       await api.declineFriendRequest(requestId);
       setSuccess("Request declined.");
+      setSearchResults((prev) =>
+        prev.map((u) =>
+          u.connection_id === requestId
+            ? { ...u, relationship: "none" as const, connection_id: null }
+            : u,
+        ),
+      );
       await loadData(profile.id);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Failed to decline request");
@@ -324,6 +345,13 @@ export function RequestsPage() {
     try {
       await api.declineFriendRequest(requestId);
       setSuccess("Invite cancelled.");
+      setSearchResults((prev) =>
+        prev.map((u) =>
+          u.connection_id === requestId
+            ? { ...u, relationship: "none" as const, connection_id: null }
+            : u,
+        ),
+      );
       await loadData(profile.id);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Failed to cancel invite");
@@ -559,7 +587,7 @@ export function RequestsPage() {
                     onRemoveFriend={handleRemoveFriend}
                     onBlock={handleBlock}
                     onUnblock={handleUnblock}
-                    isBusy={busyActionId === user.id || busyActionId === user.connection_id}
+                    isBusy={Boolean(busyActionId && (busyActionId === user.id || (user.connection_id && busyActionId === user.connection_id)))}
                     showBlockOption
                   />
                 );

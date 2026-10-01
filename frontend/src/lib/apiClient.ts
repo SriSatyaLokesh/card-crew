@@ -134,23 +134,104 @@ async function createCard(input: {
   const ownerId = userRes.data.user?.id;
   if (!ownerId) throw new ApiError(401, "not_authenticated");
 
-  const catRes = await supabase
-    .from("catalog_cards_view")
-    .select("id")
-    .ilike("product_name", `%${input.cardName.trim()}%`)
-    .limit(1);
+  const cleanName = input.cardName.trim();
+  const cleanLower = cleanName.toLowerCase();
 
-  let catalogItemId = catRes.data?.[0]?.id;
-  if (!catalogItemId) {
-    const anyCat = await supabase.from("catalog_cards_view").select("id").limit(1);
-    catalogItemId = anyCat.data?.[0]?.id;
+  // Fetch catalog cards to find the best match
+  const { data: allCatalog } = await supabase
+    .from("catalog_cards_view")
+    .select("id, issuer, product_name");
+
+  let catalogItemId: string | undefined;
+
+  if (allCatalog && allCatalog.length > 0) {
+    // 1. Try exact match on "Issuer ProductName" or "ProductName"
+    const exact = allCatalog.find(
+      (c) =>
+        `${c.issuer} ${c.product_name}`.toLowerCase() === cleanLower ||
+        c.product_name.toLowerCase() === cleanLower,
+    );
+    if (exact) {
+      catalogItemId = exact.id;
+    }
+
+    // 2. Try substring matching (e.g. input "HDFC Regalia Gold" includes "Regalia Gold")
+    if (!catalogItemId) {
+      const sub = allCatalog.find(
+        (c) =>
+          cleanLower.includes(c.product_name.toLowerCase()) ||
+          cleanLower.includes(`${c.issuer} ${c.product_name}`.toLowerCase()),
+      );
+      if (sub) {
+        catalogItemId = sub.id;
+      }
+    }
+
+    // 3. Try word matching (e.g. "Regalia" or "Gold")
+    if (!catalogItemId) {
+      const words = cleanLower.split(/\s+/).filter((w) => w.length > 2);
+      const wordMatch = allCatalog.find((c) =>
+        words.some((w) => c.product_name.toLowerCase().includes(w)),
+      );
+      if (wordMatch) {
+        catalogItemId = wordMatch.id;
+      }
+    }
+
+    // 4. Fallback: find any catalog card the user does NOT already have
+    if (!catalogItemId) {
+      const existingOwned = await supabase
+        .from("resources")
+        .select("catalog_item_id")
+        .eq("owner_id", ownerId);
+      const ownedSet = new Set((existingOwned.data || []).map((r: any) => r.catalog_item_id));
+      const unowned = allCatalog.find((c) => !ownedSet.has(c.id));
+      catalogItemId = unowned?.id || allCatalog[0]?.id;
+    }
   }
 
   if (!catalogItemId) {
-    throw new ApiError(400, "Catalog items not found");
+    throw new ApiError(400, "Card catalog item could not be found");
   }
 
   const depth = input.visibilityScope === "TOTAL_NETWORK" ? 2 : 1;
+
+  // Check if user already owns this card in resources (active or removed)
+  const existing = await supabase
+    .from("resources")
+    .select("*")
+    .eq("owner_id", ownerId)
+    .eq("catalog_item_id", catalogItemId)
+    .maybeSingle();
+
+  if (existing.data) {
+    // Update and reactivate existing resource to prevent unique constraint violation
+    const upd = await supabase
+      .from("resources")
+      .update({
+        visibility_depth: depth,
+        status: "active",
+        notes: cleanName,
+      })
+      .eq("id", existing.data.id)
+      .select()
+      .single();
+
+    const row = unwrap(upd) as ResourceRow;
+    return {
+      card: {
+        id: row.id,
+        userId: row.owner_id,
+        cardName: cleanName,
+        cardType: input.cardType,
+        visibilityScope: (row.visibility_depth ?? 1) >= 2 ? "TOTAL_NETWORK" : "DIRECT_FRIENDS",
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+      },
+    };
+  }
+
+  // Otherwise, insert new resource
   const ins = await supabase
     .from("resources")
     .insert({
@@ -158,7 +239,7 @@ async function createCard(input: {
       catalog_item_id: catalogItemId,
       visibility_depth: depth,
       request_enabled: true,
-      notes: input.cardName,
+      notes: cleanName,
     })
     .select()
     .single();
@@ -168,7 +249,7 @@ async function createCard(input: {
     card: {
       id: row.id,
       userId: row.owner_id,
-      cardName: input.cardName,
+      cardName: cleanName,
       cardType: input.cardType,
       visibilityScope: input.visibilityScope ?? "DIRECT_FRIENDS",
       createdAt: row.created_at,
