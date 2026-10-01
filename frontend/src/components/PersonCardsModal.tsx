@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import type { UserCard, UserProfile } from "../types/api";
+import type { PersonCard, UserProfile } from "../types/api";
 import type { GraphFriend } from "./NetworkGraph";
 import { CardTile } from "./CardTile";
 
@@ -7,7 +7,7 @@ export interface PersonCardsModalProps {
   isOpen: boolean;
   onClose: () => void;
   person: GraphFriend | null;
-  cards: UserCard[] | null;
+  cards: PersonCard[] | null;
   isLoading: boolean;
   error: string | null;
   onRetry: () => void;
@@ -45,7 +45,6 @@ export function PersonCardsModal({
   // Focus modal close button upon opening
   useEffect(() => {
     if (isOpen) {
-      // Small timeout to allow transition to mount
       const t = setTimeout(() => {
         closeBtnRef.current?.focus();
       }, 50);
@@ -187,7 +186,7 @@ export function PersonCardsModal({
             <div className="person-cards-empty-state">
               <div className="empty-cards-icon" aria-hidden="true">💳</div>
               <h3>No cards available</h3>
-              <p>{displayName} hasn&rsquo;t shared any cards yet.</p>
+              <p>{displayName} hasn&rsquo;t shared any cards with your network visibility depth.</p>
             </div>
           )}
 
@@ -199,9 +198,7 @@ export function PersonCardsModal({
                   key={card.id}
                   card={card}
                   ownerName={displayName}
-                  ownerUsername={personProfile?.username}
-                  ownerEmail={personProfile?.email}
-                  ownerAvatarUrl={personProfile?.avatar_url}
+                  ownerAvatarUrl={avatarUrl}
                   relationshipDepth={person.depth}
                 />
               ))}

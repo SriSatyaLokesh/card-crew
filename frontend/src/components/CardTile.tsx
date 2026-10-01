@@ -1,55 +1,49 @@
-import React from "react";
-import type { UserCard } from "../types/api";
+import type { PersonCard } from "../types/api";
 
 export interface CardTileProps {
-  card: UserCard;
+  card: PersonCard;
   ownerName?: string;
-  ownerUsername?: string | null;
-  ownerEmail?: string | null;
   ownerAvatarUrl?: string | null;
   relationshipDepth?: number;
 }
 
 function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .map((p) => p[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase() || "CC";
+  return (
+    name
+      .split(" ")
+      .map((p) => p[0])
+      .filter(Boolean)
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "CC"
+  );
 }
 
 export function CardTile({
   card,
   ownerName,
-  ownerUsername,
-  ownerEmail,
   ownerAvatarUrl,
   relationshipDepth,
 }: CardTileProps) {
-  // Determine gradient style based on card type
-  const typeLower = card.cardType.toLowerCase();
+  const cardName = card.product_name
+    ? `${card.issuer ? `${card.issuer} ` : ""}${card.product_name}`
+    : "Payment Card";
+
+  const category = (card.card_category || card.card_type || "credit").toLowerCase();
   let cardClass = "visual-card-credit";
-  if (typeLower.includes("debit")) {
+  if (category.includes("debit")) {
     cardClass = "visual-card-debit";
-  } else if (typeLower.includes("prepaid")) {
+  } else if (category.includes("prepaid")) {
     cardClass = "visual-card-prepaid";
-  } else if (typeLower.includes("virtual")) {
-    cardClass = "visual-card-virtual";
-  } else if (
-    typeLower.includes("business") ||
-    typeLower.includes("corporate") ||
-    typeLower.includes("charge")
-  ) {
+  } else if (card.segment === "corporate") {
     cardClass = "visual-card-business";
   }
 
-  const isNetworkScope = card.visibilityScope === "TOTAL_NETWORK";
+  const isNetworkScope = card.visibility_depth >= 2;
   const displayName = ownerName || "Cardholder";
 
   return (
-    <div className="card-tile-container" role="article" aria-label={`${card.cardName} (${card.cardType})`}>
+    <div className="card-tile-container" role="article" aria-label={`${cardName} (${card.card_type || "Card"})`}>
       {/* 1. Realistic Graphic Card */}
       <div className={`visual-card ${cardClass}`}>
         <div className="visual-card-topline">
@@ -62,13 +56,13 @@ export function CardTile({
         </div>
 
         <div className="visual-card-body">
-          <div className="visual-card-name" title={card.cardName}>
-            {card.cardName.toUpperCase()}
+          <div className="visual-card-name" title={cardName}>
+            {cardName.toUpperCase()}
           </div>
         </div>
 
         <div className="visual-card-bottomline">
-          <span className="visual-card-type-label">{card.cardType.toUpperCase()}</span>
+          <span className="visual-card-type-label">{(card.card_type || card.card_category || "Credit").toUpperCase()}</span>
           <span
             className="visual-card-visibility-pill"
             title={isNetworkScope ? "Shared across total network" : "Shared with direct friends"}
@@ -90,12 +84,10 @@ export function CardTile({
           </div>
           <div className="card-tile-owner-info">
             <strong className="card-tile-owner-name">{displayName}</strong>
-            {ownerUsername && (
-              <span className="card-tile-owner-handle">@{ownerUsername}</span>
-            )}
-            {!ownerUsername && ownerEmail && (
-              <span className="card-tile-owner-handle">{ownerEmail}</span>
-            )}
+            <span className="card-tile-owner-handle">
+              {card.network} · {card.variant ?? "Standard"}
+              {card.upi_enabled ? " · UPI" : ""}
+            </span>
           </div>
         </div>
 

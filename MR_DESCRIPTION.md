@@ -1,84 +1,64 @@
-# Merge Request: Card Sharing, Network Graph Avatars, Profile Management & Request Enhancements
+# Merge Request: Production-Safe Supabase Integration (Card Sharing, Network Graph Avatars, Profile Page)
 
 ## Summary
 
-This Merge Request introduces end-to-end support for card creation and visibility-scoped sharing, network graph avatar rendering, profile management (photo upload & password update), and UI enhancements in the Request tab.
+Refactored the PR to adhere 100% to the production **Supabase architecture** (Supabase Database, Auth, Storage, and RLS). All introduced Express routes, Prisma models, custom controllers, and backend dependencies have been removed. The features are implemented natively using Supabase without reintroducing the legacy backend.
 
 ---
 
-## 🚀 Key Changes
+## 🚀 Key Features & Changes
 
-### 1. Card Sharing & Visibility Control
-- **Visibility Scoping**: Added ability to set card visibility during creation:
-  - `direct_friends`: Visible only to 1st-degree friends.
-  - `total_network`: Visible to 1st-degree and 2nd-degree connections (Friends of Friends).
-- **View Person's Cards**: Added `PersonCardsModal` and `CardTile` components allowing users to view any connected person's cards directly from the Network Graph, enforcing visibility boundaries.
-- **Backend Cards Module**: Full CRUD and access-control endpoints (`GET /cards`, `POST /cards`, `GET /cards/user/:userId`, `DELETE /cards/:id`, etc.) with test coverage.
+### 1. Card Sharing via Supabase Database & RLS
+- **Existing `resources` Table & `visibility_depth`**:
+  - `0 = Private`: Accessible only by the card owner.
+  - `1 = Direct Friends`: Accessible by owner and direct 1st-degree friends.
+  - `2 = Total Network`: Accessible by owner, direct friends, and 2nd-degree connections (Friends of Friends).
+- **Database-Level Authorization**:
+  - Enhanced RLS policy `resources_network_read` for 2nd-degree network discovery.
+  - Added PostgreSQL RPC function `get_person_cards(p_user_id uuid)` with server-side friend-edge traversal, block checks, and `visibility_depth` enforcement.
+  - Connected `PersonCardsModal` and `CardTile` components to view shared cards directly from the Network Graph.
+  - Updated `MyCardsPage` visibility controls to map explicitly to `private`, `friends`, and `network` depths.
 
-### 2. Network Graph Avatar Rendering
-- **Circular Avatar Nodes**: Render user profile photos inside network node circles using HTML5 Canvas clipping (`arc()` and `drawImage` with center-crop aspect preservation).
-- **Graceful Fallbacks**: Renders standard colored dots if a user does not have a photo or if the image fails to load.
-- **CORS & Re-render**: Fixed data URI cross-origin handling and added dynamic repaint listeners on image load/decode to prevent blank nodes.
+### 2. Avatars Using Supabase Storage
+- **Public Storage Bucket**: Created and configured the public `avatars` bucket with RLS policies allowing authenticated users to upload, update, and manage their avatar image files.
+- **Profile Schema & Public View**:
+  - Added `avatar_url` column to `public.profiles`.
+  - Recreated `public.profiles_public` view to project `id, display_name, status, avatar_url` for authenticated clients.
+  - Updated `public.sync_profile` function to handle `avatar_url` seamlessly with user metadata.
+- **Network Graph Avatars**:
+  - Updated `public.network_graph` RPC function to return `avatar_url` for each node.
+  - Network graph canvas renders circular cropped avatars with graceful fallback to standard colored node dots.
 
-### 3. Avatar Support in Search & User Lists
-- **Service Updates**: Extended `searchByNameWithRelationships` and `getFriendsOfFriends` backend services to return `avatar_url`.
-- **Component Updates**: Enhanced `UserListItem`, `RequestsPage`, `MyNetworkPage`, and `HomePage` to display profile pictures with seamless fallback to initials when image loading fails.
+### 3. Profile Management via Supabase Auth
+- **Native Supabase Client**:
+  - Password updates execute directly via `supabase.auth.updateUser({ password })`.
+  - Display name updates synchronize both `supabase.auth.updateUser({ data: { display_name } })` and `public.profiles`.
+  - Avatar uploads push image files directly to the `avatars` Supabase Storage bucket, obtain the public URL, and update `profiles.avatar_url` and auth metadata.
+  - Robust error handling, loading states, session expiration resilience, and duplicate submission prevention.
 
-### 4. Request Tab Dashboard Refinement
-- **Removed "Blocked Me" Pill**: Hid the "Blocked Me" count/button from the top stats dashboard for the current logged-in user.
-- **Preserved Backend Logic**: Kept underlying blocking APIs and database models intact.
-- **Responsive Layout**: Rebalanced the stats grid using `repeat(auto-fit, minmax(140px, 1fr))` to prevent awkward gaps or layout shifts.
-
-### 5. Profile Management & Auth
-- **Change Password**: Implemented `POST /auth/change-password` with bcrypt validation and hashing.
-- **Photo Upload**: Implemented `POST /auth/photo` supporting avatar uploads and data URLs.
-- **Profile Page**: Added frontend `ProfilePage` for updating avatar and password credentials.
+### 4. Removal of Express/Prisma Backend
+- Reverted all PR modifications in `backend/` back to clean `main` status.
+- Removed custom Express routes (`backend/src/auth`, `backend/src/cards`), Prisma models, and test mocks.
+- Restored `apiClient.ts` as a pure Supabase client calling PostgREST and RPC endpoints.
+- Cleaned up dead UI components and unused imports.
 
 ---
 
 ## 🛠 Type of Change
 
-- [x] **New feature** (non-breaking change adding functionality)
-- [x] **Bug fix** (fixing image rendering, CORS canvas issue, avatar propagation)
-- [x] **UI/UX improvement** (dashboard layout cleanup, avatar fallbacks)
-- [x] **Refactoring & Tests** (backend test suites, service normalization)
+- [x] **Refactoring** (aligning PR architecture with production Supabase)
+- [x] **New feature** (Card Sharing with depth authorization, Storage avatars, Profile Page)
+- [x] **Security / RLS** (Database-level multi-hop visibility checks, Storage RLS)
+- [x] **Cleanup** (Removal of redundant Express/Prisma code)
 
 ---
 
 ## 🧪 Testing & Verification
 
-### Automated Tests
-- **Backend Test Suite**: Ran `npm --prefix backend test` &rarr; **35 / 35 tests passing** (covering auth, cards, network, connections).
-- **TypeScript & Build Checks**:
-  - `npm --prefix backend run build` &rarr; **0 errors**.
-  - `npm --prefix frontend run build` &rarr; **0 errors**.
-
-### Manual UI Testing
-- [x] Created card with "Direct Friends" visibility and verified it only appears for 1st-degree connections.
-- [x] Created card with "Total Network" visibility and verified it appears for 2nd-degree connections (FOF).
-- [x] Clicked a node on the Network Graph and verified "View Cards" opens the modal displaying their accessible cards.
-- [x] Confirmed node dots on Network Graph display avatar images with circular crop, or fallback colored dot if missing.
-- [x] Verified user search results display profile photos or initials.
-- [x] Verified Request tab top header displays 5 stat cards (`All`, `Incoming`, `Pending`, `Friends`, `FOF`) without the "Blocked Me" button.
-- [x] Verified photo update and password change from the Profile page.
-
----
-
-## 📦 Modified & Added Files Summary
-
-- **Backend**:
-  - `backend/src/auth/*`: Auth routes, services, password hashing, tests.
-  - `backend/src/cards/*`: Card controller, repository, routes, service, tests.
-  - `backend/src/users/*`: Added `avatar_url` propagation in user repository and search services.
-  - `backend/src/network/*`: Added `avatar_url` in friend-of-friend summaries.
-  - `backend/prisma/schema.prisma`: Added Card model and user avatar fields.
-- **Frontend**:
-  - `frontend/src/components/NetworkGraph.tsx`: Circular avatar node rendering with canvas clip.
-  - `frontend/src/components/PersonCardsModal.tsx` & `CardTile.tsx`: Viewing cards for network contacts.
-  - `frontend/src/components/NetworkStatsDashboard.tsx`: Removed "Blocked Me" counter.
-  - `frontend/src/components/UserListItem.tsx`: Avatar display with initials fallback.
-  - `frontend/src/pages/RequestsPage.tsx`, `HomePage.tsx`, `MyNetworkPage.tsx`: Mapped `avatar_url` across lists.
-  - `frontend/src/pages/ProfilePage.tsx`: User profile photo and password update screen.
-- **Scripts**:
-  - `backend/scripts/seed-users.ts`: Demo user credentials and connection seeder.
-  - `scripts/seed-avatars.cjs`: User avatar data generator for local testing.
+- **Frontend Compilation**: `npx tsc --noEmit` &rarr; **0 errors**.
+- **Backend Test Suite**: Ran `npm --prefix backend test` &rarr; **28 / 28 tests passing**.
+- **Integration Tests Updated**:
+  - `tests/integration/resources.test.ts`: Added tests verifying that friends-of-friends access `visibility_depth = 2` but are denied `visibility_depth = 1`, and verified `get_person_cards` RPC enforcement.
+  - `tests/integration/profiles.test.ts`: Added tests for `avatar_url` updates in `profiles` and reading via `profiles_public`.
+  - `tests/integration/network.test.ts`: Verified `avatar_url` property presence on `network_graph` nodes.
+- **Guardrails**: Updated `supabase/guardrails/03_definer_audit_list.sql` to include `get_person_cards`.
