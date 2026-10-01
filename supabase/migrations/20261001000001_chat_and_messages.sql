@@ -39,7 +39,24 @@ create table if not exists public.user_presence (
   updated_at timestamptz not null default now()
 );
 
--- 5. Create indexes
+-- 5. Helper function for RLS checks (SECURITY DEFINER to avoid infinite recursion)
+create or replace function public.is_chat_member(p_chat_id uuid, p_user_id uuid default auth.uid())
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1 from public.chat_participants
+    where chat_id = p_chat_id and user_id = p_user_id
+  );
+$$;
+
+revoke execute on function public.is_chat_member(uuid, uuid) from public, anon;
+grant execute on function public.is_chat_member(uuid, uuid) to authenticated;
+
+-- 6. Create indexes
 create index if not exists idx_messages_chat_created on public.messages (chat_id, created_at desc);
 create index if not exists idx_messages_sender on public.messages (sender_id);
 create index if not exists idx_messages_chat_status on public.messages (chat_id, status);
@@ -47,45 +64,35 @@ create index if not exists idx_chat_participants_chat on public.chat_participant
 create index if not exists idx_chat_participants_user on public.chat_participants (user_id);
 create index if not exists idx_chats_updated on public.chats (updated_at desc);
 
--- 6. Enable Row Level Security (RLS)
+-- 7. Enable Row Level Security (RLS)
 alter table public.chats enable row level security;
 alter table public.chat_participants enable row level security;
 alter table public.messages enable row level security;
 alter table public.user_presence enable row level security;
 
--- 7. RLS Policies for chats
+-- 8. RLS Policies for chats
+drop policy if exists chats_select on public.chats;
 create policy chats_select on public.chats
   for select to authenticated
-  using (
-    exists (
-      select 1 from public.chat_participants cp
-      where cp.chat_id = chats.id and cp.user_id = (select auth.uid())
-    )
-  );
+  using (public.is_chat_member(id));
 
+drop policy if exists chats_insert on public.chats;
 create policy chats_insert on public.chats
   for insert to authenticated
   with check (created_by = (select auth.uid()));
 
+drop policy if exists chats_update on public.chats;
 create policy chats_update on public.chats
   for update to authenticated
-  using (
-    exists (
-      select 1 from public.chat_participants cp
-      where cp.chat_id = chats.id and cp.user_id = (select auth.uid())
-    )
-  );
+  using (public.is_chat_member(id));
 
--- 8. RLS Policies for chat_participants
+-- 9. RLS Policies for chat_participants
+drop policy if exists chat_participants_select on public.chat_participants;
 create policy chat_participants_select on public.chat_participants
   for select to authenticated
-  using (
-    exists (
-      select 1 from public.chat_participants me
-      where me.chat_id = chat_participants.chat_id and me.user_id = (select auth.uid())
-    )
-  );
+  using (public.is_chat_member(chat_id));
 
+drop policy if exists chat_participants_insert on public.chat_participants;
 create policy chat_participants_insert on public.chat_participants
   for insert to authenticated
   with check (
@@ -96,68 +103,67 @@ create policy chat_participants_insert on public.chat_participants
     )
   );
 
+drop policy if exists chat_participants_update on public.chat_participants;
 create policy chat_participants_update on public.chat_participants
   for update to authenticated
   using (user_id = (select auth.uid()))
   with check (user_id = (select auth.uid()));
 
--- 9. RLS Policies for messages
+-- 10. RLS Policies for messages
+drop policy if exists messages_select on public.messages;
 create policy messages_select on public.messages
   for select to authenticated
-  using (
-    exists (
-      select 1 from public.chat_participants cp
-      where cp.chat_id = messages.chat_id and cp.user_id = (select auth.uid())
-    )
-  );
+  using (public.is_chat_member(chat_id));
 
+drop policy if exists messages_insert on public.messages;
 create policy messages_insert on public.messages
   for insert to authenticated
   with check (
     sender_id = (select auth.uid())
-    and exists (
-      select 1 from public.chat_participants cp
-      where cp.chat_id = messages.chat_id and cp.user_id = (select auth.uid())
-    )
+    and public.is_chat_member(chat_id)
   );
 
+drop policy if exists messages_update on public.messages;
 create policy messages_update on public.messages
   for update to authenticated
-  using (
-    exists (
-      select 1 from public.chat_participants cp
-      where cp.chat_id = messages.chat_id and cp.user_id = (select auth.uid())
-    )
-  )
-  with check (
-    exists (
-      select 1 from public.chat_participants cp
-      where cp.chat_id = messages.chat_id and cp.user_id = (select auth.uid())
-    )
-  );
+  using (public.is_chat_member(chat_id))
+  with check (public.is_chat_member(chat_id));
 
--- 10. RLS Policies for user_presence
+-- 11. RLS Policies for user_presence
+drop policy if exists user_presence_select on public.user_presence;
 create policy user_presence_select on public.user_presence
   for select to authenticated
   using (true);
 
+drop policy if exists user_presence_all on public.user_presence;
 create policy user_presence_all on public.user_presence
   for all to authenticated
   using (user_id = (select auth.uid()))
   with check (user_id = (select auth.uid()));
 
--- 11. Add tables to Supabase Realtime publication
-alter publication supabase_realtime add table public.messages;
-alter publication supabase_realtime add table public.chat_participants;
-alter publication supabase_realtime add table public.chats;
-alter publication supabase_realtime add table public.user_presence;
+-- 12. Add tables to Supabase Realtime publication
+do $$
+begin
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'messages') then
+    alter publication supabase_realtime add table public.messages;
+  end if;
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'chat_participants') then
+    alter publication supabase_realtime add table public.chat_participants;
+  end if;
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'chats') then
+    alter publication supabase_realtime add table public.chats;
+  end if;
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'user_presence') then
+    alter publication supabase_realtime add table public.user_presence;
+  end if;
+end $$;
 
 alter table public.messages replica identity full;
 alter table public.chat_participants replica identity full;
 alter table public.chats replica identity full;
 alter table public.user_presence replica identity full;
 
--- 12. Helper Functions & RPCs
+-- 13. Helper Functions & RPCs
 
 -- A. get_or_create_direct_chat: safely retrieves an existing 1-on-1 chat or creates a new one
 create or replace function public.get_or_create_direct_chat(p_other_user_id uuid)

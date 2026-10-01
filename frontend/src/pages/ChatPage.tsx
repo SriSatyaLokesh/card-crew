@@ -55,6 +55,7 @@ export function ChatPage() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [newMessageText, setNewMessageText] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
   const [onlineUserIds, setOnlineUserIds] = useState<Set<string>>(new Set());
   const [otherPresence, setOtherPresence] = useState<UserPresence | null>(null);
 
@@ -251,6 +252,7 @@ export function ChatPage() {
     const text = newMessageText.trim();
     if (!text || !activeChatId || !profile || isSending) return;
 
+    setSendError(null);
     setNewMessageText("");
     setIsSending(true);
 
@@ -290,11 +292,14 @@ export function ChatPage() {
             : c,
         ),
       );
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Send failed:", err);
-      // Remove optimistic or show error
+      // Remove optimistic message
       setMessages((prev) => prev.filter((m) => m.id !== tempId));
-      alert("Failed to send message. Please try again.");
+      // Restore user input so the draft is not lost
+      setNewMessageText(text);
+      const msg = err instanceof Error ? err.message : "Failed to send message. Please try again.";
+      setSendError(msg);
     } finally {
       setIsSending(false);
     }
@@ -553,6 +558,40 @@ export function ChatPage() {
               )}
               <div ref={messagesEndRef} />
             </div>
+
+            {/* Error Banner */}
+            {sendError && (
+              <div
+                className="chat-send-error-banner"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "6px 14px",
+                  background: "#fef2f2",
+                  color: "#dc2626",
+                  borderTop: "1px solid #fecaca",
+                  fontSize: "0.85rem",
+                }}
+              >
+                <span>⚠️ {sendError} — your draft has been preserved.</span>
+                <button
+                  type="button"
+                  onClick={() => setSendError(null)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "#dc2626",
+                    fontWeight: "bold",
+                    fontSize: "0.9rem",
+                  }}
+                  aria-label="Dismiss error"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
 
             {/* Input Bar */}
             <form className="chat-input-bar" onSubmit={handleSendMessage}>

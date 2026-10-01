@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { RelationshipBadge } from "./RelationshipBadge";
 import type { RelationshipType } from "./RelationshipBadge";
+import { MessageButton } from "./MessageButton";
 
 export interface UserItemData {
   id: string;
@@ -213,16 +214,21 @@ export function UserListItem({
           </button>
         )}
 
+        {user.relationship === "friend_of_friend" && (
+          <MessageButton
+            recipientUserId={user.id}
+            recipientName={user.display_name}
+            variant="icon"
+          />
+        )}
+
         {user.relationship === "direct_friend" && (
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Link
-              to={`/messages?user=${user.id}`}
-              className="button-secondary btn-sm"
-              title={`Message ${user.display_name}`}
-              style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "4px" }}
-            >
-              💬 Message
-            </Link>
+            <MessageButton
+              recipientUserId={user.id}
+              recipientName={user.display_name}
+              variant="compact"
+            />
             <span style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: 700 }}>
               Connected
             </span>

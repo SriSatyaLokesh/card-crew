@@ -12,6 +12,7 @@ declare
     'respond_to_request', 'respond_to_referral', 'reveal_contact',
     'get_person_cards',
     'get_or_create_direct_chat', 'get_user_chats', 'mark_chat_as_read', 'mark_messages_delivered', 'update_user_last_seen',
+    'is_chat_member',
     -- trigger function, not an RPC, but still SECURITY DEFINER: friend_edges has no
     -- INSERT/DELETE policy for `authenticated`, so the trigger must bypass RLS to
     -- maintain the mirror when a friendships row (which IS authenticated-writable via

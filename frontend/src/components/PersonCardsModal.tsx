@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import type { PersonCard, UserCard, UserProfile } from "../types/api";
 import type { GraphFriend } from "./NetworkGraph";
 import { CardTile } from "./CardTile";
+import { MessageButton } from "./MessageButton";
 
 export interface PersonCardsModalProps {
   isOpen: boolean;
@@ -132,6 +133,12 @@ export function PersonCardsModal({
             </div>
           </div>
 
+          <MessageButton
+            recipientUserId={person.user_id}
+            recipientName={displayName}
+            onSuccess={onClose}
+          />
+
           <button
             type="button"
             ref={closeBtnRef}
@@ -197,6 +204,7 @@ export function PersonCardsModal({
                 <CardTile
                   key={card.id}
                   card={card}
+                  ownerId={person.user_id}
                   ownerName={displayName}
                   ownerAvatarUrl={avatarUrl}
                   relationshipDepth={person.depth}

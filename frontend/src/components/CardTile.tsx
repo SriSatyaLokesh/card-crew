@@ -1,7 +1,9 @@
 import type { PersonCard, UserCard } from "../types/api";
+import { MessageButton } from "./MessageButton";
 
 export interface CardTileProps {
   card: PersonCard | UserCard;
+  ownerId?: string;
   ownerName?: string;
   ownerAvatarUrl?: string | null;
   relationshipDepth?: number;
@@ -21,6 +23,7 @@ function getInitials(name: string): string {
 
 export function CardTile({
   card,
+  ownerId,
   ownerName,
   ownerAvatarUrl,
   relationshipDepth,
@@ -110,15 +113,26 @@ export function CardTile({
           </div>
         </div>
 
-        {relationshipDepth !== undefined && (
-          <span
-            className={`card-tile-rel-badge ${
-              relationshipDepth === 1 ? "card-rel-direct" : "card-rel-fof"
-            }`}
-          >
-            {relationshipDepth === 1 ? "1st Degree" : "2nd Degree"}
-          </span>
-        )}
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          {ownerId && (
+            <MessageButton
+              recipientUserId={ownerId}
+              recipientName={displayName}
+              variant="icon"
+              className="card-tile-msg-btn"
+            />
+          )}
+
+          {relationshipDepth !== undefined && (
+            <span
+              className={`card-tile-rel-badge ${
+                relationshipDepth === 1 ? "card-rel-direct" : "card-rel-fof"
+              }`}
+            >
+              {relationshipDepth === 1 ? "1st Degree" : "2nd Degree"}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
