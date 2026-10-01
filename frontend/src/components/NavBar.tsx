@@ -45,7 +45,9 @@ function NavBar() {
           )}
           <div className="nav-user-meta">
             <span className="nav-user-name">{profile?.display_name ?? "..."}</span>
-            <span className="nav-user-handle">Manage Account</span>
+            <span className="nav-user-handle">
+              {profile?.username ? `@${profile.username}` : "Manage Account"}
+            </span>
           </div>
         </Link>
         <button

@@ -1,7 +1,7 @@
-import type { PersonCard } from "../types/api";
+import type { PersonCard, UserCard } from "../types/api";
 
 export interface CardTileProps {
-  card: PersonCard;
+  card: PersonCard | UserCard;
   ownerName?: string;
   ownerAvatarUrl?: string | null;
   relationshipDepth?: number;
@@ -25,25 +25,47 @@ export function CardTile({
   ownerAvatarUrl,
   relationshipDepth,
 }: CardTileProps) {
-  const cardName = card.product_name
-    ? `${card.issuer ? `${card.issuer} ` : ""}${card.product_name}`
-    : "Payment Card";
+  const cardName =
+    "product_name" in card && card.product_name
+      ? `${card.issuer ? `${card.issuer} ` : ""}${card.product_name}`
+      : "cardName" in card
+      ? card.cardName
+      : "Payment Card";
 
-  const category = (card.card_category || card.card_type || "credit").toLowerCase();
+  const category = (
+    ("card_category" in card && card.card_category) ||
+    ("card_type" in card && card.card_type) ||
+    ("cardType" in card && card.cardType) ||
+    "credit"
+  ).toLowerCase();
+
   let cardClass = "visual-card-credit";
   if (category.includes("debit")) {
     cardClass = "visual-card-debit";
   } else if (category.includes("prepaid")) {
     cardClass = "visual-card-prepaid";
-  } else if (card.segment === "corporate") {
+  } else if (("segment" in card && card.segment === "corporate") || category.includes("business")) {
     cardClass = "visual-card-business";
   }
 
-  const isNetworkScope = card.visibility_depth >= 2;
+  const isNetworkScope =
+    "visibility_depth" in card ? (card.visibility_depth ?? 1) >= 2 : card.visibilityScope === "TOTAL_NETWORK";
   const displayName = ownerName || "Cardholder";
 
+  const cardTypeLabel =
+    "card_type" in card && card.card_type
+      ? card.card_type
+      : "cardType" in card && card.cardType
+      ? card.cardType
+      : "Credit";
+
+  const metaSubtitle =
+    "network" in card && card.network
+      ? `${card.network} · ${card.variant ?? "Standard"}${card.upi_enabled ? " · UPI" : ""}`
+      : cardTypeLabel;
+
   return (
-    <div className="card-tile-container" role="article" aria-label={`${cardName} (${card.card_type || "Card"})`}>
+    <div className="card-tile-container" role="article" aria-label={`${cardName} (${cardTypeLabel})`}>
       {/* 1. Realistic Graphic Card */}
       <div className={`visual-card ${cardClass}`}>
         <div className="visual-card-topline">
@@ -62,7 +84,7 @@ export function CardTile({
         </div>
 
         <div className="visual-card-bottomline">
-          <span className="visual-card-type-label">{(card.card_type || card.card_category || "Credit").toUpperCase()}</span>
+          <span className="visual-card-type-label">{cardTypeLabel.toUpperCase()}</span>
           <span
             className="visual-card-visibility-pill"
             title={isNetworkScope ? "Shared across total network" : "Shared with direct friends"}
@@ -72,39 +94,31 @@ export function CardTile({
         </div>
       </div>
 
-      {/* 2. Cardholder & Sharing Details Information */}
+      {/* 2. Cardholder Info Footer */}
       <div className="card-tile-meta">
-        <div className="card-tile-owner-row">
-          <div className="card-tile-avatar">
+        <div className="card-tile-owner-section">
+          <div className="card-tile-owner-avatar">
             {ownerAvatarUrl ? (
-              <img src={ownerAvatarUrl} alt={displayName} className="avatar-img" />
+              <img src={ownerAvatarUrl} alt="" className="card-tile-avatar-img" />
             ) : (
               <span>{getInitials(displayName)}</span>
             )}
           </div>
           <div className="card-tile-owner-info">
             <strong className="card-tile-owner-name">{displayName}</strong>
-            <span className="card-tile-owner-handle">
-              {card.network} · {card.variant ?? "Standard"}
-              {card.upi_enabled ? " · UPI" : ""}
-            </span>
+            <span className="card-tile-owner-handle">{metaSubtitle}</span>
           </div>
         </div>
 
-        <div className="card-tile-status-bar">
-          <span className="card-tile-share-status">
-            {relationshipDepth === 1
-              ? "👥 Shared with you · Direct Friend"
-              : relationshipDepth === 2
-              ? "✨ Shared with you · Extended Network"
-              : isNetworkScope
-              ? "🌐 Shared with total network"
-              : "👥 Shared with direct friends"}
+        {relationshipDepth !== undefined && (
+          <span
+            className={`card-tile-rel-badge ${
+              relationshipDepth === 1 ? "card-rel-direct" : "card-rel-fof"
+            }`}
+          >
+            {relationshipDepth === 1 ? "1st Degree" : "2nd Degree"}
           </span>
-          <span className="card-tile-verified-tag">
-            ✓ Verified Catalog Record
-          </span>
-        </div>
+        )}
       </div>
     </div>
   );

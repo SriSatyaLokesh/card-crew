@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import type { PersonCard, UserProfile } from "../types/api";
+import { useEffect, useRef } from "react";
+import type { PersonCard, UserCard, UserProfile } from "../types/api";
 import type { GraphFriend } from "./NetworkGraph";
 import { CardTile } from "./CardTile";
 
@@ -7,7 +7,7 @@ export interface PersonCardsModalProps {
   isOpen: boolean;
   onClose: () => void;
   person: GraphFriend | null;
-  cards: PersonCard[] | null;
+  cards: (PersonCard | UserCard)[] | null;
   isLoading: boolean;
   error: string | null;
   onRetry: () => void;

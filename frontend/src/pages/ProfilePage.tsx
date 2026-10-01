@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { supabase } from "../lib/supabaseClient";
+import { api, ApiError } from "../lib/apiClient";
 
 export function ProfilePage() {
-  const { profile, session, signOut, refreshProfile, updateProfileState } = useAuth();
+  const { profile, signOut, updateProfileState, refreshProfile } = useAuth();
   const navigate = useNavigate();
 
   // Profile fields state
   const [displayName, setDisplayName] = useState(profile?.display_name || "");
+  const [username, setUsername] = useState(profile?.username || "");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(profile?.avatar_url || null);
 
   // Profile update states
@@ -23,6 +24,7 @@ export function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Password update state
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
@@ -33,11 +35,12 @@ export function ProfilePage() {
   useEffect(() => {
     if (profile) {
       setDisplayName(profile.display_name || "");
+      setUsername(profile.username || "");
       setAvatarPreview(profile.avatar_url || null);
     }
   }, [profile]);
 
-  // Handle Display Name Update
+  // Handle Profile Update (Name & Username)
   async function handleProfileSubmit(e: React.FormEvent) {
     e.preventDefault();
     setProfileError(null);
@@ -53,50 +56,79 @@ export function ProfilePage() {
       return;
     }
 
-    if (!profile) {
-      setProfileError("You must be logged in to update your profile.");
+    const trimmedUser = username.trim().toLowerCase();
+    if (trimmedUser && !/^[a-z0-9_]{3,30}$/.test(trimmedUser)) {
+      setProfileError("Username must be between 3 and 30 characters (letters, numbers, underscores only).");
       return;
     }
 
     setIsUpdatingProfile(true);
     try {
-      // 1. Update Supabase Auth user metadata
-      const { error: authError } = await supabase.auth.updateUser({
-        data: { display_name: trimmedName },
+      const { user } = await api.updateProfile({
+        displayName: trimmedName,
+        username: trimmedUser || undefined,
       });
-      if (authError) throw authError;
-
-      // 2. Update profiles table
-      const { error: dbError } = await supabase
-        .from("profiles")
-        .update({
-          display_name: trimmedName,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", profile.id);
-      if (dbError) throw dbError;
-
-      updateProfileState({ ...profile, display_name: trimmedName });
+      updateProfileState(user);
       setProfileSuccess("Personal information updated successfully.");
-      await refreshProfile();
-    } catch (err: unknown) {
-      setProfileError(err instanceof Error ? err.message : "Failed to update profile. Please try again.");
+    } catch (err) {
+      setProfileError(err instanceof ApiError ? err.message : "Failed to update profile. Please try again.");
     } finally {
       setIsUpdatingProfile(false);
     }
   }
 
-  // Handle Avatar Selection and Upload to Supabase Storage
+  // Helper: client-side image compression & downscaling for seamless avatar upload
+  async function prepareAvatarDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Unable to read selected image file."));
+      reader.onload = () => {
+        const rawResult = reader.result as string;
+        const img = new Image();
+        img.onerror = () => resolve(rawResult); // fallback to raw data URL
+        img.onload = () => {
+          try {
+            const MAX_DIM = 512;
+            let { width, height } = img;
+            if (width > MAX_DIM || height > MAX_DIM) {
+              if (width > height) {
+                height = Math.round((height * MAX_DIM) / width);
+                width = MAX_DIM;
+              } else {
+                width = Math.round((width * MAX_DIM) / height);
+                height = MAX_DIM;
+              }
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+              resolve(rawResult);
+              return;
+            }
+
+            ctx.drawImage(img, 0, 0, width, height);
+            const format = file.type === "image/png" ? "image/png" : "image/jpeg";
+            const compressed = canvas.toDataURL(format, 0.88);
+            resolve(compressed);
+          } catch {
+            resolve(rawResult);
+          }
+        };
+        img.src = rawResult;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Handle Photo Picker Selection
   async function handlePhotoSelected(e: React.ChangeEvent<HTMLInputElement>) {
     setAvatarError(null);
     setAvatarSuccess(null);
     const file = e.target.files?.[0];
     if (!file) return;
-
-    if (!profile) {
-      setAvatarError("You must be logged in to upload an avatar.");
-      return;
-    }
 
     // 1. Validate file type
     const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -106,59 +138,26 @@ export function ProfilePage() {
       return;
     }
 
-    // 2. Validate file size (5MB max)
-    const MAX_SIZE = 5 * 1024 * 1024;
+    // 2. Validate file size (10MB max allowed)
+    const MAX_SIZE = 10 * 1024 * 1024;
     if (file.size > MAX_SIZE) {
-      setAvatarError("Selected image exceeds 5MB limit. Please choose a smaller photo.");
+      setAvatarError("Selected image exceeds 10MB limit. Please choose a smaller photo.");
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
 
     setIsUploadingAvatar(true);
     try {
-      // 3. Upload to Supabase Storage 'avatars' bucket
-      const ext = file.name.split(".").pop() || "png";
-      const filePath = `${profile.id}/avatar.${ext}`;
+      // 3. Compress and optimize image for avatar dimensions
+      const dataUrl = await prepareAvatarDataUrl(file);
+      setAvatarPreview(dataUrl);
 
-      const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(filePath, file, {
-          upsert: true,
-          contentType: file.type,
-        });
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      // 4. Retrieve public URL
-      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(filePath);
-      const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
-
-      // 5. Update user metadata in Supabase Auth
-      await supabase.auth.updateUser({
-        data: { avatar_url: publicUrl },
-      });
-
-      // 6. Update profiles table
-      const { error: profileUpdateError } = await supabase
-        .from("profiles")
-        .update({
-          avatar_url: publicUrl,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", profile.id);
-
-      if (profileUpdateError) {
-        throw profileUpdateError;
-      }
-
-      setAvatarPreview(publicUrl);
-      updateProfileState({ ...profile, avatar_url: publicUrl });
+      // 4. Send to backend
+      const { user } = await api.updateProfile({ avatarUrl: dataUrl });
+      updateProfileState(user);
       setAvatarSuccess("Profile photo updated successfully!");
-      await refreshProfile();
-    } catch (err: unknown) {
-      setAvatarError(err instanceof Error ? err.message : "Failed to upload photo. Please try again.");
+    } catch (err) {
+      setAvatarError(err instanceof ApiError ? err.message : err instanceof Error ? err.message : "Failed to upload photo.");
       setAvatarPreview(profile?.avatar_url || null);
     } finally {
       setIsUploadingAvatar(false);
@@ -172,43 +171,30 @@ export function ProfilePage() {
     setAvatarError(null);
     setAvatarSuccess(null);
     setIsUploadingAvatar(true);
-
     try {
-      // 1. Clear in Supabase Auth user metadata
-      await supabase.auth.updateUser({
-        data: { avatar_url: null },
-      });
-
-      // 2. Clear in profiles table
-      const { error: profileUpdateError } = await supabase
-        .from("profiles")
-        .update({
-          avatar_url: null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", profile.id);
-
-      if (profileUpdateError) {
-        throw profileUpdateError;
-      }
-
+      const { user } = await api.updateProfile({ avatarUrl: "" });
+      updateProfileState(user);
       setAvatarPreview(null);
-      updateProfileState({ ...profile, avatar_url: null });
       setAvatarSuccess("Profile photo removed.");
-      await refreshProfile();
-    } catch (err: unknown) {
-      setAvatarError(err instanceof Error ? err.message : "Failed to remove photo.");
+    } catch (err) {
+      setAvatarError(err instanceof ApiError ? err.message : "Failed to remove photo.");
     } finally {
       setIsUploadingAvatar(false);
     }
   }
 
-  // Handle Password Update via Supabase Auth
+  const hasPasswordSet = profile?.has_password !== false;
+
+  // Handle Password Update
   async function handlePasswordSubmit(e: React.FormEvent) {
     e.preventDefault();
     setPasswordError(null);
     setPasswordSuccess(null);
 
+    if (hasPasswordSet && !currentPassword) {
+      setPasswordError("Current password is required.");
+      return;
+    }
     if (!newPassword) {
       setPasswordError("New password is required.");
       return;
@@ -224,19 +210,24 @@ export function ProfilePage() {
 
     setIsUpdatingPassword(true);
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword,
+      await api.changePassword({
+        currentPassword: currentPassword.trim() ? currentPassword : undefined,
+        newPassword,
+        confirmPassword,
       });
-
-      if (error) {
-        throw error;
-      }
-
-      setPasswordSuccess("Your password has been updated successfully.");
+      setPasswordSuccess(
+        hasPasswordSet
+          ? "Your password has been changed successfully."
+          : "Your password has been set successfully.",
+      );
+      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-    } catch (err: unknown) {
-      setPasswordError(err instanceof Error ? err.message : "Failed to update password.");
+      if (refreshProfile) {
+        await refreshProfile();
+      }
+    } catch (err) {
+      setPasswordError(err instanceof ApiError ? err.message : "Failed to update password.");
     } finally {
       setIsUpdatingPassword(false);
     }
@@ -251,8 +242,6 @@ export function ProfilePage() {
       navigate("/login");
     }
   }
-
-  const userEmail = session?.user?.email || profile?.email || "Authenticated User";
 
   return (
     <div className="page" style={{ maxWidth: "780px", margin: "0 auto", paddingBottom: "80px" }}>
@@ -334,8 +323,13 @@ export function ProfilePage() {
               </span>
             </div>
             <p style={{ margin: "3px 0 0", color: "var(--ink-600)", fontSize: "0.88rem" }}>
-              {userEmail}
+              {profile?.email || "No email specified"}
             </p>
+            {username && (
+              <p style={{ margin: "2px 0 0", color: "var(--cobalt-600, #2563eb)", fontSize: "0.85rem", fontWeight: 600 }}>
+                @{username}
+              </p>
+            )}
 
             {/* Photo Action Buttons */}
             <div style={{ display: "flex", gap: "10px", marginTop: "12px", alignItems: "center" }}>
@@ -397,7 +391,7 @@ export function ProfilePage() {
           Personal Information
         </h3>
         <p style={{ margin: "0 0 1.25rem 0", fontSize: "0.85rem", color: "var(--ink-600)" }}>
-          Update your public display name seen across your network.
+          Update your public name and unique username handle seen by your network.
         </p>
 
         {profileError && (
@@ -429,6 +423,40 @@ export function ProfilePage() {
             />
           </div>
 
+          <div className="form-field" style={{ marginBottom: "1rem" }}>
+            <label htmlFor="username-input" style={{ display: "block", fontWeight: 600, fontSize: "0.88rem", marginBottom: "6px" }}>
+              Username Handle
+            </label>
+            <div style={{ position: "relative" }}>
+              <span
+                style={{
+                  position: "absolute",
+                  left: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "var(--ink-400)",
+                  fontWeight: 600,
+                }}
+              >
+                @
+              </span>
+              <input
+                id="username-input"
+                type="text"
+                className="network-search-input"
+                style={{ paddingLeft: "30px" }}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="username"
+                maxLength={30}
+                disabled={isUpdatingProfile}
+              />
+            </div>
+            <span style={{ fontSize: "0.76rem", color: "var(--ink-400)", marginTop: "4px", display: "block" }}>
+              Letters, numbers, and underscores only (3-30 characters).
+            </span>
+          </div>
+
           <div className="form-field" style={{ marginBottom: "1.25rem" }}>
             <label htmlFor="email-input" style={{ display: "block", fontWeight: 600, fontSize: "0.88rem", marginBottom: "6px" }}>
               Email Address
@@ -437,7 +465,7 @@ export function ProfilePage() {
               id="email-input"
               type="email"
               className="network-search-input"
-              value={userEmail}
+              value={profile?.email || ""}
               disabled
               style={{ background: "var(--paper-100)", cursor: "not-allowed", opacity: 0.8 }}
             />
@@ -472,7 +500,7 @@ export function ProfilePage() {
           Security & Password
         </h3>
         <p style={{ margin: "0 0 1.25rem 0", fontSize: "0.85rem", color: "var(--ink-600)" }}>
-          Update your account password securely using Supabase Auth.
+          Ensure your account uses a strong password of at least 8 characters.
         </p>
 
         {passwordError && (
@@ -487,6 +515,23 @@ export function ProfilePage() {
         )}
 
         <form onSubmit={handlePasswordSubmit}>
+          <div className="form-field" style={{ marginBottom: "1rem" }}>
+            <label htmlFor="current-password-input" style={{ display: "block", fontWeight: 600, fontSize: "0.88rem", marginBottom: "6px" }}>
+              Current Password {hasPasswordSet ? <span style={{ color: "#ef4444" }}>*</span> : <span style={{ fontSize: "0.8rem", color: "var(--ink-400)", fontWeight: 400 }}>(Optional - Not set yet)</span>}
+            </label>
+            <input
+              id="current-password-input"
+              type="password"
+              className="network-search-input"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              placeholder={hasPasswordSet ? "••••••••" : "Leave blank if not set previously"}
+              required={hasPasswordSet}
+              disabled={isUpdatingPassword}
+              autoComplete="current-password"
+            />
+          </div>
+
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px", marginBottom: "1.25rem" }}>
             <div className="form-field">
               <label htmlFor="new-password-input" style={{ display: "block", fontWeight: 600, fontSize: "0.88rem", marginBottom: "6px" }}>
@@ -527,9 +572,9 @@ export function ProfilePage() {
           <button
             type="submit"
             className="button-primary-accent"
-            disabled={isUpdatingPassword || !newPassword || !confirmPassword}
+            disabled={isUpdatingPassword || (hasPasswordSet && !currentPassword) || !newPassword || !confirmPassword}
           >
-            {isUpdatingPassword ? "Updating Password..." : "Update Password"}
+            {isUpdatingPassword ? "Updating Password..." : (hasPasswordSet ? "Update Password" : "Set Password")}
           </button>
         </form>
       </section>
@@ -551,7 +596,7 @@ export function ProfilePage() {
               Account Session
             </h3>
             <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--ink-600)" }}>
-              Signed in as <strong>{userEmail}</strong>. Logging out ends your active authenticated session.
+              Signed in as <strong>{profile?.email}</strong>. Logging out ends your active authenticated session.
             </p>
           </div>
 
