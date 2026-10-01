@@ -29,6 +29,10 @@ function NavBar() {
           <span className="nav-link-icon" aria-hidden="true">📬</span>
           <span>Requests</span>
         </NavLink>
+        <NavLink to="/messages">
+          <span className="nav-link-icon" aria-hidden="true">💬</span>
+          <span>Messages</span>
+        </NavLink>
         <NavLink to="/profile">
           <span className="nav-link-icon" aria-hidden="true">⚙️</span>
           <span>Profile</span>

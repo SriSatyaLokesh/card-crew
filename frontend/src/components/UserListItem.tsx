@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { RelationshipBadge } from "./RelationshipBadge";
 import type { RelationshipType } from "./RelationshipBadge";
 
@@ -214,6 +215,14 @@ export function UserListItem({
 
         {user.relationship === "direct_friend" && (
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Link
+              to={`/messages?user=${user.id}`}
+              className="button-secondary btn-sm"
+              title={`Message ${user.display_name}`}
+              style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "4px" }}
+            >
+              💬 Message
+            </Link>
             <span style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: 700 }}>
               Connected
             </span>

@@ -627,6 +627,19 @@ async function revealContact(id: string, message?: string) {
   return { contact: unwrap(res) as ContactInfo };
 }
 
+import {
+  getUserChats,
+  getOrCreateDirectChat,
+  getChatMessages,
+  sendMessage,
+  markChatAsRead,
+  markMessagesDelivered,
+  getUserPresence,
+  updateUserLastSeen,
+  subscribeToChat,
+  subscribeToOnlinePresence,
+} from "./chatService";
+
 export const api = {
   syncUser,
   getCatalogCards,
@@ -662,6 +675,17 @@ export const api = {
   respondToRequest,
   respondToReferral,
   revealContact,
+  // Chat & Messaging Phase 1
+  getUserChats,
+  getOrCreateDirectChat,
+  getChatMessages,
+  sendMessage,
+  markChatAsRead,
+  markMessagesDelivered,
+  getUserPresence,
+  updateUserLastSeen,
+  subscribeToChat,
+  subscribeToOnlinePresence,
 };
 
 export { ApiError };

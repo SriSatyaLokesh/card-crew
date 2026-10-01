@@ -179,6 +179,43 @@ type ContactInfo = {
   whatsapp_message: string;
 };
 
+export type ChatType = "direct" | "group";
+export type MessageStatus = "sent" | "delivered" | "seen";
+export type MessageType = "text" | "image" | "video" | "file" | "audio" | "system";
+
+export type ChatSummary = {
+  chat_id: string;
+  chat_type: ChatType;
+  updated_at: string;
+  other_user_id: string;
+  other_user_name: string;
+  other_user_avatar_url: string | null;
+  last_read_at: string;
+  last_message_id: string | null;
+  last_message_content: string | null;
+  last_message_sender_id: string | null;
+  last_message_status: MessageStatus | null;
+  last_message_created_at: string | null;
+  unread_count: number;
+};
+
+export type ChatMessage = {
+  id: string;
+  chat_id: string;
+  sender_id: string;
+  content: string;
+  message_type: MessageType;
+  status: MessageStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export type UserPresence = {
+  user_id: string;
+  last_seen_at: string;
+  updated_at: string;
+};
+
 export type {
   BlockedUserSummary,
   CardCatalogSummary,
