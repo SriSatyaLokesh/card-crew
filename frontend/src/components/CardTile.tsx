@@ -5,27 +5,13 @@ export interface CardTileProps {
   card: PersonCard | UserCard;
   ownerId?: string;
   ownerName?: string;
-  ownerAvatarUrl?: string | null;
   relationshipDepth?: number;
-}
-
-function getInitials(name: string): string {
-  return (
-    name
-      .split(" ")
-      .map((p) => p[0])
-      .filter(Boolean)
-      .slice(0, 2)
-      .join("")
-      .toUpperCase() || "CC"
-  );
 }
 
 export function CardTile({
   card,
   ownerId,
   ownerName,
-  ownerAvatarUrl,
   relationshipDepth,
 }: CardTileProps) {
   const cardName =
@@ -100,13 +86,6 @@ export function CardTile({
       {/* 2. Cardholder Info Footer */}
       <div className="card-tile-meta">
         <div className="card-tile-owner-section">
-          <div className="card-tile-owner-avatar">
-            {ownerAvatarUrl ? (
-              <img src={ownerAvatarUrl} alt="" className="card-tile-avatar-img" />
-            ) : (
-              <span>{getInitials(displayName)}</span>
-            )}
-          </div>
           <div className="card-tile-owner-info">
             <strong className="card-tile-owner-name">{displayName}</strong>
             <span className="card-tile-owner-handle">{metaSubtitle}</span>

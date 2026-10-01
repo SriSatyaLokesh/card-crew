@@ -206,7 +206,6 @@ export function PersonCardsModal({
                   card={card}
                   ownerId={person.user_id}
                   ownerName={displayName}
-                  ownerAvatarUrl={avatarUrl}
                   relationshipDepth={person.depth}
                 />
               ))}
