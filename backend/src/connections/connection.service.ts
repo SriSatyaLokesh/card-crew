@@ -111,53 +111,6 @@ class ConnectionService {
     return connections.map(toConnectionSummary);
   }
 
-  async blockUser(blockerId: string, targetUserId: string): Promise<void> {
-    if (blockerId === targetUserId) {
-      throw new HttpError(400, "You cannot block yourself");
-    }
-
-    await this.assertUserExists(blockerId, "Blocker not found");
-    await this.assertUserExists(targetUserId, "User to block not found");
-
-    await this.connectionRepository.blockUser(blockerId, targetUserId);
-  }
-
-  async unblockUser(blockerId: string, targetUserId: string): Promise<void> {
-    if (blockerId === targetUserId) {
-      throw new HttpError(400, "You cannot unblock yourself");
-    }
-
-    await this.assertUserExists(blockerId, "Blocker not found");
-    await this.connectionRepository.unblockUser(blockerId, targetUserId);
-  }
-
-  async listBlocked(userId: string) {
-    await this.assertUserExists(userId);
-    return this.connectionRepository.listBlockedByUser(userId);
-  }
-
-  async decline(input: ConnectionActorInput): Promise<void> {
-    await this.assertUserExists(input.user_id);
-    const connection = await this.getConnectionOrThrow(input.connection_id);
-
-    if (connection.addressee_id !== input.user_id) {
-      throw new HttpError(403, "Only the addressee can decline this connection request");
-    }
-
-    await this.connectionRepository.updateStatus(connection.id, "removed");
-  }
-
-  async cancel(input: ConnectionActorInput): Promise<void> {
-    await this.assertUserExists(input.user_id);
-    const connection = await this.getConnectionOrThrow(input.connection_id);
-
-    if (connection.requester_id !== input.user_id) {
-      throw new HttpError(403, "Only the requester can cancel this connection request");
-    }
-
-    await this.connectionRepository.updateStatus(connection.id, "removed");
-  }
-
   private async assertUserExists(userId: string, message = "User not found"): Promise<void> {
     const user = await this.userRepository.findById(userId);
 

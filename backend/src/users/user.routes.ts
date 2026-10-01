@@ -45,37 +45,6 @@ function createUserRouter({
     }
   });
 
-  router.get("/search", profileRateLimit, optionalUserAuthMiddleware, async (request, response) => {
-    try {
-      const q = typeof request.query.q === "string" ? request.query.q.trim() : "";
-      const filter = typeof request.query.filter === "string" ? request.query.filter.trim().toLowerCase() : "";
-      let users = await userService.searchUsersWithRelationships(q, request.authUserId);
-      if (filter === "friends") {
-        users = users.filter((u) => u.relationship === "direct_friend");
-      } else if (filter === "fof" || filter === "friends_of_friends") {
-        users = users.filter((u) => u.relationship === "friend_of_friend");
-      } else if (filter === "requests") {
-        users = users.filter((u) => u.relationship === "incoming_request" || u.relationship === "outgoing_request");
-      }
-      response.status(200).json({ users });
-    } catch (error) {
-      sendErrorResponse(error, response);
-    }
-  });
-
-  router.get("/", profileRateLimit, optionalUserAuthMiddleware, async (request, response) => {
-    try {
-      const q = typeof request.query.q === "string" ? request.query.q.trim() : "";
-      // If user is authenticated, return enriched relationship search; otherwise fallback to public search
-      const users = request.authUserId
-        ? await userService.searchUsersWithRelationships(q, request.authUserId)
-        : await userService.searchUsers(q, request.authUserId);
-      response.status(200).json({ users });
-    } catch (error) {
-      sendErrorResponse(error, response);
-    }
-  });
-
   router.get("/:id", profileRateLimit, optionalUserAuthMiddleware, async (request, response) => {
     try {
       const rawId = request.params.id;

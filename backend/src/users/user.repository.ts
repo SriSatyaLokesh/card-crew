@@ -7,7 +7,6 @@ import type { UpsertUserRecordInput, UserRecord } from "./user.types.js";
 interface UserRepository {
   findById(id: string): Promise<UserRecord | null>;
   upsertProfile(input: UpsertUserRecordInput): Promise<UserRecord>;
-  searchByName(query: string, currentUserId?: string): Promise<UserRecord[]>;
 }
 
 class PrismaUserRepository implements UserRepository {
@@ -19,19 +18,6 @@ class PrismaUserRepository implements UserRepository {
     });
 
     return user ? mapPrismaUser(user) : null;
-  }
-
-  async searchByName(query: string, currentUserId?: string): Promise<UserRecord[]> {
-    const users = await this.prisma.user.findMany({
-      where: {
-        status: "active",
-        ...(currentUserId ? { id: { not: currentUserId } } : {}),
-        ...(query ? { display_name: { contains: query, mode: "insensitive" } } : {}),
-      },
-      take: 25,
-    });
-
-    return users.map(mapPrismaUser);
   }
 
   async upsertProfile(input: UpsertUserRecordInput): Promise<UserRecord> {
@@ -72,21 +58,6 @@ class InMemoryUserRepository implements UserRepository {
     return this.usersById.get(id) ?? null;
   }
 
-  async searchByName(query: string, currentUserId?: string): Promise<UserRecord[]> {
-    const normalized = query.toLowerCase().trim();
-    const results: UserRecord[] = [];
-
-    for (const user of this.usersById.values()) {
-      if (user.status !== "active") continue;
-      if (currentUserId && user.id === currentUserId) continue;
-      if (!normalized || user.display_name.toLowerCase().includes(normalized)) {
-        results.push(user);
-      }
-    }
-
-    return results.slice(0, 25);
-  }
-
   async upsertProfile(input: UpsertUserRecordInput): Promise<UserRecord> {
     const existingUser = this.usersById.get(input.id) ?? null;
 
@@ -98,8 +69,6 @@ class InMemoryUserRepository implements UserRepository {
       ? {
           ...existingUser,
           email: input.email,
-          username: input.username ?? existingUser.username,
-          avatar_url: input.avatar_url ?? existingUser.avatar_url,
           phone: input.phone ?? null,
           display_name: input.display_name,
           updated_at: now,
@@ -107,8 +76,6 @@ class InMemoryUserRepository implements UserRepository {
       : {
           id: input.id,
           email: input.email,
-          username: input.username ?? null,
-          avatar_url: input.avatar_url ?? null,
           phone: input.phone ?? null,
           display_name: input.display_name,
           status: input.status ?? "active",
@@ -159,8 +126,6 @@ function mapPrismaUser(user: User): UserRecord {
   return {
     id: user.id,
     email: user.email,
-    username: user.username,
-    avatar_url: user.avatar_url,
     phone: user.phone,
     display_name: user.display_name,
     status: parseUserStatus(user.status),

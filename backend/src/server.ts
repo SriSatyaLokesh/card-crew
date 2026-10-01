@@ -18,29 +18,15 @@ import { PrismaRequestRepository } from "./requests/request.repository.js";
 import { RequestService } from "./requests/request.service.js";
 import { NetworkService } from "./network/network.service.js";
 
-import { PrismaCardRepository } from "./cards/card.repository.js";
-import { CardService } from "./cards/card.service.js";
-import { AuthService } from "./auth/auth.service.js";
-
 const DEFAULT_PORT = 3000;
 const port = parsePort(process.env.PORT);
 const userRepository = new PrismaUserRepository(prisma);
 const catalogRepository = new PrismaCardCatalogRepository(prisma);
-const cardRepository = new PrismaCardRepository(prisma);
 const resourceRepository = new PrismaResourceRepository(prisma);
 const requestRepository = new PrismaRequestRepository(prisma);
 const connectionRepository = new PrismaConnectionRepository(prisma);
-const authService = new AuthService(prisma);
-const cardService = new CardService({
-  cardRepository,
-  userRepository,
-  cardCatalogRepository: catalogRepository,
-  resourceRepository,
-  connectionRepository,
-});
 const userService = new UserService({
   userRepository,
-  connectionRepository,
 });
 const connectionService = new ConnectionService({
   connectionRepository,
@@ -62,7 +48,6 @@ const networkService = new NetworkService({
   connectionRepository,
   userRepository,
   resourceRepository,
-  cardRepository,
 });
 const supabaseAuthVerifier = createSupabaseAuthVerifier({
   url: process.env.SUPABASE_URL,
@@ -77,9 +62,7 @@ const optionalUserAuthMiddleware = createOptionalSupabaseAuthMiddleware({
 const app = createApp({
   userService,
   connectionService,
-  authService,
   catalogRepository,
-  cardService,
   resourceService,
   requestService,
   networkService,

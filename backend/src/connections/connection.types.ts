@@ -52,19 +52,6 @@ function toConnectionSummary(connection: ConnectionRecord): ConnectionSummary {
 }
 
 export { CONNECTION_STATUSES, toConnectionSummary };
-
-export type BlockedUserRecord = {
-  id: string;
-  blocker_id: string;
-  blocked_id: string;
-  user: {
-    id: string;
-    display_name: string;
-    email: string;
-  };
-  created_at: Date;
-};
-
 export type {
   ActiveConnectionStatus,
   ConnectionActorInput,
