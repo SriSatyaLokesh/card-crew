@@ -1,112 +1,105 @@
-# Milestone 6: Dashboard Reconstruction & Redesign
+# Milestone 6: Dashboard Reconstruction & Mobile-First UX Study
 
 **Tracked Issue:** [#45](https://github.com/SriSatyaLokesh/card-crew/issues/45)  
-**Priority:** High (Primary User Experience)  
+**Priority:** High (Core Application Experience)  
 **Status:** Ready for Implementation  
 **Estimated Complexity:** High  
 
 ---
 
-## 1. Executive Summary & User Story
+## 1. UX Study: The Core Application Idea & Customer Needs
 
-> **As a Card Crew member**, I want a reconstructed, cohesive dashboard that places trusted resource search front-and-center while offering an at-a-glance view of my network stats, my saved cards deck, pending requests, and quick crew actions, so that discovering help and managing my trusted network is fast, intuitive, and enjoyable.
+To reconstruct the dashboard properly, we must align the interface directly with the **fundamental customer journey** of Card Crew:
 
-The current `frontend/src/pages/HomePage.tsx` has grown into a 957-line monolith with mixed concerns, emoji-laden metric pills, and an unwieldy network graph that pushes search down. This milestone reconstructs the dashboard into a search-first, modular, accessible interface aligned with the Card Crew design system (`docs/design.md`).
+### 1.1 The Core Customer Job-to-be-Done
+> *"I am about to make an e-commerce purchase, dine at a restaurant, or travel through an airport lounge. I want to know in seconds which of my trusted friends has the right card or voucher, and send them a polite, private request for help."*
 
----
+### 1.2 Five Key Customer Needs
 
-## 2. Structural Architecture & Component Decoupling
-
-`HomePage.tsx` will be restructured into clean, focused subcomponents in `frontend/src/components/dashboard/`:
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                       [NavBar Component]                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  [1. DashboardSearchHero]                                       │
-│  "Find help from people you trust"                              │
-│  [ 🔍 Search cards, banks, offers, or friends...       [Search] ] │
-│                                                                 │
-│  [2. DashboardQuickActions]                                     │
-│  [ + Add Card ]    [ + Invite Friend ]    [ 📬 Requests (2) ]   │
-│                                                                 │
-│  [3. DashboardPendingAlerts] (Conditional)                     │
-│  "⚠️ 2 incoming card requests require your review" -> [Review]  │
-│                                                                 │
-│  ┌───────────────────────────────┬───────────────────────────┐  │
-│  │ [4. DashboardCardDeck]        │ [5. DashboardNetworkStats]│  │
-│  │ "Your Active Cards"           │ Direct Friends: 14        │  │
-│  │ [VisualCard 1] [VisualCard 2] │ 2-Hop Network: 86         │  │
-│  │ + Manage cards                │ Saved Resources: 8        │  │
-│  └───────────────────────────────┴───────────────────────────┘  │
-│                                                                 │
-│  [6. DashboardRecentActivity]                                   │
-│  Recent approvals, friend additions, or newly added crew cards  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+1. **Instant Search (Zero Latency to Query):**
+   - The user shouldn't have to navigate past graphs or dense tables. The search bar must be the primary visual anchor in the viewport, supporting fuzzy card names, banks, or merchant offers (e.g. *"Swiggy"*, *"HDFC Millennia"*, *"Lounge access BLR"*).
+2. **Effortless Quick Actions (Thumb-Friendly):**
+   - Adding a card or inviting a friend shouldn't require page jumps. Quick action pills at the top of the mobile viewport (`+ Add Card`, `+ Invite Friend`) trigger smooth bottom-sheet modals.
+3. **Actionable Approvals Banner (Attention-Guaranteed):**
+   - If a friend requested a card, this is high urgency. The dashboard surfaces an amber notification card at the top with 1-click **Approve** and **Decline** options.
+4. **My Active Cards Deck (Visual Wallet):**
+   - Users take pride in their cards and want to see their shared wallet. A horizontal swipeable card deck shows each card with its authentic bank colors, network logo, tier, and sharing scope.
+5. **Mobile-First Primacy:**
+   - 85%+ of usage occurs on smartphones. The desktop layout is an expansive adaptation; the mobile layout is the **primary product interface**.
 
 ---
 
-## 3. Component Breakdown
+## 2. Reconstructed Dashboard Architecture
 
-### 3.1 `DashboardSearchHero.tsx`
-- H1: *"Find help from people you trust"* (warm cursive `Caveat` accent).
-- Full-width search bar with high-contrast SVG magnifying glass.
-- Instant keyboard shortcut focus (`/` key).
-- Displays live search results categorized into:
-  - **Cards & Resources**: Shows bank, network, tier, and connection distance (`Direct Friend` or `2nd Degree via [Friend]`).
-  - **Friends & Network**: Direct friend cards with fast message button.
+```
+Mobile Viewport (320px – 767px)
+┌────────────────────────────────────────────────────────┐
+│ [Logo] Card Crew                           [Avatar]    │ <- Top Brand Bar
+├────────────────────────────────────────────────────────┤
+│ [1. SEARCH HERO]                                       │
+│ "Find help from people you trust"                      │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ 🔍 Search cards, banks, offers, or friends...       │ │
+│ └────────────────────────────────────────────────────┘ │
+├────────────────────────────────────────────────────────┤
+│ [2. QUICK ACTION STRIP]                                │
+│ [ + Add Card ]     [ + Invite Friend ]    [ 📬 Alerts ] │
+├────────────────────────────────────────────────────────┤
+│ [3. PENDING APPROVALS ALERT] (Dynamic)                 │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ ⚠️ 2 requests pending your review                  │ │
+│ │ Ramesh needs HDFC Regalia · [Review Now]           │ │
+│ └────────────────────────────────────────────────────┘ │
+├────────────────────────────────────────────────────────┤
+│ [4. MY CARDS DECK] (Horizontal Snap Carousel)          │
+│ ┌──────────────────────┐ ┌──────────────────────────┐  │
+│ │ [VisualCard 1: HDFC] │ │ [VisualCard 2: SBI]      │  │
+│ └──────────────────────┘ └──────────────────────────┘  │
+├────────────────────────────────────────────────────────┤
+│ [5. TRUST NETWORK PULSE]                               │
+│ 👥 Direct Friends: 14     🌐 2-Hop Network Reach: 86   │
+├────────────────────────────────────────────────────────┤
+│ [Search]      [Cards]      [Requests (2)]    [Network] │ <- Fixed Bottom Nav
+└────────────────────────────────────────────────────────┘
+```
 
-### 3.2 `DashboardQuickActions.tsx`
-- Fast, accessible action buttons:
-  - **Add Card**: Opens the Database Catalog Search / Custom Card modal directly.
-  - **Invite Friend**: Opens phone/username/email lookup modal.
-  - **Review Requests**: Fast link to pending inbound/outbound approvals with badge counter.
+---
 
-### 3.3 `DashboardPendingAlerts.tsx`
-- Sticky amber-tinted notification banner that surfaces only when actionable requests exist.
-- Displays requester name, requested card, and inline "Approve" / "Decline" / "Review" shortcuts.
+## 3. Component Breakdown & Refactoring
 
-### 3.4 `DashboardCardDeck.tsx`
-- Uses the new `VisualCard` engine (Milestone 2).
-- Horizontal scrollable strip or grid showcasing the user's active cards with Bank, Network, Tier, and Scope.
+`HomePage.tsx` (currently 957 lines) is refactored into modular subcomponents in `frontend/src/components/dashboard/`:
 
-### 3.5 `DashboardNetworkSummary.tsx`
-- Compact paper-styled metric card:
-  - Direct Trusted Connections
-  - Extended Network Reach (2nd degree friends)
-  - Cards in Wallet
-- Replaces the 5 fragmented emoji pills with clean, structured SVG stats.
+1. **`DashboardSearchHero.tsx`**:
+   - Clean, distraction-free hero section with autofocus and keyboard shortcut (`/`).
+   - Categorized live search dropdown (Cards / Friends) with relationship distance pills (`1st Degree` / `2nd Degree via [Friend]`).
+2. **`DashboardQuickActions.tsx`**:
+   - Rapid action buttons triggering bottom-sheet modals:
+     - `+ Add Card`: Launches Database Catalog Search / Custom Card fallback modal.
+     - `+ Invite Friend`: Launches Phone / Username / Email lookup modal.
+3. **`DashboardPendingAlerts.tsx`**:
+   - Clean amber callout banner rendered when inbound requests are pending response.
+4. **`DashboardCardDeck.tsx`**:
+   - Horizontal snap carousel utilizing `VisualCard` with authentic card colorways.
+5. **`DashboardNetworkPulse.tsx`**:
+   - Replaces fragmented emoji stat pills with clean SVG metrics.
 
 ---
 
 ## 4. Implementation Steps
 
-1. **Create Subcomponents:**
-   - `frontend/src/components/dashboard/DashboardSearchHero.tsx`
-   - `frontend/src/components/dashboard/DashboardQuickActions.tsx`
-   - `frontend/src/components/dashboard/DashboardPendingAlerts.tsx`
-   - `frontend/src/components/dashboard/DashboardCardDeck.tsx`
-   - `frontend/src/components/dashboard/DashboardNetworkSummary.tsx`
-2. **Refactor `HomePage.tsx`:**
-   - Reduce size from 957 lines to ~150 lines by delegating state and UI to subcomponents.
-   - Maintain search debouncing and keyboard navigation.
-3. **Responsive Verification:**
-   - Mobile (<768px): Vertical stacking, search first, bottom nav padding.
-   - Tablet (768-1023px): 2-column grid for card deck and network summary.
-   - Desktop (>=1024px): Max content width 920px with side context widgets.
-4. **Testing:**
-   - Unit test each dashboard subcomponent.
-   - Playwright E2E test for the complete dashboard user journey.
+1. Create modular dashboard subcomponents in `frontend/src/components/dashboard/`.
+2. Refactor `HomePage.tsx` to compose the subcomponents, reducing file size to <150 lines.
+3. Connect quick actions directly to the Add Card modal (Milestone 3) and Multi-Identifier Friend lookup (Milestone 5).
+4. Implement mobile swipe carousel with CSS `scroll-snap-type: x mandatory`.
+5. Integrate with Bottom Navigation Bar (Milestone 11).
+6. Verify layout responsiveness across 320px, 375px, 768px, and 1024px+ viewports.
 
 ---
 
 ## 5. Acceptance Criteria
 
-- [ ] Search hero is the primary visual anchor upon page load.
-- [ ] Quick actions provide direct 1-click modal access for adding cards and inviting friends.
-- [ ] User's cards render realistic visuals via `VisualCard`.
-- [ ] Network summary displays clean SVG metrics with zero unicode emojis.
-- [ ] Dashboard adapts seamlessly across 375px, 768px, and 1024px+ screen sizes.
+- [ ] Search hero is the primary visual anchor in the viewport upon loading.
+- [ ] Quick action buttons open streamlined modals for card addition and friend invitation.
+- [ ] Active cards render as a swipeable visual deck with authentic bank colors.
+- [ ] Pending requests appear as prominent, actionable alerts.
+- [ ] Zero horizontal page overflow; mobile layout is touch-optimized (>= 48px targets).

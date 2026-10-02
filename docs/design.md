@@ -1,228 +1,176 @@
-# Card Crew UI Design System
+# Card Crew UI Design System (v2.0)
 
-Status: implementation source of truth
-Product: Trusted Personal Resource Network, India-first
-Scope: MVP web app, mobile-first and responsive
+**Status:** Implementation Source of Truth  
+**Product:** Trusted Personal Resource Network (India-First)  
+**Scope:** Mobile-First Primary Web App & Responsive Desktop Dashboard  
+**Tracked Issue:** [#48](https://github.com/SriSatyaLokesh/card-crew/issues/48)  
 
-## Product Feeling
+---
 
-Card Crew should feel like a trusted personal index: calm, legible, human, and slightly editorial. It is not a bank portal, a marketplace, or a social feed. The interface should make one action obvious: search for a resource through people the user trusts.
+## 1. Product Feeling & Visual Identity
 
-The visual language is **paper index + signal blue**:
+Card Crew is a **trusted, high-security personal resource network**. The visual language must feel:
+- **Trustworthy & Modern:** Premium financial clarity without bank bloat. Clean white and slate surfaces, dark navy accents, and radiant cobalt signals.
+- **Mobile-First:** 85%+ of card coordination happens on mobile devices when users are shopping, dining, or booking flights. Mobile touch ergonomics take precedence over desktop layouts.
+- **Zero Emojis:** All unicode emojis are replaced with crisp, accessible vector SVG icons.
+- **Authentic Financial Craft:** Cards rendered in the UI mirror their authentic physical counterparts, featuring real bank colorways, metallic EMV chips, contactless arcs, network badges (Visa, MasterCard, Amex, RuPay, Diners), and tier markers (Platinum, Signature, World, Infinite).
 
-- Warm off-white surfaces create a private notebook feeling.
-- Ink-black typography keeps financial/privacy content serious.
-- Cobalt blue is the primary action and navigation signal.
-- Leaf green means a permission is available, never general decoration.
-- Amber is reserved for pending decisions and review states.
-- Red is reserved for destructive or denied states.
+---
 
-## Design Principles
+## 2. Core Design Principles
 
-1. Search first. The home screen begins with the card/resource search, not a dashboard of metrics.
-2. Trust is explicit. Always separate `Direct friend`, `Can request`, and `Contact available`.
-3. Privacy is visible. Use plain language for discoverability, requestability, and contact handoff.
-4. Metadata only. Never visually suggest that Card Crew stores payment credentials.
-5. One primary action per screen. Secondary management actions stay quieter.
-6. Dense enough for repeat use, spacious enough for mobile touch.
-7. No public trust score. Relationship labels are contextual, not rankings of people.
+1. **Mobile-First UX:** Touch targets must be at least 48px. Navigation is thumb-accessible at the screen bottom. No clipped text or horizontal overflow.
+2. **Search First:** The home viewport immediately offers the central resource and friend search bar. Metrics and graph canvas remain secondary context.
+3. **Card-Authentic Visuals:** Each card carries its authentic issuer color palette, gradient theme, and branding retrieved directly from the database catalog.
+4. **Zero Payment Credentials:** Never display or request card numbers, CVVs, PINs, or expiration dates. The design reinforces metadata-only privacy.
+5. **Clear Trust Boundaries:** Explicit visual separation between `Direct Friend` (1st-degree), `Extended Crew` (2nd-degree), and `Pending Request`.
+6. **Zero Emojis:** Strict vector SVG iconography with uniform stroke, scalable viewBoxes, and accessible ARIA attributes.
 
-## Tokens
+---
 
-### Color
+## 3. Brand Identity, Logo & Favicon
+
+### 3.1 Card Crew Brand Logo
+
+The Card Crew logo fuses two core metaphors: **overlapping financial cards** and **trusted connection nodes**.
+
+```
+       ┌───────────┐
+  ┌────│─────┐     │  <- Two layered, rounded credit cards
+  │    │  ●──┼──●  │  <- Connected trust nodes spanning the cards
+  │    └─────│─────┘
+  └──────────┘
+```
+
+#### Official SVG Vector Specification:
+```xml
+<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="card-crew-logo">
+  <!-- Rear Card (Electric Cobalt) -->
+  <rect x="12" y="6" width="30" height="22" rx="4" fill="#2563EB" fill-opacity="0.85" stroke="#1D4ED8" stroke-width="1.5"/>
+  <!-- Front Card (Midnight Navy) -->
+  <rect x="6" y="18" width="30" height="22" rx="4" fill="#0B132B" stroke="#1E293B" stroke-width="1.5"/>
+  <!-- EMV Chip Accent -->
+  <rect x="10" y="24" width="6" height="5" rx="1" fill="#F59E0B"/>
+  <!-- Trust Connection Nodes & Bridge -->
+  <line x1="20" y1="29" x2="30" y2="29" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="20" cy="29" r="2.5" fill="#10B981"/>
+  <circle cx="30" cy="29" r="2.5" fill="#10B981"/>
+</svg>
+```
+
+### 3.2 Application Favicon
+- Linked in `frontend/index.html` as:
+  ```html
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <meta name="theme-color" content="#0B132B" />
+  ```
+
+---
+
+## 4. Color Tokens (Modern Trust Palette)
 
 ```css
 :root {
-  --ink-950: #171717;
-  --ink-800: #292524;
-  --ink-600: #57534e;
-  --ink-400: #a8a29e;
-  --paper-50: #faf9f6;
-  --paper-100: #f1efe9;
-  --paper-200: #e3dfd5;
-  --white: #ffffff;
-  --cobalt-700: #1d4ed8;
+  /* Brand Primary */
+  --primary-navy: #0b132b;
+  --primary-navy-surface: #1c2541;
   --cobalt-600: #2563eb;
-  --cobalt-100: #dbeafe;
-  --leaf-700: #166534;
-  --leaf-100: #dcfce7;
-  --amber-800: #92400e;
-  --amber-100: #fef3c7;
-  --red-700: #b91c1c;
-  --red-100: #fee2e2;
-  --focus: #0f766e;
+  --cobalt-700: #1d4ed8;
+  --cobalt-50: #eff6ff;
+
+  /* Surfaces & Neutrals */
+  --surface-base: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-elevated: #ffffff;
+  --border-subtle: #e2e8f0;
+  --border-medium: #cbd5e1;
+
+  /* Ink & Typography */
+  --ink-950: #0f172a;
+  --ink-800: #1e293b;
+  --ink-600: #475569;
+  --ink-400: #94a3b8;
+
+  /* Semantic Feedback */
+  --emerald-600: #10b981;
+  --emerald-50: #ecfdf5;
+  --amber-600: #f59e0b;
+  --amber-50: #fffbeb;
+  --coral-600: #ef4444;
+  --coral-50: #fef2f2;
+
+  /* Focus & Active */
+  --focus-ring: #2563eb;
+  --touch-target-min: 48px;
 }
 ```
 
-Contrast requirements:
+---
 
-- Body text uses `--ink-950` or `--ink-800` on paper/white surfaces.
-- Secondary text must remain at least 4.5:1; do not use `--ink-400` for readable copy.
-- Status colors always include text, never color alone.
-- Focus rings use `--focus` with a 3px outer ring.
+## 5. Typography Hierarchy
 
-### Typography
+Moving away from informal handwriting cursives to clean, modern, high-legibility geometric sans-serif:
+- **Headings & Brand Title:** `Inter`, `Plus Jakarta Sans`, system `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto`.
+- **Numeric & Card Data:** `ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`.
+- **Scale:**
+  - Display Title: 2.25rem (36px), 700 bold
+  - Section Header: 1.5rem (24px), 600 semibold
+  - Card Product Title: 1.125rem (18px), 600 semibold
+  - Body Text: 1rem (16px), line-height 1.5
+  - Small / Badge: 0.8125rem (13px), 600 semibold
 
-Primary recommendation from UI/UX Pro Max was a friendly handwritten pairing. For this privacy-sensitive utility, use the same warmth more carefully:
+---
 
-- Display/brand: `Caveat`, 600-700, only for the Card Crew wordmark or short welcome phrase.
-- UI/body: `Quicksand`, 400-700, for readable rounded utility text.
-- Numeric/card metadata: `ui-monospace`, `SFMono-Regular`, `Consolas`, monospace figures where alignment matters.
+## 6. Dynamic Card Visual Theming Engine
 
-```css
-:root {
-  --font-display: "Caveat", cursive;
-  --font-body: "Quicksand", "Segoe UI", sans-serif;
-  --font-data: ui-monospace, SFMono-Regular, Consolas, monospace;
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-md: 1rem;
-  --text-lg: 1.25rem;
-  --text-xl: 1.75rem;
-  --text-2xl: 2.25rem;
-}
+Each card stored in the catalog specifies its visual appearance:
+
+| Card Series / Bank | Primary Hex | Accent Hex | Gradient / Visual Theme |
+|---|---|---|---|
+| **HDFC Millennia** | `#1E3A8A` | `#38BDF8` | Deep Cobalt to Cyan Gloss |
+| **HDFC Regalia Gold** | `#1E293B` | `#D97706` | Slate Black with Brushed Gold |
+| **HDFC Infinia** | `#090D16` | `#475569` | Obsidian Black Metal with Silver Rim |
+| **SBI SimplyCLICK** | `#1D4ED8` | `#F97316` | Electric Blue with Vibrant Orange Accent |
+| **ICICI Amazon Pay** | `#18181B` | `#F59E0B` | Charcoal Matte with Amazon Gold Wave |
+| **Axis Magnus** | `#4A044E` | `#F59E0B` | Deep Burgundy Velvet with Gold |
+| **Amex Platinum** | `#475569` | `#E2E8F0` | Brushed Stainless Steel Metallic |
+| **Tata Neu Infinity** | `#2E1065` | `#EC4899` | Neu Royal Violet to Magenta Glow |
+
+### 6.1 Database Schema Integration
+`catalog_cards` captures:
+- `card_color text not null default '#1E3A8A'`
+- `accent_color text not null default '#38BDF8'`
+- `gradient_theme text not null default 'default'`
+
+---
+
+## 7. Mobile-First Layout Architecture
+
+```
+Mobile Viewport (320px – 767px)
+┌────────────────────────────────────────┐
+│ [Logo] Card Crew            [Avatar]  │ <- Top App Header (56px)
+├────────────────────────────────────────┤
+│ [ 🔍 Search cards or friends...      ] │ <- Search Hero
+├────────────────────────────────────────┤
+│ [ + Add Card ]  [ + Invite ] [Alerts]  │ <- Quick Action Pill Strip
+├────────────────────────────────────────┤
+│ Active Cards (Swipeable Snap Deck)     │
+│ [Card 1]  [Card 2]  [Card 3]           │ <- Horizontal Scroll Snap
+├────────────────────────────────────────┤
+│ Pending Requests (Vertical Stack)      │
+│ ┌────────────────────────────────────┐ │
+│ │ Ramesh requested HDFC Regalia      │ │
+│ │ [Approve]             [Decline]    │ │
+│ └────────────────────────────────────┘ │
+├────────────────────────────────────────┤
+│ [Search] [Cards] [Requests] [Network]  │ <- Fixed Bottom Nav (64px)
+└────────────────────────────────────────┘
 ```
 
-Body text is never smaller than 16px on mobile. Line height is 1.5 or higher for explanatory/privacy copy.
-
-### Spacing and shape
-
-Use a 4/8 rhythm:
-
-- `4px`, `8px`, `12px`, `16px`, `24px`, `32px`, `48px`.
-- Default control height: 48px on mobile.
-- Minimum touch target: 44px; preferred: 48px.
-- Card radius: 10px.
-- Modal radius: 14px.
-- Avoid pill-shaped containers except compact status badges.
-- Borders are `1px solid var(--paper-200)`; shadows are soft and rare.
-
-## Layout
-
-### Desktop >= 1024px
-
-- Left rail: 232px, persistent brand and primary destinations.
-- Main content: max 920px, left aligned.
-- Optional right context rail: 280px for network summary or request status.
-- Search hero occupies the first viewport, with the next result section visible below it.
-
-### Tablet 768-1023px
-
-- Compact top bar with brand and menu.
-- Main content max 720px.
-- Network graph remains a simple row/list, never a dense canvas.
-
-### Mobile 0-767px
-
-- Top bar with wordmark and profile menu.
-- Bottom navigation with no more than four destinations: Search, My Cards, Network, Requests.
-- `padding-bottom` reserves space for the fixed navigation.
-- Main content uses 16px gutters.
-- Cards stack vertically; controls wrap without horizontal scrolling.
-- Search field is full width and first interactive element after the heading.
-
-## Screen Direction
-
-### Home / Search
-
-- H1: `Find help from people you trust`.
-- Search field is the primary visual anchor, with a magnifier icon and a visible label.
-- Suggested cards appear as compact rows with issuer, card name, network, and UPI marker where relevant.
-- Results are person/resource rows, not giant cards.
-- Direct friend is blue; Can request is green; Requests unavailable is neutral; Contact available is green with a lock/unlock explanation.
-- Empty state always includes the next action: Invite a friend or Add a card.
-
-### My Cards
-
-- Use a filter strip: All, UPI, Credit, Debit, Travel, Cashback, Fuel, Lifestyle.
-- Catalog rows show issuer, product, network, variant, and use-case tags.
-- Add flow progressively discloses visibility and request controls after card selection.
-- Notes helper text must state: `Never enter a card number, CVV, PIN, or OTP here.`
-- Existing resources use inline controls for visibility and requests; destructive removal is confirmed.
-
-### My Network
-
-- Group by Direct friends, Incoming requests, Outgoing requests, Blocked.
-- Show names, not raw UUIDs.
-- Invite is a single clear action; current MVP uses user ID until lookup-by-email exists.
-- Block/remove confirmations explain the privacy consequence.
-
-### Requests
-
-- Incoming and Outgoing are tabs with pending counts when available.
-- Request rows show requester/owner, card name, relationship, message, and state.
-- Approve is the primary action; Decline and Ignore are secondary.
-- Contact details are never present in DOM before approval. After approval, show the permitted contact fields with a clear explanation.
-
-### Network Context
-
-- Use a lightweight node list, not a decorative graph visualization.
-- Self is visually distinct; direct friends are neutral; matching friends receive a green outline and a `1 match` label.
-- Never show unrelated graph edges or a public trust score.
-
-## Components
-
-### Buttons
-
-- Primary: cobalt fill, white text, 48px height.
-- Secondary: white/paper fill, ink text, paper border.
-- Destructive: red text/border, never the same visual weight as the primary CTA.
-- Disabled: reduced emphasis and `cursor: not-allowed`; retain readable contrast.
-- Every async button disables during the request and communicates progress (`Sending...`, `Loading...`).
-
-### Badges
-
-Badges are text-first compact labels, not decorative pills:
-
-- `Direct friend` — blue background/text.
-- `Can request` — green background/text.
-- `Requests unavailable` — neutral background/text.
-- `Pending` — amber background/text.
-- `Contact available` — green background/text plus explanatory copy.
-
-### Forms
-
-- Visible labels, never placeholder-only.
-- `autocomplete` on email/password fields.
-- Inputs and selects at least 48px tall.
-- Errors appear below the related field or action and use `role="alert"` where appropriate.
-- Success messages use `aria-live="polite"` and remain visible long enough to read.
-
-### Modal
-
-- Scrim 45-55% black.
-- Title linked with `aria-labelledby`.
-- Initial focus moves to the first useful field.
-- Escape and Cancel close without submitting.
-- Keep modal content short; primary action is visually dominant.
-- Add a focus trap before introducing more modal-heavy flows.
-
-## Motion
-
-- 150-250ms ease-out for hover/pressed/focus transitions.
-- Use opacity/transform only; avoid layout animation.
-- Search result reveal may stagger 30ms per row, capped at five rows.
-- Respect `prefers-reduced-motion: reduce` by removing stagger and transform motion.
-- No decorative floating shapes, bokeh, or looping background motion.
-
-## Accessibility and QA
-
-- Keyboard order follows visual order.
-- Skip link targets `<main>`.
-- Route changes move focus to the page heading.
-- All nav links have text labels.
-- All icon buttons have accessible names.
-- Status colors have text equivalents.
-- Test at 375px, 768px, 1024px, and 1440px.
-- Test with reduced motion and browser text zoom at 200%.
-- No horizontal scrolling at any supported width.
-
-## Product Boundaries
-
-Do not add UI for:
-
-- Card numbers, CVV, PIN, OTP, bank credentials, or password sharing.
-- Payments, escrow, marketplace settlement, or lending.
-- Second-degree graph traversal in MVP.
-- AI chat or A2UI before deterministic flows are stable.
-- Public trust scores or rankings of friends.
+### 7.1 Key Mobile Ergonomics
+1. **Fixed Bottom Navigation:** Thumb-friendly bottom navigation bar with 4 primary destinations (Search, My Cards, Requests, Network).
+2. **Bottom-Sheet Modals (`sheet-modal`):** Modals slide up from bottom on mobile with smooth swipe-down-to-dismiss gesture.
+3. **Zero Horizontal Overflow:** Strict `overflow-x: hidden` across all containers; wide tables replaced with vertical card lists.
+4. **Touch Target Size:** Buttons, inputs, and links have minimum 48px height and width.
