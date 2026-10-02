@@ -13,9 +13,9 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const syncProfile = useCallback(async (displayName?: string) => {
+  const syncProfile = useCallback(async (displayName?: string, avatarUrl?: string) => {
     try {
-      const { user } = await api.syncUser(displayName);
+      const { user } = await api.syncUser(displayName, avatarUrl);
       setProfile(user);
       setError(null);
     } catch (syncError) {
@@ -68,7 +68,15 @@ function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = useCallback(async (email: string, password: string, displayName: string) => {
     setError(null);
-    const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          display_name: displayName,
+        },
+      },
+    });
 
     if (signUpError) {
       setError(signUpError.message);
@@ -85,9 +93,17 @@ function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(null);
   }, []);
 
+  const refreshProfile = useCallback(async () => {
+    await syncProfile();
+  }, [syncProfile]);
+
+  const updateProfileState = useCallback((updated: UserProfile) => {
+    setProfile(updated);
+  }, []);
+
   const value = useMemo(
-    () => ({ session, profile, loading, error, signIn, signUp, signOut }),
-    [session, profile, loading, error, signIn, signUp, signOut],
+    () => ({ session, profile, loading, error, signIn, signUp, signOut, refreshProfile, updateProfileState }),
+    [session, profile, loading, error, signIn, signUp, signOut, refreshProfile, updateProfileState],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

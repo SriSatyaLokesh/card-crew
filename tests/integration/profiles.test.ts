@@ -85,6 +85,28 @@ describe("profiles visibility", () => {
       expect(error!.code).toBe("42501");
     },
   );
+
+  it("user can update avatar_url and display_name and view it via profiles_public", async () => {
+    const user = await createTestUser();
+    await syncProfile(user, "Original Name");
+
+    const testAvatar = "https://example.com/avatars/test-avatar.png";
+    const { error: updateError } = await user.client
+      .from("profiles")
+      .update({ display_name: "Updated Name", avatar_url: testAvatar })
+      .eq("id", user.id);
+    expect(updateError).toBeNull();
+
+    const { data: own } = await user.client.from("profiles").select("*").eq("id", user.id).single();
+    expect(own.display_name).toBe("Updated Name");
+    expect(own.avatar_url).toBe(testAvatar);
+
+    const stranger = await createTestUser();
+    await syncProfile(stranger, "Stranger");
+    const { data: publicProfile } = await stranger.client.from("profiles_public").select("*").eq("id", user.id).single();
+    expect(publicProfile.display_name).toBe("Updated Name");
+    expect(publicProfile.avatar_url).toBe(testAvatar);
+  });
 });
 
 describe("auth boundary", () => {

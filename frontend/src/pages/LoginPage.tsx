@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../auth/AuthContext";
 
 function LoginPage() {
-  const { signIn, signUp } = useAuth();
+  const { session, profile, signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
   const [email, setEmail] = useState("");
@@ -14,6 +14,12 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (session || profile) {
+      navigate("/", { replace: true });
+    }
+  }, [session, profile, navigate]);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();

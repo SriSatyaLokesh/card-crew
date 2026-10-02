@@ -8,6 +8,8 @@ import { LoginPage } from "./pages/LoginPage";
 import { MyCardsPage } from "./pages/MyCardsPage";
 import { MyNetworkPage } from "./pages/MyNetworkPage";
 import { RequestsPage } from "./pages/RequestsPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { ChatPage } from "./pages/ChatPage";
 
 function SignedInLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -53,6 +55,22 @@ function App() {
             element={
               <SignedInLayout>
                 <RequestsPage />
+              </SignedInLayout>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <SignedInLayout>
+                <ChatPage />
+              </SignedInLayout>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <SignedInLayout>
+                <ProfilePage />
               </SignedInLayout>
             }
           />

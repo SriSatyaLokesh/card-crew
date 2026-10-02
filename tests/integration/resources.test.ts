@@ -80,4 +80,38 @@ describe("resources", () => {
     expect(error).toBeNull();
     expect(data.id).toBe(resource.id);
   });
+
+  it("friend of friend can access visibility_depth = 2, but not visibility_depth = 1", async () => {
+    const owner = await createTestUser();
+    const mutual = await createTestUser();
+    const fof = await createTestUser();
+    await Promise.all([syncProfile(owner, "Owner"), syncProfile(mutual, "Mutual"), syncProfile(fof, "FoF")]);
+    await becomeFriends(owner, mutual);
+    await becomeFriends(mutual, fof);
+
+    const card1 = await getCatalogItemId(owner.client, "Infinia", "hdfc");
+    const card2 = await getCatalogItemId(owner.client, "Atlas", "axis");
+    const resDepth1 = await addResource(owner, card1, { visibility_depth: 1 });
+    const resDepth2 = await addResource(owner, card2, { visibility_depth: 2 });
+
+    // FoF reading depth 1 via get_resource -> PT403 not_visible
+    const { data: d1, error: e1 } = await fof.client.rpc("get_resource", { p_resource_id: resDepth1.id });
+    expect(d1).toBeNull();
+    expect(e1!.code).toBe("PT403");
+
+    // FoF reading depth 2 via get_resource -> succeeds
+    const { data: d2, error: e2 } = await fof.client.rpc("get_resource", { p_resource_id: resDepth2.id });
+    expect(e2).toBeNull();
+    expect(d2.id).toBe(resDepth2.id);
+
+    // Direct query to resources table under RLS: FoF can see depth 2, not depth 1
+    const { data: fofRows } = await fof.client.from("resources").select("*").eq("owner_id", owner.id);
+    expect(fofRows?.map((r: any) => r.id)).toEqual([resDepth2.id]);
+
+    // get_person_cards RPC: returns only depth 2
+    const { data: personCards, error: pcError } = await fof.client.rpc("get_person_cards", { p_user_id: owner.id });
+    expect(pcError).toBeNull();
+    expect(personCards.length).toBe(1);
+    expect(personCards[0].id).toBe(resDepth2.id);
+  });
 });

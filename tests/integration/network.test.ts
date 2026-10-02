@@ -88,14 +88,17 @@ describe("network_graph", () => {
     const selfNode = data.nodes.find((n: any) => n.user_id === me.id);
     expect(selfNode.relationship).toBe("self");
     expect(selfNode.depth).toBe(0);
+    expect(selfNode).toHaveProperty("avatar_url");
 
     const directNode = data.nodes.find((n: any) => n.user_id === direct.id);
     expect(directNode.relationship).toBe("direct");
     expect(directNode.card_count).toBe(1);
+    expect(directNode).toHaveProperty("avatar_url");
 
     const fofNode = data.nodes.find((n: any) => n.user_id === fof.id);
     expect(fofNode.relationship).toBe("second-degree");
     expect(fofNode.via_user_id).toBe(direct.id);
+    expect(fofNode).toHaveProperty("avatar_url");
 
     expect(data.truncated).toBe(false);
   });

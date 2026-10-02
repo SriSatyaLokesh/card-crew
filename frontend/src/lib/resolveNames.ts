@@ -5,6 +5,14 @@ async function resolveDisplayName(userId: string): Promise<string> {
   return data?.display_name ?? "Unknown user";
 }
 
+async function resolveUserProfile(userId: string): Promise<{ display_name: string; avatar_url: string | null }> {
+  const { data } = await supabase.from("profiles_public").select("display_name, avatar_url").eq("id", userId).single();
+  return {
+    display_name: data?.display_name ?? "Unknown user",
+    avatar_url: data?.avatar_url ?? null,
+  };
+}
+
 async function resolveDisplayNames<T extends { user_id: string }>(
   items: T[],
 ): Promise<Array<T & { display_name: string }>> {
@@ -13,4 +21,4 @@ async function resolveDisplayNames<T extends { user_id: string }>(
   );
 }
 
-export { resolveDisplayName, resolveDisplayNames };
+export { resolveDisplayName, resolveUserProfile, resolveDisplayNames };
