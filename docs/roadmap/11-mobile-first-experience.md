@@ -1,6 +1,6 @@
 # Milestone 11: Mobile-First Experience & Touch Ergonomics
 
-**Tracked Issue:** [#48](https://github.com/SriSatyaLokesh/card-crew/issues/48) & Architecture Standard  
+**Tracked Issue:** [#49](https://github.com/SriSatyaLokesh/card-crew/issues/49)  
 **Priority:** High (Primary User Surface)  
 **Status:** Ready for Implementation  
 **Estimated Complexity:** High  

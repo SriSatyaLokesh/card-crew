@@ -1,6 +1,6 @@
 # Milestone 7: Chat Trust Gate Security Fix & Anti-Exfiltration Safety
 
-**Tracked Issue:** [#34](https://github.com/SriSatyaLokesh/card-crew/issues/34) & Private Security Advisory  
+**Tracked Issue:** [#51](https://github.com/SriSatyaLokesh/card-crew/issues/51), [#34](https://github.com/SriSatyaLokesh/card-crew/issues/34)  
 **Priority:** Critical (Security & Trust Enforcement)  
 **Status:** Ready for Implementation  
 **Estimated Complexity:** Medium  

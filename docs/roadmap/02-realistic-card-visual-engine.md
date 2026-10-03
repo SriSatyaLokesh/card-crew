@@ -1,6 +1,6 @@
 # Milestone 2: Realistic Financial Card Engine (Bank, Network, Tier, Partner, Level & Dynamic Card Colors)
 
-**Tracked Issue:** [#42](https://github.com/SriSatyaLokesh/card-crew/issues/42) & [#48](https://github.com/SriSatyaLokesh/card-crew/issues/48)  
+**Tracked Issue:** [#42](https://github.com/SriSatyaLokesh/card-crew/issues/42) & [#50](https://github.com/SriSatyaLokesh/card-crew/issues/50)  
 **Priority:** High (Core UI Identity)  
 **Status:** Ready for Implementation  
 **Estimated Complexity:** Medium / High  
