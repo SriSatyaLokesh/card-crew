@@ -615,7 +615,7 @@ async function changePassword(input: {
   }
 
   if (input.confirmPassword && input.newPassword !== input.confirmPassword) {
-    throw new ApiError(400, "New and confirmation passwords do not match.");
+    throw new ApiError(400, "New password and confirmation do not match.");
   }
 
   // Re-authenticate session with current password before updating credentials
