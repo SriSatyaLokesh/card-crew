@@ -596,9 +596,40 @@ async function changePassword(input: {
   confirmPassword?: string;
   oldPassword?: string;
 }): Promise<void> {
+  const user = (await supabase.auth.getUser()).data.user;
+  if (!user || !user.email) {
+    throw new ApiError(401, "You must be signed in to change your password.");
+  }
+
+  const currentPassword = input.currentPassword ?? input.oldPassword;
+  if (!currentPassword) {
+    throw new ApiError(400, "Current password is required.");
+  }
+
+  if (!input.newPassword) {
+    throw new ApiError(400, "New password is required.");
+  }
+
+  if (input.newPassword.length < 8) {
+    throw new ApiError(400, "New password must be at least 8 characters long.");
+  }
+
+  if (input.confirmPassword && input.newPassword !== input.confirmPassword) {
+    throw new ApiError(400, "New password and confirmation do not match.");
+  }
+
+  // Re-authenticate session with current password before updating credentials
+  const reauth = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: currentPassword,
+  });
+  if (reauth.error) {
+    throw new ApiError(401, "Current password is incorrect.");
+  }
+
   const res = await supabase.auth.updateUser({ password: input.newPassword });
   if (res.error) {
-    throw new ApiError(400, res.error.message);
+    throw new ApiError(400, res.error.message || "Failed to update password. Please try again.");
   }
 }
 
